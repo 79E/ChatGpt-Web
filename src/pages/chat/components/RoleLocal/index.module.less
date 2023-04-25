@@ -1,0 +1,56 @@
+.roleLocal{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    &_operate{
+        text-align: right;
+    }
+    .promptCard{
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        box-sizing: border-box;
+        border-radius: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        &_content{
+            flex: 1;
+            max-width: 80%;
+            p{
+                font-size: 14px;
+            }
+            span{
+                display: block;
+                overflow: hidden; //超出的文本隐藏
+                text-overflow: ellipsis; //溢出用省略号显示
+                white-space: nowrap; //溢出不换行
+                font-size: 12px;
+                color: #999;
+            }
+        }
+        &_operate{
+            margin-left: auto;
+            display: flex;
+            font-size: 18px;
+            cursor: pointer;
+            span{
+                width: 20px;
+                height: 20px;
+                padding: 4px;
+                border: 1px solid #333;
+                margin-left: 20px;
+                border-radius: 50%; 
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                &:hover{
+                    color: blue;
+                    border-color: blue;
+                }
+            }
+        }
+    }
+}

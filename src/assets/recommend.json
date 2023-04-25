@@ -1,0 +1,14 @@
+[
+  {
+    "key": "awesome-chatgpt-prompts-zh",
+    "desc": "🤖️ ChatGPT 中文调教指南",
+    "downloadUrl": "https://raw.githubusercontent.com/PlexPt/awesome-chatgpt-prompts-zh/main/prompts-zh.json",
+    "url": "https://github.com/PlexPt/awesome-chatgpt-prompts-zh"
+  },
+  {
+    "key": "awesome-chatgpt-prompts-zh-TW",
+    "desc": "🤖️ ChatGPT 中文調教指南 (透過 OpenAI / OpenCC 協助，從簡體中文轉換為繁體中文的版本)",
+    "downloadUrl": "https://raw.githubusercontent.com/PlexPt/awesome-chatgpt-prompts-zh/main/prompts-zh-TW.json",
+    "url": "https://github.com/PlexPt/awesome-chatgpt-prompts-zh"
+  }
+]

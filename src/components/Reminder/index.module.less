@@ -1,0 +1,57 @@
+.reminder{
+    padding-top: 120px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    &_title{
+        font-size: 38px;
+        color: #333;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        font-family: PingFang SC-Semibold,PingFang SC;
+        img{
+            width: 60px;
+        }
+    }
+    &_message{
+        font-size: 16px;
+        color: #26334b;
+        margin-top: 4px;
+        span{
+            padding: 2px 8px;
+            border: 1px solid #26334b;
+            border-radius: 4px;;
+        }
+    }
+    &_question{
+        margin-top: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        flex-flow: wrap;
+        &_item{
+            min-width: 212px;
+            min-height: 138px;
+            flex: 1;
+            padding: 16px;
+            border-radius: 12px;
+            background-color: #f5f5f5;
+            img{
+                width: 24px;
+                margin-bottom: 12px;
+            }
+            h3{
+                font-size: 16px;
+                margin-bottom: 5px;
+                color: #26334b;
+                font-weight: 700;
+            }
+            p{
+                font-size: 12px;
+                color: #26334b;
+            }
+        }
+    }
+}

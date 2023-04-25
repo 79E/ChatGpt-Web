@@ -1,0 +1,104 @@
+.chatPage{
+ 
+    .menuItem{
+        color: #333;
+        padding: 12px;
+        border-radius: 4px;
+        height: 40px;
+        border: 1px solid #e5e7eb;
+        display: flex;
+        align-items: center;
+        border-color: #e5e7eb;
+        &:hover{
+            background-color:#f5f5f5;
+        }
+
+        transition: all 0.3s ease-in-out;
+
+        &_action{
+            border-color: #1677ff;
+            color: #1677ff;
+
+            .menuItem_options{
+                display: inline-block;
+            }
+        }
+
+        &_options{
+            margin-left: auto;
+            cursor: pointer;
+            display: none;
+        }
+
+        &_icon{
+            margin-right: 8px;
+        }
+        &_name{
+            font-size: 14px;
+            overflow:hidden; //超出的文本隐藏
+            text-overflow:ellipsis; //溢出用省略号显示
+            white-space:nowrap; //溢出不换行
+        }
+    }
+    
+    &_container{
+        display: flex;
+        flex-direction: column;
+        height: calc(100vh - 56px);
+
+        &_one{
+            flex: 1;
+            width: 100%;
+            max-width: 900px;
+            align-self: center;
+            overflow: auto;
+            &::-webkit-scrollbar {
+                display: none;
+            }
+        }
+        &_two{
+            padding: 12px 12px 20px;
+            // height: 80px;
+        }
+    }
+}
+
+.chatPage{
+    [class*='ant-pro-sider-collapsed-button']{
+        inset-block-start: 40%;
+    }
+    [class*='ant-layout-sider-children']{
+        padding-inline: 12px !important;
+    }
+    [class*='ant-pro-sider-extra']{
+        margin-inline: 0px;
+    }
+    [class*='ant-menu-item']{
+        width: 100%;
+        margin-top: 8px;
+        margin-left: 0;
+        margin-right: 0;
+        padding: 0 !important;
+        background-color: transparent !important;
+        &:hover{
+            background-color: transparent !important;
+        }
+    }
+    [class*='ant-menu-item-selected']{
+        background-color: transparent !important;
+    }
+    [class*='ant-pro-layout-bg-list']{
+        background: #fff !important;
+    }
+    [class*='ant-layout-sider-children']{
+        background-color: #fff;
+    }
+    [class*='ant-pro-layout-content']{
+        padding-block: 0;
+    }
+    @media (max-width: 600px) { 
+        [class*='ant-pro-layout-content']{
+            padding-inline: 4px;
+        }
+    }
+}
