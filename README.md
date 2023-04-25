@@ -97,4 +97,4 @@ Chat Web Logo。
 
 ## 📋 开源协议
 
-[License](https://github.com/79E/ChatGPT-Web/blob/main/LICENSE)
+[![License MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg)](https://github.com/79E/ChatGpt-Web/blob/master/license)
