@@ -1,0 +1,25 @@
+.formItemCard {
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	padding-bottom: 12px;
+	margin-top: 12px;
+	border-bottom: 1px solid #f4f4f4;
+	&_text{
+		p{
+			font-size: 14px;
+			font-weight: 500;
+			color: #333;
+		}
+		span{
+			font-size: 12px;
+			color: #999;
+			font-weight: 400;
+		}
+	}
+	&_field{
+		[class*='ant-form-item']{
+			margin-bottom: 0;
+		}
+	}
+}

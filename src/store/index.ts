@@ -11,6 +11,10 @@ import {
 import { formatTime, generateChatInfo } from '@/utils'
 
 export interface State {
+  models: Array<{
+    label: string
+    value: string
+  }>
   // 用户信息
   user_detail: UserDetail | undefined
   // 登陆Token
@@ -67,11 +71,45 @@ const useStore = create<State>()(
     (set, get) => ({
       user_detail: undefined,
       token: undefined,
+      models: [
+        {
+          label: 'GPT-3.5',
+          value: 'gpt-3.5-turbo'
+        },
+        {
+          label: 'GPT-4',
+          value: 'gpt-4'
+        },
+        {
+          label: 'GPT-4-0314',
+          value: 'gpt-4-0314'
+        },
+        {
+          label: 'GPT-4-32k',
+          value: 'gpt-4-32k'
+        },
+        {
+          label: 'TEXT-002',
+          value: 'text-davinci-002'
+        },
+        {
+          label: 'TEXT-003',
+          value: 'text-davinci-003'
+        },
+        {
+          label: 'CODE-002',
+          value: 'code-davinci-002'
+        }
+      ],
       config: {
-        // model: 'GPT-3.5',
+        model: 'gpt-3.5-turbo',
         temperature: 0,
         presence_penalty: 0,
-        frequency_penalty: 0
+        frequency_penalty: 0,
+        limit_message: 4,
+        max_token: 4000,
+        api: 'https://api.openai.com',
+        api_key: ''
       },
       localPrompt: [],
       chats: [],
@@ -114,7 +152,7 @@ const useStore = create<State>()(
         set((state: State) => {
           const newChats = state.chats.map((item) => {
             if (item.id === id) {
-              const name = item.data.length <= 0 && data?.text ? data.text : item.name;
+              const name = item.data.length <= 0 && data?.text ? data.text : item.name
               return {
                 ...item,
                 name,
@@ -123,7 +161,7 @@ const useStore = create<State>()(
               }
             }
             return item
-          });
+          })
           return {
             chats: newChats
           }

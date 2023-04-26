@@ -12,13 +12,26 @@ import {
 import {
   LoginForm,
   ModalForm,
+  ProForm,
   ProFormCaptcha,
   ProFormRadio,
+  ProFormSelect,
   ProFormSlider,
   ProFormText,
   ProLayout
 } from '@ant-design/pro-components'
-import { Button, Dropdown, Form, Modal, Popconfirm, Segmented, Space, Tabs } from 'antd'
+import {
+  Button,
+  Dropdown,
+  Form,
+  Modal,
+  Popconfirm,
+  Segmented,
+  Space,
+  Tabs,
+  Radio,
+  Select
+} from 'antd'
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 
 import styles from './index.module.less'
@@ -34,6 +47,7 @@ import Reminder from '@/components/Reminder'
 import { formatTime, generateUUID, handleChatData } from '@/utils'
 import { useScroll } from '@/hooks/useScroll'
 import useDocumentResize from '@/hooks/useDocumentResize'
+import FormItemCard from '@/components/FormItemCard'
 
 function ChatPage() {
   const [chatGptConfigform] = Form.useForm<ChatGptConfig>()
@@ -43,6 +57,7 @@ function ChatPage() {
   const { scrollToBottomIfAtBottom, scrollToBottom } = useScroll(scrollRef.current)
 
   const {
+    models,
     token,
     config,
     changeConfig,
@@ -60,7 +75,7 @@ function ChatPage() {
     delChatMessage
   } = useStore()
 
-  const bodyResize = useDocumentResize();
+  const bodyResize = useDocumentResize()
 
   // 登陆信息
   const [loginOptions, setLoginOptions] = useState({
@@ -118,7 +133,7 @@ function ChatPage() {
     )
   }
 
-  const [fetchController, setFetchController] = useState<AbortController | null>(null);
+  const [fetchController, setFetchController] = useState<AbortController | null>(null)
 
   // 对话
   async function sendChatCompletions(vaule: string) {
@@ -148,16 +163,20 @@ function ChatPage() {
       }
     )
     const controller = new AbortController()
-    const signal = controller.signal;
-    setFetchController(controller);
-    const response = await postCompletions(requestOptions, { options:{
-      signal
-    } }).then((res)=>{
-      return res;
-    }).catch((error)=>{
-      // 终止： AbortError
-      console.log(error.name);
-    });
+    const signal = controller.signal
+    setFetchController(controller)
+    const response = await postCompletions(requestOptions, {
+      options: {
+        signal
+      }
+    })
+      .then((res) => {
+        return res
+      })
+      .catch((error) => {
+        // 终止： AbortError
+        console.log(error.name)
+      })
     if (!(response instanceof Response)) {
       // 这里返回是错误 ...
       setChatDataInfo(selectChatId, userMessageId, {
@@ -170,7 +189,7 @@ function ChatPage() {
     while (true) {
       const { done, value } = (await reader?.read()) || {}
       if (done) {
-        setFetchController(null);
+        setFetchController(null)
         break
       }
       // 将获取到的数据片段显示在屏幕上
@@ -206,7 +225,7 @@ function ChatPage() {
           })
         }
         if (segment === 'stop') {
-          setFetchController(null);
+          setFetchController(null)
           setChatDataInfo(selectChatId, userMessageId, {
             status: 'pass'
           })
@@ -349,18 +368,19 @@ function ChatPage() {
           //   if (props?.collapsed) return undefined;
           return (
             <Space direction="vertical" style={{ width: '100%' }}>
-              {/* <Segmented
-                      defaultValue={config.model}
-                      value={config.model}
-                      block
-                      options={['GPT-3.5', 'GPT-4']}
-                      onChange={(e)=>{
-                        changeConfig({
-                          ...config,
-                          model: e.toString()
-                        });
-                      }}
-                    /> */}
+              <Select
+                size="middle"
+                style={{ width: '100%' }}
+                defaultValue={config.model}
+                value={config.model}
+                options={models.map((m) => ({ ...m, label: 'AI模型: ' + m.label }))}
+                onChange={(e) => {
+                  changeConfig({
+                    ...config,
+                    model: e.toString()
+                  })
+                }}
+              />
               <Button
                 block
                 onClick={() => {
@@ -421,7 +441,7 @@ function ChatPage() {
                     content={item.text}
                     time={item.dateTime}
                     onDelChatMessage={() => {
-                      delChatMessage(selectChatId, item.id);
+                      delChatMessage(selectChatId, item.id)
                     }}
                   />
                 )
@@ -434,18 +454,18 @@ function ChatPage() {
               disabled={!!fetchController}
               onSend={(value) => {
                 if (value === '/') return
-                sendChatCompletions(value);
-                scrollToBottomIfAtBottom();
+                sendChatCompletions(value)
+                scrollToBottomIfAtBottom()
               }}
               clearMessage={() => {
                 clearChatMessage(selectChatId)
               }}
-              onStopFetch={()=>{
+              onStopFetch={() => {
                 // 结束
-                setFetchController((c)=>{
-                  c?.abort();
+                setFetchController((c) => {
+                  c?.abort()
                   return null
-                });
+                })
               }}
             />
           </div>
@@ -464,14 +484,14 @@ function ChatPage() {
           logo={import.meta.env.VITE_APP_LOGO}
           title=""
           subTitle="全网最便宜的人工智能对话"
-          actions={(
+          actions={
             <Space>
               <HeartFilled />
               <RedditCircleFilled />
               <SlackCircleFilled />
               <TwitterCircleFilled />
             </Space>
-          )}
+          }
           contentStyle={{
             width: 'auto',
             minWidth: '100px'
@@ -567,46 +587,42 @@ function ChatPage() {
           destroyOnClose: true
         }}
       >
-        {/* <ProFormRadio.Group
+        <FormItemCard title="GPT模型" describe="根据OpenAI中给出的模型配置">
+          <ProFormSelect
             name="model"
-            label="GPT模型"
-            radioType="button"
-            options={[
-              {
-                label: 'GPT-3.5',
-                value: 'GPT-3.5',
-              },
-              {
-                label: 'GPT-4',
-                value: 'GPT-4',
-              },
-            ]}
-            rules={[{ required: true, message: '请选择模型！' }]}
-          /> */}
-        <ProFormSlider
-          name="temperature"
-          label="回答性格"
-          max={2}
-          min={-2}
-          step={0.1}
-          rules={[{ required: true, message: '请选择回答性格值！' }]}
-        />
-        <ProFormSlider
-          name="presence_penalty"
-          label="探索新话题的可能性"
-          max={2}
-          min={-2}
-          step={0.1}
-          rules={[{ required: true, message: '请选择探索新话题的可能性值！' }]}
-        />
-        <ProFormSlider
-          name="frequency_penalty"
-          label="回答重复性的可能性"
-          max={2}
-          min={-2}
-          step={0.1}
-          rules={[{ required: true, message: '请选择回答重复性值！' }]}
-        />
+            style={{ minWidth: '180px' }}
+            options={[...models]}
+            fieldProps={{
+              clearIcon: false
+            }}
+          />
+        </FormItemCard>
+        <FormItemCard title="代理API" describe="代理地址可以是任何三方代理（ChatGpt）">
+          <ProFormText
+            allowClear={false}
+            name="api"
+            placeholder="请输入代理地址"
+            rules={[{ required: true, message: '请填写代理API地址' }]}
+          />
+        </FormItemCard>
+        <FormItemCard title="API Key" describe="使用自己的OpenApiKey 或者其他代理。">
+          <ProFormText allowClear={false} name="api_key" placeholder="请输入key 密钥" />
+        </FormItemCard>
+        <FormItemCard title="携带历史消息数" describe="每次请求携带的历史消息数">
+          <ProFormSlider name="limit_message" max={10} min={0} step={1} />
+        </FormItemCard>
+        <FormItemCard title="随机性" describe="值越大，回复越随机，大于 1 的值可能会导致乱码">
+          <ProFormSlider name="temperature" max={2} min={-2} step={0.1} />
+        </FormItemCard>
+        <FormItemCard title="话题新鲜度" describe="值越大，越有可能扩展到新话题">
+          <ProFormSlider name="presence_penalty" max={2} min={-2} step={0.1} />
+        </FormItemCard>
+        <FormItemCard title="重复性" describe="文本中重复单词和短语的频率，越大越不流畅">
+          <ProFormSlider name="frequency_penalty" max={2} min={-2} step={0.1} />
+        </FormItemCard>
+        <FormItemCard title="单次回复限制" describe="单次交互所用的最大 Token 数">
+          <ProFormSlider name="max_token" max={10000} min={2000} step={1} />
+        </FormItemCard>
       </ModalForm>
 
       {/* AI角色预设 */}
