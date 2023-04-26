@@ -111,6 +111,7 @@ module.exports = {
           condition: 'parens-new-line',
           logical: 'parens-new-line',
           prop: 'parens-new-line',
+		  actions: 'parens-new-line',
         },
       ],
 
