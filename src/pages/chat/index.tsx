@@ -131,12 +131,12 @@ function ChatPage() {
           marginRight: 0
         }}
         onClick={() => {
-          if (!token) {
-            setLoginOptions({
-              open: true
-            })
-            return
-          }
+          // if (!token) {
+          //   setLoginOptions({
+          //     open: true
+          //   })
+          //   return
+          // }
           addChat()
         }}
       >
@@ -172,6 +172,8 @@ function ChatPage() {
       setChatDataInfo(selectChatId, userMessageId, {
         status: 'error'
       })
+      setFetchController(null);
+      message.error('请求失败')
       return
     }
     const reader = response.body?.getReader?.()
@@ -187,7 +189,7 @@ function ChatPage() {
       const texts = handleChatData(text)
       for (let i = 0; i < texts.length; i++) {
         const { id, dateTime, parentMessageId, role, text, segment } = texts[i]
-        alltext += text
+        alltext += text ? text : '';
         if (segment === 'start') {
           setChatDataInfo(selectChatId, userMessageId, {
             status: 'pass'
@@ -230,6 +232,7 @@ function ChatPage() {
     }
   }
 
+  // 三方代码请求处理
   async function openChatCompletions({
     requestOptions,
     signal,
@@ -265,69 +268,72 @@ function ChatPage() {
         }
       }
     )
-    if (response instanceof Response) {
-      const reader = response.body?.getReader?.()
-      //   let alltext = ''
-      while (true) {
-        const { done, value } = (await reader?.read()) || {}
-        if (done) {
-          setFetchController(null)
-          break
-        }
-        const text = new TextDecoder('utf-8').decode(value)
-        console.log('这里是最外', text)
-        const texts = handleOpenChatData(text)
-        console.log(texts)
-        // if (texts) {
-        // //   console.log(texts)
-        //   return
-        // }
-        // for (let i = 0; i < 111; i++) {
-        //   const { id, dateTime, parentMessageId, role, text, segment } = texts[i]
-        //   alltext += text
-        //   if (segment === 'start') {
-        //     setChatDataInfo(selectChatId, userMessageId, {
-        //       status: 'pass'
-        //     })
-        //     setChatInfo(
-        //       selectChatId,
-        //       {
-        //         parentMessageId
-        //       },
-        //       {
-        //         id,
-        //         text: alltext,
-        //         dateTime,
-        //         status: 'loading',
-        //         role,
-        //         requestOptions
-        //       }
-        //     )
-        //   }
-        //   if (segment === 'text') {
-        //     setChatDataInfo(selectChatId, id, {
-        //       text: alltext,
-        //       dateTime,
-        //       status: 'pass'
-        //     })
-        //   }
-        //   if (segment === 'stop') {
-        //     setFetchController(null)
-        //     setChatDataInfo(selectChatId, userMessageId, {
-        //       status: 'pass'
-        //     })
-        //     setChatDataInfo(selectChatId, id, {
-        //       text: alltext,
-        //       dateTime,
-        //       status: 'pass'
-        //     })
-        //   }
-        // }
-      }
-    } else {
-      message.error('发送失败')
+    if (!(response instanceof Response)) {
+      setChatDataInfo(selectChatId, userMessageId, {
+        status: 'error'
+      })
       setFetchController(null)
+      message.error('请求失败');
+      return
     }
+    const reader = response.body?.getReader?.()
+    let alltext = '';
+    while (true) {
+      const { done, value } = (await reader?.read()) || {}
+      if (done) {
+        setFetchController(null)
+        break
+      }
+      const text = new TextDecoder('utf-8').decode(value)
+      const texts = handleOpenChatData(text)
+      for (let i = 0; i < texts.length; i++) {
+        const { id, dateTime, parentMessageId, role, text, segment } = texts[i]
+        alltext += text ? text : '';
+        if (segment === 'start') {
+          setChatDataInfo(selectChatId, userMessageId, {
+            status: 'pass'
+          })
+          setChatInfo(
+            selectChatId,
+            {
+              parentMessageId
+            },
+            {
+              id,
+              text: alltext,
+              dateTime,
+              status: 'loading',
+              role,
+              requestOptions
+            }
+          )
+        }
+        if (segment === 'text') {
+          setChatDataInfo(selectChatId, id, {
+            text: alltext,
+            dateTime,
+            status: 'pass',
+            role,
+            requestOptions
+          })
+        }
+        if (segment === 'stop') {
+          setFetchController(null)
+          setChatDataInfo(selectChatId, userMessageId, {
+            status: 'pass'
+          })
+          setChatDataInfo(selectChatId, id, {
+            text: alltext,
+            dateTime,
+            status: 'pass',
+            role,
+            requestOptions
+          })
+        }
+      }
+      scrollToBottomIfAtBottom();
+    }
+
   }
 
   const [fetchController, setFetchController] = useState<AbortController | null>(null)
@@ -629,14 +635,14 @@ function ChatPage() {
           logo={import.meta.env.VITE_APP_LOGO}
           title=""
           subTitle="全网最便宜的人工智能对话"
-          actions={
+          actions={(
             <Space>
               <HeartFilled />
               <RedditCircleFilled />
               <SlackCircleFilled />
               <TwitterCircleFilled />
             </Space>
-          }
+          )}
           contentStyle={{
             width: 'auto',
             minWidth: '100px'
