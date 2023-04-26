@@ -1,4 +1,10 @@
-import { RequestChatOptions, RequestLoginParams, ResponseLoginData, UserDetail } from '@/types'
+import {
+  RequestChatOptions,
+  RequestLoginParams,
+  RequestOpenChatOptions,
+  ResponseLoginData,
+  UserDetail
+} from '@/types'
 import request from '.'
 
 // 获取验证码
@@ -17,9 +23,28 @@ export function getUserInfo() {
 }
 
 // 请求对话
-export function postCompletions(params: RequestChatOptions, config?: {
-  headers?: { [key: string]: any },
-  options?: { [key: string]: any },
-}) {
+export function postCompletions(
+  params: RequestChatOptions,
+  config?: {
+    headers?: { [key: string]: any }
+    options?: { [key: string]: any }
+  }
+) {
   return request.postStreams<Response>('/completions', params, config)
+}
+
+// 直接请求三方 直链
+export function postChatCompletions(
+  url: string,
+  params: RequestOpenChatOptions,
+  config?: {
+    headers?: { [key: string]: any }
+    options?: { [key: string]: any }
+  }
+) {
+  return request.postStreams<Response>(
+    `${url}/v1/chat/completions`,
+    { ...params, stream: true },
+    config
+  )
 }

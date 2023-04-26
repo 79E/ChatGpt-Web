@@ -4,5 +4,7 @@ export * from './generateUUID'
 export * from './generateChatInfo'
 export * from './handleChatData'
 export * from './formatTime'
+export * from './filterObjectNull'
+export * from './handleOpenChatData'
 import is from './is'
 export { is }
