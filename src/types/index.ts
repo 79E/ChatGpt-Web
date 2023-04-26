@@ -23,7 +23,7 @@ export interface ChatGptConfig {
   // api-key
   api_key?: string
   // 模型
-  model?: string
+  model: string
   // 输出随机性 0 - 2
   temperature?: number
   // 惩罚性质 -2 - 2
@@ -33,7 +33,7 @@ export interface ChatGptConfig {
   // 携带历史消息数
   limit_message: number
   // 单次回复限制
-  max_token?: number
+  max_tokens?: number
 }
 
 export interface PromptInfo {
@@ -43,8 +43,26 @@ export interface PromptInfo {
 
 export interface RequestChatOptions {
   prompt: string
-  options?: ChatGptConfig
+  options?: Omit<ChatGptConfig, 'api' | 'api_key' | 'limit_message'>
   parentMessageId?: string
+}
+
+// 请求Openai 或者 其他代理
+export interface RequestOpenChatOptions {
+  model: string
+  messages: Array<{
+    role: 'assistant' | 'user' | string
+    content: string
+  }>
+  // 输出随机性 0 - 2
+  temperature?: number
+  // 惩罚性质 -2 - 2
+  presence_penalty?: number
+  // 惩罚频率 -2 - 2
+  frequency_penalty?: number
+  // 单次回复限制
+  max_tokens?: number
+  stream?: boolean
 }
 
 export interface ChatsInfo {

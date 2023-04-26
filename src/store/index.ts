@@ -58,7 +58,7 @@ export interface State {
   setChatDataInfo: (
     id: string | number,
     messageId: string | number,
-    info?: { [key: string]: any }
+    info?: ChatGpt | { [key: string]: any },
   ) => void
   // 清理当前会话
   clearChatMessage: (id: string | number) => void
@@ -107,7 +107,7 @@ const useStore = create<State>()(
         presence_penalty: 0,
         frequency_penalty: 0,
         limit_message: 4,
-        max_token: 4000,
+        max_tokens: 4000,
         api: 'https://api.openai.com',
         api_key: ''
       },
@@ -166,32 +166,33 @@ const useStore = create<State>()(
             chats: newChats
           }
         }),
-      setChatDataInfo: (id, messageId, info) =>
-        set((state: State) => {
-          const newChats = state.chats.map((item) => {
-            if (item.id === id) {
-              const newData = item.data.map((m) => {
-                if (m.id === messageId) {
-                  return {
-                    ...m,
-                    ...info
-                  }
+      setChatDataInfo: (id, messageId, info) => set((state: State) => {
+        const newChats = state.chats.map((item) => {
+          if (item.id === id) {
+            const newData = item.data.map((m) => {
+              if (m.id === messageId) {
+                return {
+                  ...m,
+                  ...info
                 }
-                return m
-              })
-              return {
-                ...item,
-                ...info,
-                data: newData
               }
-            }
-            return item
-          })
+              return m
+            });
 
-          return {
-            chats: newChats
+            const dataFilter = newData.filter(d => d.id === messageId);
+            const chatData = { id: messageId, ...info } as ChatGpt;
+            return {
+              ...item,
+              data: dataFilter.length <= 0 ? [...newData, { ...chatData }] : [...newData]
+            }
           }
-        }),
+          return item
+        })
+
+        return {
+          chats: newChats
+        }
+      }),
       addChat: () =>
         set((state: State) => {
           const info = generateChatInfo()

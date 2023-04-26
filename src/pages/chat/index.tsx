@@ -30,7 +30,8 @@ import {
   Space,
   Tabs,
   Radio,
-  Select
+  Select,
+  message
 } from 'antd'
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 
@@ -40,11 +41,22 @@ import RoleNetwork from './components/RoleNetwork'
 import RoleLocal from './components/RoleLocal'
 import AllInput from './components/AllInput'
 import ChatMessage from './components/ChatMessage'
-import { ChatGptConfig, RequestLoginParams } from '@/types'
-import { getCode, postCompletions } from '@/request/api'
+import {
+  ChatGptConfig,
+  RequestChatOptions,
+  RequestLoginParams,
+  RequestOpenChatOptions
+} from '@/types'
+import { getCode, postChatCompletions, postCompletions } from '@/request/api'
 import { fetchLogin } from '@/store/async'
 import Reminder from '@/components/Reminder'
-import { formatTime, generateUUID, handleChatData } from '@/utils'
+import {
+  filterObjectNull,
+  formatTime,
+  generateUUID,
+  handleChatData,
+  handleOpenChatData
+} from '@/utils'
 import { useScroll } from '@/hooks/useScroll'
 import useDocumentResize from '@/hooks/useDocumentResize'
 import FormItemCard from '@/components/FormItemCard'
@@ -119,12 +131,12 @@ function ChatPage() {
           marginRight: 0
         }}
         onClick={() => {
-          if (!token) {
-            setLoginOptions({
-              open: true
-            })
-            return
-          }
+          // if (!token) {
+          //   setLoginOptions({
+          //     open: true
+          //   })
+          //   return
+          // }
           addChat()
         }}
       >
@@ -133,38 +145,16 @@ function ChatPage() {
     )
   }
 
-  const [fetchController, setFetchController] = useState<AbortController | null>(null)
-
-  // 对话
-  async function sendChatCompletions(vaule: string) {
-    if (!token) {
-      setLoginOptions({
-        open: true
-      })
-      return
-    }
-    const parentMessageId = chats.filter((c) => c.id === selectChatId)[0].parentMessageId
-    const userMessageId = generateUUID()
-    const requestOptions = {
-      prompt: vaule,
-      parentMessageId,
-      options: config
-    }
-    setChatInfo(
-      selectChatId,
-      {},
-      {
-        id: userMessageId,
-        text: vaule,
-        dateTime: formatTime(),
-        status: 'pass',
-        role: 'user',
-        requestOptions
-      }
-    )
-    const controller = new AbortController()
-    const signal = controller.signal
-    setFetchController(controller)
+  // 对接服务端方法
+  async function serverChatCompletions({
+    requestOptions,
+    signal,
+    userMessageId
+  }: {
+    userMessageId: string
+    signal: AbortSignal
+    requestOptions: RequestChatOptions
+  }) {
     const response = await postCompletions(requestOptions, {
       options: {
         signal
@@ -182,6 +172,8 @@ function ChatPage() {
       setChatDataInfo(selectChatId, userMessageId, {
         status: 'error'
       })
+      setFetchController(null);
+      message.error('请求失败')
       return
     }
     const reader = response.body?.getReader?.()
@@ -197,7 +189,7 @@ function ChatPage() {
       const texts = handleChatData(text)
       for (let i = 0; i < texts.length; i++) {
         const { id, dateTime, parentMessageId, role, text, segment } = texts[i]
-        alltext += text
+        alltext += text ? text : '';
         if (segment === 'start') {
           setChatDataInfo(selectChatId, userMessageId, {
             status: 'pass'
@@ -237,6 +229,165 @@ function ChatPage() {
         }
       }
       scrollToBottomIfAtBottom()
+    }
+  }
+
+  // 三方代码请求处理
+  async function openChatCompletions({
+    requestOptions,
+    signal,
+    userMessageId
+  }: {
+    userMessageId: string
+    signal: AbortSignal
+    requestOptions: RequestChatOptions
+  }) {
+    const sendMessages: Array<{ role: string; content: string }> = [
+      { role: 'user', content: requestOptions.prompt }
+    ]
+    if (config.limit_message > 0) {
+      const limitMessage = chatMessages.slice(-config.limit_message)
+      if (limitMessage.length) {
+        const list = limitMessage.map((item) => ({ role: item.role, content: item.text }))
+        sendMessages.unshift(...list)
+      }
+    }
+    const response = await postChatCompletions(
+      config.api,
+      {
+        model: config.model,
+        messages: sendMessages,
+        ...requestOptions.options
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${config.api_key}`
+        },
+        options: {
+          signal
+        }
+      }
+    )
+    if (!(response instanceof Response)) {
+      setChatDataInfo(selectChatId, userMessageId, {
+        status: 'error'
+      })
+      setFetchController(null)
+      message.error('请求失败');
+      return
+    }
+    const reader = response.body?.getReader?.()
+    let alltext = '';
+    while (true) {
+      const { done, value } = (await reader?.read()) || {}
+      if (done) {
+        setFetchController(null)
+        break
+      }
+      const text = new TextDecoder('utf-8').decode(value)
+      const texts = handleOpenChatData(text)
+      for (let i = 0; i < texts.length; i++) {
+        const { id, dateTime, parentMessageId, role, text, segment } = texts[i]
+        alltext += text ? text : '';
+        if (segment === 'start') {
+          setChatDataInfo(selectChatId, userMessageId, {
+            status: 'pass'
+          })
+          setChatInfo(
+            selectChatId,
+            {
+              parentMessageId
+            },
+            {
+              id,
+              text: alltext,
+              dateTime,
+              status: 'loading',
+              role,
+              requestOptions
+            }
+          )
+        }
+        if (segment === 'text') {
+          setChatDataInfo(selectChatId, id, {
+            text: alltext,
+            dateTime,
+            status: 'pass',
+            role,
+            requestOptions
+          })
+        }
+        if (segment === 'stop') {
+          setFetchController(null)
+          setChatDataInfo(selectChatId, userMessageId, {
+            status: 'pass'
+          })
+          setChatDataInfo(selectChatId, id, {
+            text: alltext,
+            dateTime,
+            status: 'pass',
+            role,
+            requestOptions
+          })
+        }
+      }
+      scrollToBottomIfAtBottom();
+    }
+
+  }
+
+  const [fetchController, setFetchController] = useState<AbortController | null>(null)
+
+  // 对话
+  async function sendChatCompletions(vaule: string) {
+    if (!token && (!config.api_key || !config.api)) {
+      setLoginOptions({
+        open: true
+      })
+      return
+    }
+    const parentMessageId = chats.filter((c) => c.id === selectChatId)[0].parentMessageId
+    const userMessageId = generateUUID()
+    const requestOptions = {
+      prompt: vaule,
+      parentMessageId,
+      options: filterObjectNull({
+        ...config,
+        api: null,
+        api_key: null,
+        limit_message: null
+      })
+    }
+    setChatInfo(
+      selectChatId,
+      {},
+      {
+        id: userMessageId,
+        text: vaule,
+        dateTime: formatTime(),
+        status: 'pass',
+        role: 'user',
+        requestOptions
+      }
+    )
+    const controller = new AbortController()
+    const signal = controller.signal
+    setFetchController(controller)
+    if (config.api && config.api_key) {
+      // 这里是 openai 公共
+      openChatCompletions({
+        requestOptions,
+        signal,
+        userMessageId
+      })
+    } else if (token) {
+      serverChatCompletions({
+        requestOptions,
+        signal,
+        userMessageId
+      })
+    } else {
+      message.error('数据状态异常')
     }
   }
 
@@ -484,14 +635,14 @@ function ChatPage() {
           logo={import.meta.env.VITE_APP_LOGO}
           title=""
           subTitle="全网最便宜的人工智能对话"
-          actions={
+          actions={(
             <Space>
               <HeartFilled />
               <RedditCircleFilled />
               <SlackCircleFilled />
               <TwitterCircleFilled />
             </Space>
-          }
+          )}
           contentStyle={{
             width: 'auto',
             minWidth: '100px'
@@ -621,7 +772,7 @@ function ChatPage() {
           <ProFormSlider name="frequency_penalty" max={2} min={-2} step={0.1} />
         </FormItemCard>
         <FormItemCard title="单次回复限制" describe="单次交互所用的最大 Token 数">
-          <ProFormSlider name="max_token" max={10000} min={2000} step={1} />
+          <ProFormSlider name="max_tokens" max={10000} min={2000} step={1} />
         </FormItemCard>
       </ModalForm>
 
