@@ -7,7 +7,8 @@ import {
   RedditCircleFilled,
   SlackCircleFilled,
   TwitterCircleFilled,
-  DeleteOutlined
+  DeleteOutlined,
+  GithubFilled
 } from '@ant-design/icons'
 import {
   LoginForm,
@@ -462,56 +463,86 @@ function ChatPage() {
             // 可以在这里做一些处理
             if (!token)
               return (
-                <Button
-                  type="primary"
-                  onClick={() => {
-                    setLoginOptions({ open: true })
+                <Space>
+                  <Button
+                    type="primary"
+                    onClick={() => {
+                      setLoginOptions({ open: true })
+                    }}
+                  >
+                    登录 / 注册
+                  </Button>
+                  <a href="https://github.com/79E/ChatGpt-Web" target="_blank" rel="noopener noreferrer" style={{
+                    display: 'flex',
+                    alignItems: 'center'
                   }}
-                >
-                  登录 / 注册
-                </Button>
+                  >
+                    <GithubFilled
+                      style={{
+                        fontSize: 32,
+                        color: '#333'
+                      }}
+                    />
+                  </a>
+                </Space>
+
               )
             return (
-              <Dropdown
-                menu={{
-                  items: [
-                    // {
-                    //   key:'info',
-                    //   icon: <CloudSyncOutlined />,
-                    //   label: '用户信息',
-                    //   onClick: ()=>{
+              <Space>
+                <Dropdown
+                  menu={{
+                    items: [
+                      // {
+                      //   key:'info',
+                      //   icon: <CloudSyncOutlined />,
+                      //   label: '用户信息',
+                      //   onClick: ()=>{
 
-                    //   }
-                    // },
-                    // {
-                    //   key:'yue',
-                    //   icon: <CloudSyncOutlined />,
-                    //   label: '我的余额',
-                    //   onClick: ()=>{
+                      //   }
+                      // },
+                      // {
+                      //   key:'yue',
+                      //   icon: <CloudSyncOutlined />,
+                      //   label: '我的余额',
+                      //   onClick: ()=>{
 
-                    //   }
-                    // },
-                    // {
-                    //   key:'goumai',
-                    //   icon: <CloudSyncOutlined />,
-                    //   label: '购买次数',
-                    //   onClick: ()=>{
+                      //   }
+                      // },
+                      // {
+                      //   key:'goumai',
+                      //   icon: <CloudSyncOutlined />,
+                      //   label: '购买次数',
+                      //   onClick: ()=>{
 
-                    //   }
-                    // },
-                    {
-                      key: 'logout',
-                      icon: <LogoutOutlined />,
-                      label: '退出登录',
-                      onClick: () => {
-                        logout()
+                      //   }
+                      // },
+                      {
+                        key: 'logout',
+                        icon: <LogoutOutlined />,
+                        label: '退出登录',
+                        onClick: () => {
+                          logout()
+                        }
                       }
-                    }
-                  ]
+                    ]
+                  }}
+                >
+                  {dom}
+                </Dropdown>
+                <a href="https://github.com/79E/ChatGpt-Web" target="_blank" rel="noopener noreferrer" style={{
+                  display: 'flex',
+                  alignItems: 'center'
                 }}
-              >
-                {dom}
-              </Dropdown>
+                >
+                  <GithubFilled
+                    style={{
+                      fontSize: 32,
+                      color: '#333'
+                    }}
+                  />
+                </a>
+              </Space>
+
             )
           }
         }}
