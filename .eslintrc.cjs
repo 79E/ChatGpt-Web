@@ -103,7 +103,7 @@ module.exports = {
 
       // https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/jsx-wrap-multilines.md
       'react/jsx-wrap-multilines': [
-        'error', {
+        'warn', {
           declaration: 'parens-new-line',
           assignment: 'parens-new-line',
           return: 'parens-new-line',
@@ -111,7 +111,6 @@ module.exports = {
           condition: 'parens-new-line',
           logical: 'parens-new-line',
           prop: 'parens-new-line',
-		  actions: 'parens-new-line',
         },
       ],
 
