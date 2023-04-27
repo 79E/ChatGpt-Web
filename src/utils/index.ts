@@ -6,5 +6,6 @@ export * from './handleChatData'
 export * from './formatTime'
 export * from './filterObjectNull'
 export * from './handleOpenChatData'
+export * from './copyToClipboard'
 import is from './is'
 export { is }
