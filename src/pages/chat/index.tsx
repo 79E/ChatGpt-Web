@@ -8,7 +8,8 @@ import {
   SlackCircleFilled,
   TwitterCircleFilled,
   DeleteOutlined,
-  GithubFilled
+  GithubFilled,
+  CloudSyncOutlined
 } from '@ant-design/icons'
 import {
   LoginForm,
@@ -61,6 +62,7 @@ import {
 import { useScroll } from '@/hooks/useScroll'
 import useDocumentResize from '@/hooks/useDocumentResize'
 import FormItemCard from '@/components/FormItemCard'
+import GoodsPay from './components/GoodsPay'
 
 function ChatPage() {
   const [chatGptConfigform] = Form.useForm<ChatGptConfig>()
@@ -110,6 +112,10 @@ function ChatPage() {
       scrollToBottom()
     }
   }, [scrollRef.current, selectChatId, chats])
+
+  const [goodsPayOptions, setGoodsPayOptions] = useState({
+    open: false
+  })
 
   // 当前聊天记录
   const chatMessages = useMemo(() => {
@@ -466,7 +472,8 @@ function ChatPage() {
                   <Button
                     type="primary"
                     onClick={() => {
-                      setLoginOptions({ open: true })
+                      setGoodsPayOptions({ open: true })
+                      //   setLoginOptions({ open: true })
                     }}
                   >
                     登录 / 注册
@@ -510,14 +517,14 @@ function ChatPage() {
 
                       //   }
                       // },
-                      // {
-                      //   key:'goumai',
-                      //   icon: <CloudSyncOutlined />,
-                      //   label: '购买次数',
-                      //   onClick: ()=>{
-
-                      //   }
-                      // },
+                      {
+                        key: 'zhifuzhongxin',
+                        icon: <CloudSyncOutlined />,
+                        label: '支付中心',
+                        onClick: () => {
+                          setGoodsPayOptions({ open: true })
+                        }
+                      },
                       {
                         key: 'logout',
                         icon: <LogoutOutlined />,
@@ -840,6 +847,14 @@ function ChatPage() {
           ]}
         />
       </Modal>
+
+      {/* 支付中心弹窗 */}
+      <GoodsPay
+        open={goodsPayOptions.open}
+        onClose={() => {
+          setGoodsPayOptions({ open: false })
+        }}
+      />
     </div>
   )
 }
