@@ -173,7 +173,7 @@ function ChatPage() {
       setChatDataInfo(selectChatId, userMessageId, {
         status: 'error'
       })
-      setFetchController(null);
+      setFetchController(null)
       message.error('请求失败')
       return
     }
@@ -190,7 +190,7 @@ function ChatPage() {
       const texts = handleChatData(text)
       for (let i = 0; i < texts.length; i++) {
         const { id, dateTime, parentMessageId, role, text, segment } = texts[i]
-        alltext += text ? text : '';
+        alltext += text ? text : ''
         if (segment === 'start') {
           setChatDataInfo(selectChatId, userMessageId, {
             status: 'pass'
@@ -274,11 +274,11 @@ function ChatPage() {
         status: 'error'
       })
       setFetchController(null)
-      message.error('请求失败');
+      message.error('请求失败')
       return
     }
     const reader = response.body?.getReader?.()
-    let alltext = '';
+    let alltext = ''
     while (true) {
       const { done, value } = (await reader?.read()) || {}
       if (done) {
@@ -289,7 +289,7 @@ function ChatPage() {
       const texts = handleOpenChatData(text)
       for (let i = 0; i < texts.length; i++) {
         const { id, dateTime, parentMessageId, role, text, segment } = texts[i]
-        alltext += text ? text : '';
+        alltext += text ? text : ''
         if (segment === 'start') {
           setChatDataInfo(selectChatId, userMessageId, {
             status: 'pass'
@@ -332,9 +332,8 @@ function ChatPage() {
           })
         }
       }
-      scrollToBottomIfAtBottom();
+      scrollToBottomIfAtBottom()
     }
-
   }
 
   const [fetchController, setFetchController] = useState<AbortController | null>(null)
@@ -472,10 +471,14 @@ function ChatPage() {
                   >
                     登录 / 注册
                   </Button>
-                  <a href="https://github.com/79E/ChatGpt-Web" target="_blank" rel="noopener noreferrer" style={{
-                    display: 'flex',
-                    alignItems: 'center'
-                  }}
+                  <a
+                    href="https://github.com/79E/ChatGpt-Web"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center'
+                    }}
                   >
                     <GithubFilled
                       style={{
@@ -485,7 +488,6 @@ function ChatPage() {
                     />
                   </a>
                 </Space>
-
               )
             return (
               <Space>
@@ -529,10 +531,14 @@ function ChatPage() {
                 >
                   {dom}
                 </Dropdown>
-                <a href="https://github.com/79E/ChatGpt-Web" target="_blank" rel="noopener noreferrer" style={{
-                  display: 'flex',
-                  alignItems: 'center'
-                }}
+                <a
+                  href="https://github.com/79E/ChatGpt-Web"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center'
+                  }}
                 >
                   <GithubFilled
                     style={{
@@ -542,7 +548,6 @@ function ChatPage() {
                   />
                 </a>
               </Space>
-
             )
           }
         }}
@@ -635,7 +640,7 @@ function ChatPage() {
             <AllInput
               disabled={!!fetchController}
               onSend={(value) => {
-                if (value === '/') return
+                if (value.startsWith('/')) return
                 sendChatCompletions(value)
                 scrollToBottomIfAtBottom()
               }}
@@ -666,14 +671,14 @@ function ChatPage() {
           logo={import.meta.env.VITE_APP_LOGO}
           title=""
           subTitle="全网最便宜的人工智能对话"
-          actions={(
+          actions={
             <Space>
               <HeartFilled />
               <RedditCircleFilled />
               <SlackCircleFilled />
               <TwitterCircleFilled />
             </Space>
-          )}
+          }
           contentStyle={{
             width: 'auto',
             minWidth: '100px'
