@@ -20,8 +20,14 @@ type Props = {
 // 登录注册弹窗
 function LoginModal(props: Props) {
   const [loginForm] = Form.useForm()
+
+  const onCancel = () => {
+    props.onCancel()
+    loginForm.resetFields()
+  }
+
   return (
-    <Modal open={props.open} footer={null} destroyOnClose onCancel={props.onCancel}>
+    <Modal open={props.open} footer={null} destroyOnClose onCancel={onCancel}>
       <LoginForm<RequestLoginParams>
         form={loginForm}
         logo={import.meta.env.VITE_APP_LOGO}
@@ -47,7 +53,7 @@ function LoginModal(props: Props) {
                   reject(false)
                   return
                 }
-                props.onCancel()
+                onCancel()
                 resolve(true)
               })
               .catch(() => {
