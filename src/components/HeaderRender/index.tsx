@@ -3,12 +3,13 @@ import { HeaderViewProps } from '@ant-design/pro-layout/es/components/Header'
 import styles from './index.module.less'
 import { CloudSyncOutlined, LogoutOutlined, MenuUnfoldOutlined } from '@ant-design/icons'
 import useStore from '@/store'
-import { Button, Dropdown } from 'antd'
+import { Avatar, Button, Dropdown } from 'antd'
+import { getEmailPre } from '@/utils'
 
 function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
   console.log(props)
 
-  const { token, user_detail, setLoginModal } = useStore()
+  const { token, user_detail, logout, setLoginModal } = useStore()
 
   const renderLogo = useMemo(() => {
     if (typeof props.logo === 'string')
@@ -63,13 +64,26 @@ function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
                   icon: <LogoutOutlined />,
                   label: '退出登录',
                   onClick: () => {
-                    // logout()
+                    logout()
                   }
                 }
               ]
             }}
           >
-            <img src={user_detail?.avatar} alt="" />
+            <div>
+              <Avatar src={user_detail?.avatar} />
+              {!props.isMobile && (
+                <span
+                  style={{
+                    fontSize: 14,
+                    color: '#999',
+                    marginLeft: 4
+                  }}
+                >
+                  {getEmailPre(user_detail?.account)}
+                </span>
+              )}
+            </div>
           </Dropdown>
         ) : (
           <Button

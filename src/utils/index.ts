@@ -7,5 +7,6 @@ export * from './formatTime'
 export * from './filterObjectNull'
 export * from './handleOpenChatData'
 export * from './copyToClipboard'
+export * from './getEmailPre'
 import is from './is'
 export { is }

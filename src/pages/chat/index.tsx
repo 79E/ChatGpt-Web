@@ -419,104 +419,11 @@ function ChatPage() {
             </div>
           )
         }}
-        // avatarProps={{
-        //   src: 'https://cdn.jsdelivr.net/gh/duogongneng/testuitc/1682426702646avatarf3db669b024fad66-1930929abe2847093.png',
-        //   size: 'small',
-        //   title: user_detail?.account,
-        //   render: (props, dom) => {
-        //     // 可以在这里做一些处理
-        //     if (!token)
-        //       return (
-        //         <Space>
-        //           <Button
-        //             type="primary"
-        //             onClick={() => {
-        //               setGoodsPayOptions({ open: true })
-        //               //   setLoginOptions({ open: true })
-        //             }}
-        //           >
-        //             登录 / 注册
-        //           </Button>
-        //           <a
-        //             href="https://github.com/79E/ChatGpt-Web"
-        //             target="_blank"
-        //             rel="noopener noreferrer"
-        //             style={{
-        //               display: 'flex',
-        //               alignItems: 'center'
-        //             }}
-        //           >
-        //             <GithubFilled
-        //               style={{
-        //                 fontSize: 32,
-        //                 color: '#333'
-        //               }}
-        //             />
-        //           </a>
-        //         </Space>
-        //       )
-        //     return (
-        //       <Space>
-        //         <Dropdown
-        //           menu={{
-        //             items: [
-        //               // {
-        //               //   key:'info',
-        //               //   icon: <CloudSyncOutlined />,
-        //               //   label: '用户信息',
-        //               //   onClick: ()=>{
-
-        //               //   }
-        //               // },
-        //               // {
-        //               //   key:'yue',
-        //               //   icon: <CloudSyncOutlined />,
-        //               //   label: '我的余额',
-        //               //   onClick: ()=>{
-
-        //               //   }
-        //               // },
-        //               {
-        //                 key: 'zhifuzhongxin',
-        //                 icon: <CloudSyncOutlined />,
-        //                 label: '支付中心',
-        //                 onClick: () => {
-        //                   setGoodsPayOptions({ open: true })
-        //                 }
-        //               },
-        //               {
-        //                 key: 'logout',
-        //                 icon: <LogoutOutlined />,
-        //                 label: '退出登录',
-        //                 onClick: () => {
-        //                   logout()
-        //                 }
-        //               }
-        //             ]
-        //           }}
-        //         >
-        //           {dom}
-        //         </Dropdown>
-        //         <a
-        //           href="https://github.com/79E/ChatGpt-Web"
-        //           target="_blank"
-        //           rel="noopener noreferrer"
-        //           style={{
-        //             display: 'flex',
-        //             alignItems: 'center'
-        //           }}
-        //         >
-        //           <GithubFilled
-        //             style={{
-        //               fontSize: 32,
-        //               color: '#333'
-        //             }}
-        //           />
-        //         </a>
-        //       </Space>
-        //     )
-        //   }
-        // }}
+        avatarProps={{
+          src: 'https://cdn.jsdelivr.net/gh/duogongneng/testuitc/1682426702646avatarf3db669b024fad66-1930929abe2847093.png',
+          size: 'small',
+          render: (props, dom) => <>{dom}</>
+        }}
         menuFooterRender={(props) => {
           //   if (props?.collapsed) return undefined;
           return (
