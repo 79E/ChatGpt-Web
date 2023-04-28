@@ -5,6 +5,7 @@ import { CloudSyncOutlined, LogoutOutlined, MenuUnfoldOutlined } from '@ant-desi
 import useStore from '@/store'
 import { Avatar, Button, Dropdown } from 'antd'
 import { getEmailPre } from '@/utils'
+import MenuList from '../MenuList'
 
 function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
   console.log(props)
@@ -29,7 +30,7 @@ function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
         {renderLogo}
         {!props.isMobile && <h1>{props.title}</h1>}
       </div>
-      <div>列表</div>
+      {!props.isMobile && <MenuList />}
       <div className={styles.header__actives}>
         {token ? (
           <Dropdown
