@@ -11,6 +11,7 @@ import {
 import { formatTime, generateChatInfo } from '@/utils'
 
 export interface State {
+  loginModal: boolean
   models: Array<{
     label: string
     value: string
@@ -23,6 +24,8 @@ export interface State {
   config: ChatGptConfig
   // 本地角色
   localPrompt: Array<PromptInfo>
+  // 修改登录弹窗
+  setLoginModal: (value: boolean) => void
   // 修改配置
   changeConfig: (config: ChatGptConfig) => void
   // 新增角色
@@ -58,7 +61,7 @@ export interface State {
   setChatDataInfo: (
     id: string | number,
     messageId: string | number,
-    info?: ChatGpt | { [key: string]: any },
+    info?: ChatGpt | { [key: string]: any }
   ) => void
   // 清理当前会话
   clearChatMessage: (id: string | number) => void
@@ -69,6 +72,7 @@ export interface State {
 const useStore = create<State>()(
   persist(
     (set, get) => ({
+      loginModal: false,
       user_detail: undefined,
       token: undefined,
       models: [
@@ -114,6 +118,7 @@ const useStore = create<State>()(
       localPrompt: [],
       chats: [],
       selectChatId: '',
+      setLoginModal: (value) => set({ loginModal: value }),
       delChatMessage: (id, messageId) =>
         set((state: State) => {
           const newChats = state.chats.map((c) => {
@@ -166,33 +171,34 @@ const useStore = create<State>()(
             chats: newChats
           }
         }),
-      setChatDataInfo: (id, messageId, info) => set((state: State) => {
-        const newChats = state.chats.map((item) => {
-          if (item.id === id) {
-            const newData = item.data.map((m) => {
-              if (m.id === messageId) {
-                return {
-                  ...m,
-                  ...info
+      setChatDataInfo: (id, messageId, info) =>
+        set((state: State) => {
+          const newChats = state.chats.map((item) => {
+            if (item.id === id) {
+              const newData = item.data.map((m) => {
+                if (m.id === messageId) {
+                  return {
+                    ...m,
+                    ...info
+                  }
                 }
+                return m
+              })
+
+              const dataFilter = newData.filter((d) => d.id === messageId)
+              const chatData = { id: messageId, ...info } as ChatGpt
+              return {
+                ...item,
+                data: dataFilter.length <= 0 ? [...newData, { ...chatData }] : [...newData]
               }
-              return m
-            });
-
-            const dataFilter = newData.filter(d => d.id === messageId);
-            const chatData = { id: messageId, ...info } as ChatGpt;
-            return {
-              ...item,
-              data: dataFilter.length <= 0 ? [...newData, { ...chatData }] : [...newData]
             }
-          }
-          return item
-        })
+            return item
+          })
 
-        return {
-          chats: newChats
-        }
-      }),
+          return {
+            chats: newChats
+          }
+        }),
       addChat: () =>
         set((state: State) => {
           const info = generateChatInfo()

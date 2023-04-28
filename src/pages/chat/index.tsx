@@ -1,40 +1,12 @@
+import { CommentOutlined, DeleteOutlined } from '@ant-design/icons'
 import {
-  LogoutOutlined,
-  CommentOutlined,
-  LockOutlined,
-  MobileOutlined,
-  HeartFilled,
-  RedditCircleFilled,
-  SlackCircleFilled,
-  TwitterCircleFilled,
-  DeleteOutlined,
-  GithubFilled,
-  CloudSyncOutlined
-} from '@ant-design/icons'
-import {
-  LoginForm,
   ModalForm,
-  ProForm,
-  ProFormCaptcha,
-  ProFormRadio,
   ProFormSelect,
   ProFormSlider,
   ProFormText,
   ProLayout
 } from '@ant-design/pro-components'
-import {
-  Button,
-  Dropdown,
-  Form,
-  Modal,
-  Popconfirm,
-  Segmented,
-  Space,
-  Tabs,
-  Radio,
-  Select,
-  message
-} from 'antd'
+import { Button, Form, Modal, Popconfirm, Space, Tabs, Select, message } from 'antd'
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 
 import styles from './index.module.less'
@@ -43,14 +15,8 @@ import RoleNetwork from './components/RoleNetwork'
 import RoleLocal from './components/RoleLocal'
 import AllInput from './components/AllInput'
 import ChatMessage from './components/ChatMessage'
-import {
-  ChatGptConfig,
-  RequestChatOptions,
-  RequestLoginParams,
-  RequestOpenChatOptions
-} from '@/types'
-import { getCode, postChatCompletions, postCompletions } from '@/request/api'
-import { fetchLogin } from '@/store/async'
+import { ChatGptConfig, RequestChatOptions } from '@/types'
+import { postChatCompletions, postCompletions } from '@/request/api'
 import Reminder from '@/components/Reminder'
 import {
   filterObjectNull,
@@ -63,10 +29,10 @@ import { useScroll } from '@/hooks/useScroll'
 import useDocumentResize from '@/hooks/useDocumentResize'
 import FormItemCard from '@/components/FormItemCard'
 import GoodsPay from './components/GoodsPay'
+import HeaderRender from '@/components/HeaderRender'
 
 function ChatPage() {
   const [chatGptConfigform] = Form.useForm<ChatGptConfig>()
-  const [loginForm] = Form.useForm()
 
   const scrollRef = useRef<HTMLDivElement>(null)
   const { scrollToBottomIfAtBottom, scrollToBottom } = useScroll(scrollRef.current)
@@ -76,7 +42,6 @@ function ChatPage() {
     token,
     config,
     changeConfig,
-    user_detail,
     chats,
     addChat,
     delChat,
@@ -85,17 +50,12 @@ function ChatPage() {
     changeSelectChatId,
     setChatInfo,
     setChatDataInfo,
-    logout,
     clearChatMessage,
-    delChatMessage
+    delChatMessage,
+    setLoginModal
   } = useStore()
 
   const bodyResize = useDocumentResize()
-
-  // 登陆信息
-  const [loginOptions, setLoginOptions] = useState({
-    open: false
-  })
 
   // 配置信息
   const [chatConfigModal, setChatConfigModal] = useState({
@@ -255,7 +215,7 @@ function ChatPage() {
     if (config.limit_message > 0) {
       const limitMessage = chatMessages.slice(-config.limit_message)
       if (limitMessage.length) {
-        const list = limitMessage.map((item) => ({ role: item.role, content: item.text }))
+        const list = limitMessage.map((item: any) => ({ role: item.role, content: item.text }))
         sendMessages.unshift(...list)
       }
     }
@@ -347,9 +307,7 @@ function ChatPage() {
   // 对话
   async function sendChatCompletions(vaule: string) {
     if (!token && (!config.api_key || !config.api)) {
-      setLoginOptions({
-        open: true
-      })
+      setLoginModal(true)
       return
     }
     const parentMessageId = chats.filter((c) => c.id === selectChatId)[0].parentMessageId
@@ -407,6 +365,7 @@ function ChatPage() {
         contentWidth="Fluid"
         fixedHeader
         fixSiderbar
+        headerRender={HeaderRender}
         contentStyle={{
           height: 'calc(100vh - 56px)',
           background: '#fff'
@@ -460,104 +419,104 @@ function ChatPage() {
             </div>
           )
         }}
-        avatarProps={{
-          src: 'https://cdn.jsdelivr.net/gh/duogongneng/testuitc/1682426702646avatarf3db669b024fad66-1930929abe2847093.png',
-          size: 'small',
-          title: user_detail?.account,
-          render: (props, dom) => {
-            // 可以在这里做一些处理
-            if (!token)
-              return (
-                <Space>
-                  <Button
-                    type="primary"
-                    onClick={() => {
-                      setGoodsPayOptions({ open: true })
-                      //   setLoginOptions({ open: true })
-                    }}
-                  >
-                    登录 / 注册
-                  </Button>
-                  <a
-                    href="https://github.com/79E/ChatGpt-Web"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center'
-                    }}
-                  >
-                    <GithubFilled
-                      style={{
-                        fontSize: 32,
-                        color: '#333'
-                      }}
-                    />
-                  </a>
-                </Space>
-              )
-            return (
-              <Space>
-                <Dropdown
-                  menu={{
-                    items: [
-                      // {
-                      //   key:'info',
-                      //   icon: <CloudSyncOutlined />,
-                      //   label: '用户信息',
-                      //   onClick: ()=>{
+        // avatarProps={{
+        //   src: 'https://cdn.jsdelivr.net/gh/duogongneng/testuitc/1682426702646avatarf3db669b024fad66-1930929abe2847093.png',
+        //   size: 'small',
+        //   title: user_detail?.account,
+        //   render: (props, dom) => {
+        //     // 可以在这里做一些处理
+        //     if (!token)
+        //       return (
+        //         <Space>
+        //           <Button
+        //             type="primary"
+        //             onClick={() => {
+        //               setGoodsPayOptions({ open: true })
+        //               //   setLoginOptions({ open: true })
+        //             }}
+        //           >
+        //             登录 / 注册
+        //           </Button>
+        //           <a
+        //             href="https://github.com/79E/ChatGpt-Web"
+        //             target="_blank"
+        //             rel="noopener noreferrer"
+        //             style={{
+        //               display: 'flex',
+        //               alignItems: 'center'
+        //             }}
+        //           >
+        //             <GithubFilled
+        //               style={{
+        //                 fontSize: 32,
+        //                 color: '#333'
+        //               }}
+        //             />
+        //           </a>
+        //         </Space>
+        //       )
+        //     return (
+        //       <Space>
+        //         <Dropdown
+        //           menu={{
+        //             items: [
+        //               // {
+        //               //   key:'info',
+        //               //   icon: <CloudSyncOutlined />,
+        //               //   label: '用户信息',
+        //               //   onClick: ()=>{
 
-                      //   }
-                      // },
-                      // {
-                      //   key:'yue',
-                      //   icon: <CloudSyncOutlined />,
-                      //   label: '我的余额',
-                      //   onClick: ()=>{
+        //               //   }
+        //               // },
+        //               // {
+        //               //   key:'yue',
+        //               //   icon: <CloudSyncOutlined />,
+        //               //   label: '我的余额',
+        //               //   onClick: ()=>{
 
-                      //   }
-                      // },
-                      {
-                        key: 'zhifuzhongxin',
-                        icon: <CloudSyncOutlined />,
-                        label: '支付中心',
-                        onClick: () => {
-                          setGoodsPayOptions({ open: true })
-                        }
-                      },
-                      {
-                        key: 'logout',
-                        icon: <LogoutOutlined />,
-                        label: '退出登录',
-                        onClick: () => {
-                          logout()
-                        }
-                      }
-                    ]
-                  }}
-                >
-                  {dom}
-                </Dropdown>
-                <a
-                  href="https://github.com/79E/ChatGpt-Web"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center'
-                  }}
-                >
-                  <GithubFilled
-                    style={{
-                      fontSize: 32,
-                      color: '#333'
-                    }}
-                  />
-                </a>
-              </Space>
-            )
-          }
-        }}
+        //               //   }
+        //               // },
+        //               {
+        //                 key: 'zhifuzhongxin',
+        //                 icon: <CloudSyncOutlined />,
+        //                 label: '支付中心',
+        //                 onClick: () => {
+        //                   setGoodsPayOptions({ open: true })
+        //                 }
+        //               },
+        //               {
+        //                 key: 'logout',
+        //                 icon: <LogoutOutlined />,
+        //                 label: '退出登录',
+        //                 onClick: () => {
+        //                   logout()
+        //                 }
+        //               }
+        //             ]
+        //           }}
+        //         >
+        //           {dom}
+        //         </Dropdown>
+        //         <a
+        //           href="https://github.com/79E/ChatGpt-Web"
+        //           target="_blank"
+        //           rel="noopener noreferrer"
+        //           style={{
+        //             display: 'flex',
+        //             alignItems: 'center'
+        //           }}
+        //         >
+        //           <GithubFilled
+        //             style={{
+        //               fontSize: 32,
+        //               color: '#333'
+        //             }}
+        //           />
+        //         </a>
+        //       </Space>
+        //     )
+        //   }
+        // }}
         menuFooterRender={(props) => {
           //   if (props?.collapsed) return undefined;
           return (
@@ -665,100 +624,6 @@ function ChatPage() {
           </div>
         </div>
       </ProLayout>
-
-      {/* 登录注册弹窗 */}
-      <Modal
-        open={loginOptions.open}
-        footer={null}
-        destroyOnClose
-        onCancel={() => setLoginOptions({ open: false })}
-      >
-        <LoginForm<RequestLoginParams>
-          form={loginForm}
-          logo={import.meta.env.VITE_APP_LOGO}
-          title=""
-          subTitle="全网最便宜的人工智能对话"
-          actions={
-            <Space>
-              <HeartFilled />
-              <RedditCircleFilled />
-              <SlackCircleFilled />
-              <TwitterCircleFilled />
-            </Space>
-          }
-          contentStyle={{
-            width: 'auto',
-            minWidth: '100px'
-          }}
-          onFinish={async (e) => {
-            return new Promise((resolve, reject) => {
-              fetchLogin({ ...e })
-                .then((res) => {
-                  if (res.status) {
-                    reject(false)
-                    return
-                  }
-                  setLoginOptions({ open: false })
-                  resolve(true)
-                })
-                .catch(() => {
-                  reject(false)
-                })
-            })
-          }}
-        >
-          <ProFormText
-            fieldProps={{
-              size: 'large',
-              prefix: <MobileOutlined className={'prefixIcon'} />
-            }}
-            name="account"
-            placeholder="邮箱或手机号"
-            rules={[
-              {
-                required: true,
-                message: '邮箱或手机号'
-              }
-            ]}
-          />
-          <ProFormCaptcha
-            fieldProps={{
-              size: 'large',
-              prefix: <LockOutlined className={'prefixIcon'} />
-            }}
-            captchaProps={{
-              size: 'large'
-            }}
-            placeholder={'请输入验证码'}
-            captchaTextRender={(timing, count) => {
-              if (timing) {
-                return `${count} ${'获取验证码'}`
-              }
-              return '获取验证码'
-            }}
-            name="code"
-            rules={[
-              {
-                required: true,
-                message: '请输入验证码！'
-              }
-            ]}
-            onGetCaptcha={async () => {
-              const account = loginForm.getFieldValue('account')
-              return new Promise((resolve, reject) =>
-                getCode({ account })
-                  .then(() => resolve())
-                  .catch(reject)
-              )
-            }}
-          />
-          <div
-            style={{
-              marginBlockEnd: 24
-            }}
-          />
-        </LoginForm>
-      </Modal>
 
       {/* 配置弹窗 */}
       <ModalForm<ChatGptConfig>
