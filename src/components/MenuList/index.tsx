@@ -1,21 +1,48 @@
 import { CommentOutlined, DeleteOutlined } from '@ant-design/icons'
 
 import styles from './index.module.less'
+import { joinTrim } from '@/utils'
 
-function MenuList() {
-  const item = () => {
+type Props = {
+  mode?: 'vertical' | 'horizontal' | 'inline'
+}
+
+function MenuList(props: Props) {
+
+  const { mode = 'horizontal' } = props;
+
+  const item = (p:{ hideMessage?: boolean }) => {
     return (
       <div className={styles.item}>
-        <CommentOutlined />
-        <span className={styles.item_title}>标题</span>
+        <span className={styles.item_icon}>
+          <CommentOutlined />
+        </span>
+        <div className={styles.item_text}>
+          <p className={styles.item_title}>标题</p>
+          {p.hideMessage && <span className={styles.item_message}>我是一段描述内容</span>}
+        </div>
       </div>
     )
   }
+
   return (
-    <div className={styles.menuList}>
-      {item()}
-      {item()}
-      {item()}
+    <div className={joinTrim([
+      styles.menuList,
+      styles['menuList_' + mode]
+    ])}
+    >
+      {item({
+        hideMessage: mode !== 'horizontal'
+      })}
+      {item({
+        hideMessage: mode !== 'horizontal'
+      })}
+      {item({
+        hideMessage: mode !== 'horizontal'
+      })}
+      {item({
+        hideMessage: mode !== 'horizontal'
+      })}
     </div>
   )
 }

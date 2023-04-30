@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import { HeaderViewProps } from '@ant-design/pro-layout/es/components/Header'
 import styles from './index.module.less'
-import { CloudSyncOutlined, LogoutOutlined, MenuUnfoldOutlined } from '@ant-design/icons'
+import { AppstoreOutlined, CloudSyncOutlined, LogoutOutlined, MenuUnfoldOutlined } from '@ant-design/icons'
 import useStore from '@/store'
 import { Avatar, Button, Dropdown } from 'antd'
 import { getEmailPre } from '@/utils'
@@ -34,6 +34,9 @@ function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
       <div className={styles.header__actives}>
         {token ? (
           <Dropdown
+            arrow
+            placement="bottomRight"
+            trigger={['click']}
             menu={{
               items: [
                 // {
@@ -96,6 +99,23 @@ function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
             登录 / 注册
           </Button>
         )}
+        {
+          props.isMobile && (
+            <Dropdown
+              arrow
+              placement="bottomRight"
+              destroyPopupOnHide
+              trigger={['click']}
+              dropdownRender={() => {
+                return <MenuList mode="inline" />
+              }}
+            >
+              <div className={styles.header__actives_menu}>
+                <AppstoreOutlined />
+              </div>
+            </Dropdown>
+          )
+        }
       </div>
     </div>
   )
