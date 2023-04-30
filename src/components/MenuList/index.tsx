@@ -1,7 +1,8 @@
-import { CommentOutlined, DeleteOutlined } from '@ant-design/icons'
-
+import menuListData from '@/routers/menu_list'
 import styles from './index.module.less'
 import { joinTrim } from '@/utils'
+import { Link, useLocation } from 'react-router-dom';
+import { useMemo } from 'react';
 
 type Props = {
   mode?: 'vertical' | 'horizontal' | 'inline'
@@ -9,21 +10,13 @@ type Props = {
 
 function MenuList(props: Props) {
 
-  const { mode = 'horizontal' } = props;
+  const location = useLocation();
 
-  const item = (p:{ hideMessage?: boolean }) => {
-    return (
-      <div className={styles.item}>
-        <span className={styles.item_icon}>
-          <CommentOutlined />
-        </span>
-        <div className={styles.item_text}>
-          <p className={styles.item_title}>标题</p>
-          {p.hideMessage && <span className={styles.item_message}>我是一段描述内容</span>}
-        </div>
-      </div>
-    )
-  }
+  const pathname = useMemo(() => {
+    return location.pathname
+  }, [location])
+
+  const { mode = 'horizontal' } = props;
 
   return (
     <div className={joinTrim([
@@ -31,18 +24,27 @@ function MenuList(props: Props) {
       styles['menuList_' + mode]
     ])}
     >
-      {item({
-        hideMessage: mode !== 'horizontal'
-      })}
-      {item({
-        hideMessage: mode !== 'horizontal'
-      })}
-      {item({
-        hideMessage: mode !== 'horizontal'
-      })}
-      {item({
-        hideMessage: mode !== 'horizontal'
-      })}
+      {
+        menuListData.map((item) => {
+          return (
+            <Link key={item.path} to={item.path}>
+              <div className={joinTrim([
+                styles.item,
+                pathname === item.path ? styles.select_item : ''
+              ])}
+              >
+                <span className={styles.item_icon}>
+                  {item.icon}
+                </span>
+                <div className={styles.item_text}>
+                  <p className={styles.item_title}>{item.name}</p>
+                  {mode !== 'horizontal' && <span className={styles.item_message}>{item.message}</span>}
+                </div>
+              </div>
+            </Link>
+          )
+        })
+      }
     </div>
   )
 }

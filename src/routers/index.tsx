@@ -22,6 +22,24 @@ const routes: RouteOptions[] = [
         configure: {
             verifToken: false
         },
+    },
+    {
+        id: 'DrawPage',
+        path: '/draw',
+        element: <ChatPage />,
+        children:[],
+        configure: {
+            verifToken: false
+        },
+    },
+    {
+        id: 'ShopPage',
+        path: '/shop',
+        element: <ChatPage />,
+        children:[],
+        configure: {
+            verifToken: true
+        },
     }
 ];
 
