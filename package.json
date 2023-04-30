@@ -19,7 +19,7 @@
     "preview": "vite preview",
     "eslint": "eslint src/**/*.{ts,tsx}",
     "eslint:fix": "eslint src/**/*.{ts,tsx} --fix",
-	"prepare": "husky install"
+	  "prepare": "husky install"
   },
   "dependencies": {
     "@ant-design/icons": "^5.0.1",
