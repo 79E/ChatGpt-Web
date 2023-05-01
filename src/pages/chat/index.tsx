@@ -1,12 +1,8 @@
 import { CommentOutlined, DeleteOutlined } from '@ant-design/icons'
 import {
-  ModalForm,
-  ProFormSelect,
-  ProFormSlider,
-  ProFormText,
   ProLayout
 } from '@ant-design/pro-components'
-import { Button, Form, Modal, Popconfirm, Space, Tabs, Select, message } from 'antd'
+import { Button, Modal, Popconfirm, Space, Tabs, Select, message } from 'antd'
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 
 import styles from './index.module.less'
@@ -15,7 +11,7 @@ import RoleNetwork from './components/RoleNetwork'
 import RoleLocal from './components/RoleLocal'
 import AllInput from './components/AllInput'
 import ChatMessage from './components/ChatMessage'
-import { ChatGptConfig, RequestChatOptions } from '@/types'
+import { RequestChatOptions } from '@/types'
 import { postChatCompletions, postCompletions } from '@/request/api'
 import Reminder from '@/components/Reminder'
 import {
@@ -27,13 +23,10 @@ import {
 } from '@/utils'
 import { useScroll } from '@/hooks/useScroll'
 import useDocumentResize from '@/hooks/useDocumentResize'
-import FormItemCard from '@/components/FormItemCard'
-import GoodsPay from './components/GoodsPay'
 import HeaderRender from '@/components/HeaderRender'
 
 function ChatPage() {
-  const [chatGptConfigform] = Form.useForm<ChatGptConfig>()
-
+  
   const scrollRef = useRef<HTMLDivElement>(null)
   const { scrollToBottomIfAtBottom, scrollToBottom } = useScroll(scrollRef.current)
 
@@ -42,6 +35,7 @@ function ChatPage() {
     token,
     config,
     changeConfig,
+    setConfigModal,
     chats,
     addChat,
     delChat,
@@ -57,11 +51,6 @@ function ChatPage() {
 
   const bodyResize = useDocumentResize()
 
-  // 配置信息
-  const [chatConfigModal, setChatConfigModal] = useState({
-    open: false
-  })
-
   // 角色预设
   const [roleConfigModal, setRoleConfigModal] = useState({
     open: false
@@ -72,10 +61,6 @@ function ChatPage() {
       scrollToBottom()
     }
   }, [scrollRef.current, selectChatId, chats])
-
-  const [goodsPayOptions, setGoodsPayOptions] = useState({
-    open: false
-  })
 
   // 当前聊天记录
   const chatMessages = useMemo(() => {
@@ -452,10 +437,11 @@ function ChatPage() {
               <Button
                 block
                 onClick={() => {
-                  chatGptConfigform.setFieldsValue({
-                    ...config
-                  })
-                  setChatConfigModal({ open: true })
+                  setConfigModal(true)
+                  // chatGptConfigform.setFieldsValue({
+                  //   ...config
+                  // })
+                  // setChatConfigModal({ open: true })
                 }}
               >
                 系统配置
@@ -532,65 +518,6 @@ function ChatPage() {
         </div>
       </ProLayout>
 
-      {/* 配置弹窗 */}
-      <ModalForm<ChatGptConfig>
-        title="Chat 配置"
-        open={chatConfigModal.open}
-        form={chatGptConfigform}
-        onOpenChange={(visible) => {
-          setChatConfigModal({ open: visible })
-        }}
-        onFinish={async (values) => {
-          changeConfig(values)
-          return true
-        }}
-        size="middle"
-        width={600}
-        modalProps={{
-          cancelText: '取消',
-          okText: '提交',
-          maskClosable: false,
-          destroyOnClose: true
-        }}
-      >
-        <FormItemCard title="GPT模型" describe="根据OpenAI中给出的模型配置">
-          <ProFormSelect
-            name="model"
-            style={{ minWidth: '180px' }}
-            options={[...models]}
-            fieldProps={{
-              clearIcon: false
-            }}
-          />
-        </FormItemCard>
-        <FormItemCard title="代理API" describe="代理地址可以是任何三方代理（ChatGpt）">
-          <ProFormText
-            allowClear={false}
-            name="api"
-            placeholder="请输入代理地址"
-            rules={[{ required: true, message: '请填写代理API地址' }]}
-          />
-        </FormItemCard>
-        <FormItemCard title="API Key" describe="使用自己的OpenApiKey 或者其他代理。">
-          <ProFormText allowClear={false} name="api_key" placeholder="请输入key 密钥" />
-        </FormItemCard>
-        <FormItemCard title="携带历史消息数" describe="每次请求携带的历史消息数">
-          <ProFormSlider name="limit_message" max={10} min={0} step={1} />
-        </FormItemCard>
-        <FormItemCard title="随机性" describe="值越大，回复越随机，大于 1 的值可能会导致乱码">
-          <ProFormSlider name="temperature" max={2} min={-2} step={0.1} />
-        </FormItemCard>
-        <FormItemCard title="话题新鲜度" describe="值越大，越有可能扩展到新话题">
-          <ProFormSlider name="presence_penalty" max={2} min={-2} step={0.1} />
-        </FormItemCard>
-        <FormItemCard title="重复性" describe="文本中重复单词和短语的频率，越大越不流畅">
-          <ProFormSlider name="frequency_penalty" max={2} min={-2} step={0.1} />
-        </FormItemCard>
-        <FormItemCard title="单次回复限制" describe="单次交互所用的最大 Token 数">
-          <ProFormSlider name="max_tokens" max={10000} min={2000} step={1} />
-        </FormItemCard>
-      </ModalForm>
-
       {/* AI角色预设 */}
       <Modal
         title="AI角色预设"
@@ -619,14 +546,6 @@ function ChatPage() {
           ]}
         />
       </Modal>
-
-      {/* 支付中心弹窗 */}
-      <GoodsPay
-        open={goodsPayOptions.open}
-        onClose={() => {
-          setGoodsPayOptions({ open: false })
-        }}
-      />
     </div>
   )
 }

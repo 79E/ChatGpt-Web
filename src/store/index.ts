@@ -12,6 +12,7 @@ import { formatTime, generateChatInfo } from '@/utils'
 
 export interface State {
   loginModal: boolean
+  configModal: boolean
   models: Array<{
     label: string
     value: string
@@ -26,6 +27,8 @@ export interface State {
   localPrompt: Array<PromptInfo>
   // 修改登录弹窗
   setLoginModal: (value: boolean) => void
+  // 修改配置弹窗
+  setConfigModal: (value: boolean) => void
   // 修改配置
   changeConfig: (config: ChatGptConfig) => void
   // 新增角色
@@ -73,6 +76,7 @@ const useStore = create<State>()(
   persist(
     (set, get) => ({
       loginModal: false,
+      configModal: false,
       user_detail: undefined,
       token: undefined,
       models: [
@@ -119,6 +123,7 @@ const useStore = create<State>()(
       chats: [],
       selectChatId: '',
       setLoginModal: (value) => set({ loginModal: value }),
+      setConfigModal:  (value) => set({ loginModal: value }),
       delChatMessage: (id, messageId) =>
         set((state: State) => {
           const newChats = state.chats.map((c) => {

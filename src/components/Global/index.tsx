@@ -2,13 +2,14 @@ import useStore from '@/store'
 import { fetchUserInfo } from '@/store/async'
 import { useEffect } from 'react'
 import LoginModal from '../LoginModal'
+import ConfigModal from '../ConfigModal'
 
 type Props = {
   children: React.ReactElement
 }
 
 function Global(props: Props) {
-  const { token, chats, addChat, changeSelectChatId, loginModal, setLoginModal } = useStore()
+  const { config, models,token, chats, changeConfig,setConfigModal, addChat, changeSelectChatId, loginModal, setLoginModal } = useStore()
 
   useEffect(() => {
     if (chats.length <= 0) {
@@ -30,6 +31,15 @@ function Global(props: Props) {
         onCancel={() => {
           setLoginModal(false)
         }}
+      />
+      <ConfigModal 
+        open={loginModal}
+        onCancel={() => {
+          setConfigModal(false)
+        }}
+        models={models}
+        onChange={changeConfig}
+        data={config}
       />
     </>
   )
