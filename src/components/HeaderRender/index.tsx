@@ -20,7 +20,7 @@ function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
 
   return (
     <div className={styles.header}>
-      {props.isMobile && (
+      {(props.isMobile && props.hasSiderMenu) && (
         <MenuUnfoldOutlined
           className={styles.header__menuIcon}
           onClick={() => props.onCollapse?.(!props.collapsed)}
