@@ -12,6 +12,7 @@ export interface RouteOptions extends Omit<Omit<RouteObject, 'children'>,'index'
 }
 
 import ChatPage from '@/pages/chat';
+import DrawPage from '@/pages/draw';
 
 const routes: RouteOptions[] = [
     {
@@ -26,7 +27,7 @@ const routes: RouteOptions[] = [
     {
         id: 'DrawPage',
         path: '/draw',
-        element: <ChatPage />,
+        element: <DrawPage />,
         children:[],
         configure: {
             verifToken: false
