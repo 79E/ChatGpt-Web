@@ -27,6 +27,7 @@
 - 极快的首屏加载速度（~100kb）
 - 海量的内置 prompt 列表，来自[中文](https://github.com/PlexPt/awesome-chatgpt-prompts-zh)和[英文](https://github.com/f/awesome-chatgpt-prompts)
 - 一键导出聊天记录，完整的 Markdown 支持
+- 支持自定义API地址（如：[openAI](https://api.openai.com) / [API2D](https://api2d.com/r/192767)）
 ## 🎮 开始使用
 **Node 环境**
 
