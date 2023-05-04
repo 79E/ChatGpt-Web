@@ -1,0 +1,48 @@
+.drawPage {
+    &_container{
+        display: flex;
+		width: 100%;
+		max-width: 800px;
+		margin: 0 auto;
+        flex-direction: column;
+        height: calc(100vh - 56px);
+
+        &_one{
+            flex: 1;
+            width: 100%;
+            max-width: 900px;
+            align-self: center;
+            overflow: auto;
+            &::-webkit-scrollbar {
+                display: none;
+            }
+        }
+        &_two{
+            padding: 12px 12px 20px;
+        }
+    }
+
+	&_config{
+		padding: 20px;
+		background-color: rgba(231,234,243,.5);
+		position: relative;
+		top: 8px;
+		border-top-right-radius: 12px;
+		border-top-left-radius: 12px;
+		p {
+			font-size: 12px;
+			margin: 8px 4px;
+		}
+	}
+
+
+
+	[class*='ant-pro-layout-content']{
+        padding-block: 0;
+    }
+    @media (max-width: 600px) {
+        [class*='ant-pro-layout-content']{
+            padding-inline: 4px;
+        }
+    }
+}
