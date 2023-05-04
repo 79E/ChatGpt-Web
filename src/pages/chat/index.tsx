@@ -1,39 +1,6 @@
-import {
-  LogoutOutlined,
-  CommentOutlined,
-  LockOutlined,
-  MobileOutlined,
-  HeartFilled,
-  RedditCircleFilled,
-  SlackCircleFilled,
-  TwitterCircleFilled,
-  DeleteOutlined,
-  GithubFilled
-} from '@ant-design/icons'
-import {
-  LoginForm,
-  ModalForm,
-  ProForm,
-  ProFormCaptcha,
-  ProFormRadio,
-  ProFormSelect,
-  ProFormSlider,
-  ProFormText,
-  ProLayout
-} from '@ant-design/pro-components'
-import {
-  Button,
-  Dropdown,
-  Form,
-  Modal,
-  Popconfirm,
-  Segmented,
-  Space,
-  Tabs,
-  Radio,
-  Select,
-  message
-} from 'antd'
+import { CommentOutlined, DeleteOutlined } from '@ant-design/icons'
+import { ProLayout } from '@ant-design/pro-components'
+import { Button, Modal, Popconfirm, Space, Tabs, Select, message } from 'antd'
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 
 import styles from './index.module.less'
@@ -42,14 +9,8 @@ import RoleNetwork from './components/RoleNetwork'
 import RoleLocal from './components/RoleLocal'
 import AllInput from './components/AllInput'
 import ChatMessage from './components/ChatMessage'
-import {
-  ChatGptConfig,
-  RequestChatOptions,
-  RequestLoginParams,
-  RequestOpenChatOptions
-} from '@/types'
-import { getCode, postChatCompletions, postCompletions } from '@/request/api'
-import { fetchLogin } from '@/store/async'
+import { RequestChatOptions } from '@/types'
+import { postChatCompletions, postCompletions } from '@/request/api'
 import Reminder from '@/components/Reminder'
 import {
   filterObjectNull,
@@ -60,12 +21,9 @@ import {
 } from '@/utils'
 import { useScroll } from '@/hooks/useScroll'
 import useDocumentResize from '@/hooks/useDocumentResize'
-import FormItemCard from '@/components/FormItemCard'
+import HeaderRender from '@/components/HeaderRender'
 
 function ChatPage() {
-  const [chatGptConfigform] = Form.useForm<ChatGptConfig>()
-  const [loginForm] = Form.useForm()
-
   const scrollRef = useRef<HTMLDivElement>(null)
   const { scrollToBottomIfAtBottom, scrollToBottom } = useScroll(scrollRef.current)
 
@@ -74,7 +32,7 @@ function ChatPage() {
     token,
     config,
     changeConfig,
-    user_detail,
+    setConfigModal,
     chats,
     addChat,
     delChat,
@@ -83,22 +41,14 @@ function ChatPage() {
     changeSelectChatId,
     setChatInfo,
     setChatDataInfo,
-    logout,
     clearChatMessage,
-    delChatMessage
+    delChatMessage,
+    setLoginModal
   } = useStore()
 
+  const isProxy = import.meta.env.VITE_APP_MODE !== 'business'
+
   const bodyResize = useDocumentResize()
-
-  // 登陆信息
-  const [loginOptions, setLoginOptions] = useState({
-    open: false
-  })
-
-  // 配置信息
-  const [chatConfigModal, setChatConfigModal] = useState({
-    open: false
-  })
 
   // 角色预设
   const [roleConfigModal, setRoleConfigModal] = useState({
@@ -249,7 +199,7 @@ function ChatPage() {
     if (config.limit_message > 0) {
       const limitMessage = chatMessages.slice(-config.limit_message)
       if (limitMessage.length) {
-        const list = limitMessage.map((item) => ({ role: item.role, content: item.text }))
+        const list = limitMessage.map((item: any) => ({ role: item.role, content: item.text }))
         sendMessages.unshift(...list)
       }
     }
@@ -340,10 +290,8 @@ function ChatPage() {
 
   // 对话
   async function sendChatCompletions(vaule: string) {
-    if (!token && (!config.api_key || !config.api)) {
-      setLoginOptions({
-        open: true
-      })
+    if (!token && !isProxy) {
+      setLoginModal(true)
       return
     }
     const parentMessageId = chats.filter((c) => c.id === selectChatId)[0].parentMessageId
@@ -373,14 +321,14 @@ function ChatPage() {
     const controller = new AbortController()
     const signal = controller.signal
     setFetchController(controller)
-    if (config.api && config.api_key) {
+    if (isProxy && config.api && config.api_key) {
       // 这里是 openai 公共
       openChatCompletions({
         requestOptions,
         signal,
         userMessageId
       })
-    } else if (token) {
+    } else if (token && !isProxy) {
       serverChatCompletions({
         requestOptions,
         signal,
@@ -388,6 +336,7 @@ function ChatPage() {
       })
     } else {
       message.error('数据状态异常')
+      controller.abort()
     }
   }
 
@@ -401,6 +350,7 @@ function ChatPage() {
         contentWidth="Fluid"
         fixedHeader
         fixSiderbar
+        headerRender={HeaderRender}
         contentStyle={{
           height: 'calc(100vh - 56px)',
           background: '#fff'
@@ -457,99 +407,7 @@ function ChatPage() {
         avatarProps={{
           src: 'https://cdn.jsdelivr.net/gh/duogongneng/testuitc/1682426702646avatarf3db669b024fad66-1930929abe2847093.png',
           size: 'small',
-          title: user_detail?.account,
-          render: (props, dom) => {
-            // 可以在这里做一些处理
-            if (!token)
-              return (
-                <Space>
-                  <Button
-                    type="primary"
-                    onClick={() => {
-                      setLoginOptions({ open: true })
-                    }}
-                  >
-                    登录 / 注册
-                  </Button>
-                  <a
-                    href="https://github.com/79E/ChatGpt-Web"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center'
-                    }}
-                  >
-                    <GithubFilled
-                      style={{
-                        fontSize: 32,
-                        color: '#333'
-                      }}
-                    />
-                  </a>
-                </Space>
-              )
-            return (
-              <Space>
-                <Dropdown
-                  menu={{
-                    items: [
-                      // {
-                      //   key:'info',
-                      //   icon: <CloudSyncOutlined />,
-                      //   label: '用户信息',
-                      //   onClick: ()=>{
-
-                      //   }
-                      // },
-                      // {
-                      //   key:'yue',
-                      //   icon: <CloudSyncOutlined />,
-                      //   label: '我的余额',
-                      //   onClick: ()=>{
-
-                      //   }
-                      // },
-                      // {
-                      //   key:'goumai',
-                      //   icon: <CloudSyncOutlined />,
-                      //   label: '购买次数',
-                      //   onClick: ()=>{
-
-                      //   }
-                      // },
-                      {
-                        key: 'logout',
-                        icon: <LogoutOutlined />,
-                        label: '退出登录',
-                        onClick: () => {
-                          logout()
-                        }
-                      }
-                    ]
-                  }}
-                >
-                  {dom}
-                </Dropdown>
-                <a
-                  href="https://github.com/79E/ChatGpt-Web"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center'
-                  }}
-                >
-                  <GithubFilled
-                    style={{
-                      fontSize: 32,
-                      color: '#333'
-                    }}
-                  />
-                </a>
-              </Space>
-            )
-          }
+          render: (props, dom) => <>{dom}</>
         }}
         menuFooterRender={(props) => {
           //   if (props?.collapsed) return undefined;
@@ -579,10 +437,11 @@ function ChatPage() {
               <Button
                 block
                 onClick={() => {
-                  chatGptConfigform.setFieldsValue({
-                    ...config
-                  })
-                  setChatConfigModal({ open: true })
+                  setConfigModal(true)
+                  // chatGptConfigform.setFieldsValue({
+                  //   ...config
+                  // })
+                  // setChatConfigModal({ open: true })
                 }}
               >
                 系统配置
@@ -658,159 +517,6 @@ function ChatPage() {
           </div>
         </div>
       </ProLayout>
-
-      {/* 登录注册弹窗 */}
-      <Modal
-        open={loginOptions.open}
-        footer={null}
-        destroyOnClose
-        onCancel={() => setLoginOptions({ open: false })}
-      >
-        <LoginForm<RequestLoginParams>
-          form={loginForm}
-          logo={import.meta.env.VITE_APP_LOGO}
-          title=""
-          subTitle="全网最便宜的人工智能对话"
-          actions={
-            <Space>
-              <HeartFilled />
-              <RedditCircleFilled />
-              <SlackCircleFilled />
-              <TwitterCircleFilled />
-            </Space>
-          }
-          contentStyle={{
-            width: 'auto',
-            minWidth: '100px'
-          }}
-          onFinish={async (e) => {
-            return new Promise((resolve, reject) => {
-              fetchLogin({ ...e })
-                .then((res) => {
-                  if (res.status) {
-                    reject(false)
-                    return
-                  }
-                  setLoginOptions({ open: false })
-                  resolve(true)
-                })
-                .catch(() => {
-                  reject(false)
-                })
-            })
-          }}
-        >
-          <ProFormText
-            fieldProps={{
-              size: 'large',
-              prefix: <MobileOutlined className={'prefixIcon'} />
-            }}
-            name="account"
-            placeholder="邮箱或手机号"
-            rules={[
-              {
-                required: true,
-                message: '邮箱或手机号'
-              }
-            ]}
-          />
-          <ProFormCaptcha
-            fieldProps={{
-              size: 'large',
-              prefix: <LockOutlined className={'prefixIcon'} />
-            }}
-            captchaProps={{
-              size: 'large'
-            }}
-            placeholder={'请输入验证码'}
-            captchaTextRender={(timing, count) => {
-              if (timing) {
-                return `${count} ${'获取验证码'}`
-              }
-              return '获取验证码'
-            }}
-            name="code"
-            rules={[
-              {
-                required: true,
-                message: '请输入验证码！'
-              }
-            ]}
-            onGetCaptcha={async () => {
-              const account = loginForm.getFieldValue('account')
-              return new Promise((resolve, reject) =>
-                getCode({ account })
-                  .then(() => resolve())
-                  .catch(reject)
-              )
-            }}
-          />
-          <div
-            style={{
-              marginBlockEnd: 24
-            }}
-          />
-        </LoginForm>
-      </Modal>
-
-      {/* 配置弹窗 */}
-      <ModalForm<ChatGptConfig>
-        title="Chat 配置"
-        open={chatConfigModal.open}
-        form={chatGptConfigform}
-        onOpenChange={(visible) => {
-          setChatConfigModal({ open: visible })
-        }}
-        onFinish={async (values) => {
-          changeConfig(values)
-          return true
-        }}
-        size="middle"
-        width={600}
-        modalProps={{
-          cancelText: '取消',
-          okText: '提交',
-          maskClosable: false,
-          destroyOnClose: true
-        }}
-      >
-        <FormItemCard title="GPT模型" describe="根据OpenAI中给出的模型配置">
-          <ProFormSelect
-            name="model"
-            style={{ minWidth: '180px' }}
-            options={[...models]}
-            fieldProps={{
-              clearIcon: false
-            }}
-          />
-        </FormItemCard>
-        <FormItemCard title="代理API" describe="代理地址可以是任何三方代理（ChatGpt）">
-          <ProFormText
-            allowClear={false}
-            name="api"
-            placeholder="请输入代理地址"
-            rules={[{ required: true, message: '请填写代理API地址' }]}
-          />
-        </FormItemCard>
-        <FormItemCard title="API Key" describe="使用自己的OpenApiKey 或者其他代理。">
-          <ProFormText allowClear={false} name="api_key" placeholder="请输入key 密钥" />
-        </FormItemCard>
-        <FormItemCard title="携带历史消息数" describe="每次请求携带的历史消息数">
-          <ProFormSlider name="limit_message" max={10} min={0} step={1} />
-        </FormItemCard>
-        <FormItemCard title="随机性" describe="值越大，回复越随机，大于 1 的值可能会导致乱码">
-          <ProFormSlider name="temperature" max={2} min={-2} step={0.1} />
-        </FormItemCard>
-        <FormItemCard title="话题新鲜度" describe="值越大，越有可能扩展到新话题">
-          <ProFormSlider name="presence_penalty" max={2} min={-2} step={0.1} />
-        </FormItemCard>
-        <FormItemCard title="重复性" describe="文本中重复单词和短语的频率，越大越不流畅">
-          <ProFormSlider name="frequency_penalty" max={2} min={-2} step={0.1} />
-        </FormItemCard>
-        <FormItemCard title="单次回复限制" describe="单次交互所用的最大 Token 数">
-          <ProFormSlider name="max_tokens" max={10000} min={2000} step={1} />
-        </FormItemCard>
-      </ModalForm>
 
       {/* AI角色预设 */}
       <Modal
