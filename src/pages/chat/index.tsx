@@ -1,7 +1,5 @@
 import { CommentOutlined, DeleteOutlined } from '@ant-design/icons'
-import {
-  ProLayout
-} from '@ant-design/pro-components'
+import { ProLayout } from '@ant-design/pro-components'
 import { Button, Modal, Popconfirm, Space, Tabs, Select, message } from 'antd'
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 
@@ -26,7 +24,6 @@ import useDocumentResize from '@/hooks/useDocumentResize'
 import HeaderRender from '@/components/HeaderRender'
 
 function ChatPage() {
-  
   const scrollRef = useRef<HTMLDivElement>(null)
   const { scrollToBottomIfAtBottom, scrollToBottom } = useScroll(scrollRef.current)
 
@@ -48,6 +45,8 @@ function ChatPage() {
     delChatMessage,
     setLoginModal
   } = useStore()
+
+  const isProxy = import.meta.env.VITE_APP_MODE !== 'business'
 
   const bodyResize = useDocumentResize()
 
@@ -291,7 +290,7 @@ function ChatPage() {
 
   // 对话
   async function sendChatCompletions(vaule: string) {
-    if (!token && (!config.api_key || !config.api)) {
+    if (!token && !isProxy) {
       setLoginModal(true)
       return
     }
@@ -322,14 +321,14 @@ function ChatPage() {
     const controller = new AbortController()
     const signal = controller.signal
     setFetchController(controller)
-    if (config.api && config.api_key) {
+    if (isProxy && config.api && config.api_key) {
       // 这里是 openai 公共
       openChatCompletions({
         requestOptions,
         signal,
         userMessageId
       })
-    } else if (token) {
+    } else if (token && !isProxy) {
       serverChatCompletions({
         requestOptions,
         signal,
@@ -337,6 +336,7 @@ function ChatPage() {
       })
     } else {
       message.error('数据状态异常')
+      controller.abort()
     }
   }
 

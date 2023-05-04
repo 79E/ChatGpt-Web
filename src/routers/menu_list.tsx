@@ -1,18 +1,18 @@
-import { CommentOutlined, GithubOutlined, PictureOutlined, ShopOutlined } from '@ant-design/icons';
+import { CommentOutlined, GithubOutlined, PictureOutlined, ShopOutlined } from '@ant-design/icons'
 
 const menuList = [
   {
     path: '/',
     name: '对话',
     icon: <CommentOutlined />,
-    message: '与智能AI进行对话交流',
+    message: '与智能AI进行对话交流'
   },
-  {
-    path: '/draw',
-    name: '绘画',
-    icon: <PictureOutlined />,
-    message: '利用智能AI绘画出图片',
-  },
+  //   {
+  //     path: '/draw',
+  //     name: '绘画',
+  //     icon: <PictureOutlined />,
+  //     message: '利用智能AI绘画出图片',
+  //   },
   // {
   //   path: '/shop',
   //   name: '商城',
@@ -23,8 +23,7 @@ const menuList = [
     path: 'https://github.com/79E/ChatGpt-Web',
     name: '项目地址',
     icon: <GithubOutlined />,
-    message: '免费开源可商业化AiWeb项目',
-  },
-  
-];
-export default menuList;
+    message: '免费开源可商业化AiWeb项目'
+  }
+]
+export default menuList

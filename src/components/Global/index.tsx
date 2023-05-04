@@ -9,7 +9,19 @@ type Props = {
 }
 
 function Global(props: Props) {
-  const { config, models,token, chats, changeConfig,setConfigModal, addChat, changeSelectChatId, loginModal, setLoginModal } = useStore()
+  const {
+    config,
+    models,
+    token,
+    chats,
+    configModal,
+    changeConfig,
+    setConfigModal,
+    addChat,
+    changeSelectChatId,
+    loginModal,
+    setLoginModal
+  } = useStore()
 
   useEffect(() => {
     if (chats.length <= 0) {
@@ -32,8 +44,8 @@ function Global(props: Props) {
           setLoginModal(false)
         }}
       />
-      <ConfigModal 
-        open={loginModal}
+      <ConfigModal
+        open={configModal}
         onCancel={() => {
           setConfigModal(false)
         }}

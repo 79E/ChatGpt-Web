@@ -87,7 +87,7 @@ const useStore = create<State>()(
         {
           label: 'GPT-4',
           value: 'gpt-4'
-        },
+        }
         // {
         //   label: 'GPT-4-0314',
         //   value: 'gpt-4-0314'
@@ -123,7 +123,7 @@ const useStore = create<State>()(
       chats: [],
       selectChatId: '',
       setLoginModal: (value) => set({ loginModal: value }),
-      setConfigModal:  (value) => set({ loginModal: value }),
+      setConfigModal: (value) => set({ configModal: value }),
       delChatMessage: (id, messageId) =>
         set((state: State) => {
           const newChats = state.chats.map((c) => {

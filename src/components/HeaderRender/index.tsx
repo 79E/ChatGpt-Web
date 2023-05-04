@@ -1,7 +1,12 @@
 import React, { useMemo } from 'react'
 import { HeaderViewProps } from '@ant-design/pro-layout/es/components/Header'
 import styles from './index.module.less'
-import { AppstoreOutlined, CloudSyncOutlined, LogoutOutlined, MenuUnfoldOutlined } from '@ant-design/icons'
+import {
+  AppstoreOutlined,
+  CloudSyncOutlined,
+  LogoutOutlined,
+  MenuUnfoldOutlined
+} from '@ant-design/icons'
 import useStore from '@/store'
 import { Avatar, Button, Dropdown } from 'antd'
 import { getEmailPre } from '@/utils'
@@ -9,6 +14,7 @@ import MenuList from '../MenuList'
 
 function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
   console.log(props)
+  const isProxy = import.meta.env.VITE_APP_MODE === 'proxy'
 
   const { token, user_detail, logout, setLoginModal } = useStore()
 
@@ -20,7 +26,7 @@ function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
 
   return (
     <div className={styles.header}>
-      {(props.isMobile && props.hasSiderMenu) && (
+      {props.isMobile && props.hasSiderMenu && (
         <MenuUnfoldOutlined
           className={styles.header__menuIcon}
           onClick={() => props.onCollapse?.(!props.collapsed)}
@@ -32,7 +38,9 @@ function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
       </div>
       {!props.isMobile && <MenuList />}
       <div className={styles.header__actives}>
-        {token ? (
+        {isProxy ? (
+          <></>
+        ) : token ? (
           <Dropdown
             arrow
             placement="bottomRight"
@@ -99,23 +107,21 @@ function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
             登录 / 注册
           </Button>
         )}
-        {
-          props.isMobile && (
-            <Dropdown
-              arrow
-              placement="bottomRight"
-              destroyPopupOnHide
-              trigger={['click']}
-              dropdownRender={() => {
-                return <MenuList mode="inline" />
-              }}
-            >
-              <div className={styles.header__actives_menu}>
-                <AppstoreOutlined />
-              </div>
-            </Dropdown>
-          )
-        }
+        {props.isMobile && (
+          <Dropdown
+            arrow
+            placement="bottomRight"
+            destroyPopupOnHide
+            trigger={['click']}
+            dropdownRender={() => {
+              return <MenuList mode="inline" />
+            }}
+          >
+            <div className={styles.header__actives_menu}>
+              <AppstoreOutlined />
+            </div>
+          </Dropdown>
+        )}
       </div>
     </div>
   )
