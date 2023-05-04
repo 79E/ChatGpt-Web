@@ -8,11 +8,14 @@
 
 可部署商业化的 ChatGpt 网页应用。
 
-[Demo](https://aizj.top/) / [Issues](https://github.com/79E/ChatGPT-Web/issues) / [Buy Me a Coffee](https://www.buymeacoffee.com/beggar)
+[Proxy Demo]() / [Business Demo](https://chatgpt79.vercel.app/) / [Issues](https://github.com/79E/ChatGPT-Web/issues) / [Buy Me a Coffee](https://www.buymeacoffee.com/beggar)
 
-[演示](https://aizj.top/) / [反馈](https://github.com/79E/ChatGPT-Web/issues) 
+[代理（proxy）演示](https://chatgpt79.vercel.app/) / [商业（business）演示](https://aizj.top/) / [反馈](https://github.com/79E/ChatGPT-Web/issues) 
+
+[![Deploy to Vercel](https://vercel.com/button)](https://vercel.com/import/project?template=https://github.com/79E/ChatGpt-Web)
 
 ![cover](https://cdn.jsdelivr.net/gh/duogongneng/testuitc/1682393823691cover.png)
+
 
 </div>
 
@@ -78,6 +81,10 @@ Chat Web 标题名称。
 
 Chat Web Logo。
 
+#### `VITE_APP_MODE` 
+
+应用模式可选：商业模式（business）代理模式（proxy）混合模式（mix）
+
 ## 🚧 开发
 
 > 强烈不建议在本地进行开发或者部署，由于一些技术原因，很难在本地配置好 OpenAI API 代理，除非你能保证可以直连 OpenAI 服务器。
@@ -90,8 +97,35 @@ Chat Web Logo。
 ## 🎯 部署
 > 直接将打包好的 `dist` 目录上传到服务器即可。WEB项目暂时不直接访问 OpenAI API 所有不要求服务器地址。
 
+### Vercel
+如果你将其托管在自己的 Vercel 服务器上，可点击 deploy 按钮来开始你的部署！
 
-#### 贡献者
+[![Deploy to Vercel](https://vercel.com/button)](https://vercel.com/import/project?template=https://github.com/79E/ChatGpt-Web)
+
+<details>
+ <summary>设置 Vercel 的指导</summary>
+
+1. 前往 [vercel.com](https://vercel.com/)
+1. 点击 `Log in`
+   ![](https://files.catbox.moe/tct1wg.png)
+1. 点击 `Continue with GitHub` 通过 GitHub 进行登录
+   ![](https://files.catbox.moe/btd78j.jpeg)
+1. 登录 GitHub 并允许访问所有存储库（如果系统这样提示）
+1. Fork 这个仓库
+1. 返回到你的 [Vercel dashboard](https://vercel.com/dashboard)
+1. 选择 `Import Project`
+   ![](https://files.catbox.moe/qckos0.png)
+1. 选择 `Import Git Repository`
+   ![](https://files.catbox.moe/pqub9q.png)
+1. 选择 root 并将所有内容保持不变，并且只需添加名为 PAT_1 的环境变量（如图所示），其中将包含一个个人访问令牌（PAT），你可以在[这里](https://github.com/settings/tokens/new)轻松创建（保留默认，并且只需要命名下，名字随便）
+   ![](https://files.catbox.moe/0ez4g7.png)
+1. 点击 deploy，这就完成了，查看你的域名就可使用 API 了！
+
+</details>
+
+
+
+## 🧘 贡献者
 
 [见项目贡献者列表](https://github.com/79E/ChatGPT-Web/graphs/contributors)
 
