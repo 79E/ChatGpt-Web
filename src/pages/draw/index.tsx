@@ -1,13 +1,17 @@
 import { ProLayout } from '@ant-design/pro-components'
 import styles from './index.module.less'
 import HeaderRender from '@/components/HeaderRender'
-import { Button, Empty, Input, Radio, Slider, Space } from 'antd'
+import { Button, Empty, Input, Image, Radio, Slider, Space, Popconfirm, notification } from 'antd'
 import { useState } from 'react'
 import useStore from '@/store'
 import OpenAiLogo from '@/components/OpenAiLogo'
+import { postImagesGenerations } from '@/request/api'
+import { ClearOutlined } from '@ant-design/icons'
+import { formatTime, generateUUID } from '@/utils'
 
 function DrawPage() {
-  const { setConfigModal } = useStore()
+  const { config, setConfigModal, historyDrawImages, clearhistoryDrawImages, addDrawImage } =
+    useStore()
 
   const [drawConfig, setDrawConfig] = useState({
     prompt: '',
@@ -15,6 +19,57 @@ function DrawPage() {
     size: '256x256',
     response_format: 'url'
   })
+
+  const [drawResultData, setDrawResultData] = useState<{
+    loading: boolean
+    list: Array<{ url: string }>
+  }>({
+    loading: false,
+    list: []
+  })
+
+  const onStartDraw = async () => {
+    if (!config.api || !config.api_key) {
+      notification.warning({
+        message: '目前仅为代理模式',
+        description: '请配置正确的AI API 和 KEY后方可使用！'
+      })
+      setConfigModal(true)
+      return
+    }
+    setDrawResultData({
+      loading: true,
+      list: []
+    })
+    await postImagesGenerations(
+      config.api,
+      {
+        ...drawConfig
+      },
+      {
+        Authorization: `Bearer ${config.api_key}`
+      }
+    )
+      .then((res) => {
+        if (res.data.length <= 0) return
+        setDrawResultData({
+          loading: false,
+          list: res.data
+        })
+        const addImagesData = res.data.map((item) => {
+          return {
+            ...item,
+            ...drawConfig,
+            id: generateUUID(),
+            dateTime: formatTime()
+          }
+        })
+        addDrawImage(addImagesData)
+      })
+      .finally(() => {
+        setDrawResultData((dr) => ({ ...dr, loading: false }))
+      })
+  }
 
   return (
     <div className={styles.drawPage}>
@@ -58,14 +113,59 @@ function DrawPage() {
               <h2>AI 一下，妙笔生画</h2>
               <h4>只需一句话，让你的文字变成画作</h4>
             </div>
-            <div className={styles.drawPage_create} style={{ height: 0 }}>
-              <OpenAiLogo rotate width="3em" height="3em" />
+            <div
+              className={styles.drawPage_create}
+              style={{
+                minHeight: drawResultData.loading || drawResultData.list.length > 0 ? '' : 0
+              }}
+            >
+              {drawResultData.loading && <OpenAiLogo rotate width="3em" height="3em" />}
+              <Image.PreviewGroup>
+                {drawResultData.list.map((item) => {
+                  return (
+                    <Image
+                      className={styles.drawPage_image}
+                      key={item.url}
+                      width={160}
+                      src={item.url}
+                    />
+                  )
+                })}
+              </Image.PreviewGroup>
             </div>
             <div className={styles.drawPage_mydraw}>
-              <h4>我的绘画</h4>
-              <p>请及时保存绘画图片，链接可能会失效</p>
-              <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="暂无生成记录" />
-              <div className={styles.drawPage_mydraw_list}>{/*  */}</div>
+              <div className={styles.drawPage_mydraw_header}>
+                <div>
+                  <h4>我的绘画</h4>
+                  <p>请及时保存绘画图片，链接可能会失效</p>
+                </div>
+                <Popconfirm
+                  title="清除历史绘画"
+                  description="确定清除所有绘画数据吗？"
+                  onConfirm={() => {
+                    clearhistoryDrawImages()
+                  }}
+                  okText="Yes"
+                  cancelText="No"
+                >
+                  <ClearOutlined className={styles.drawPage_mydraw_header_icon} />
+                </Popconfirm>
+              </div>
+              {historyDrawImages.length <= 0 && (
+                <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="暂无生成记录" />
+              )}
+              <Image.PreviewGroup>
+                <div className={styles.drawPage_mydraw_list}>
+                  {historyDrawImages.map((item) => {
+                    return (
+                      <div key={item.id} className={styles.drawPage_mydraw_list_item}>
+                        <Image className={styles.drawPage_image} src={item.url} />
+                        <p>{item.prompt}</p>
+                      </div>
+                    )
+                  })}
+                </div>
+              </Image.PreviewGroup>
             </div>
           </div>
           <div className={styles.drawPage_container_two}>
@@ -112,10 +212,11 @@ function DrawPage() {
               value={drawConfig.prompt}
               placeholder="请输入修饰词"
               allowClear
-              enterButton="开始绘制"
+              enterButton={drawResultData.loading ? '绘制中...' : '开始绘制'}
               size="large"
+              loading={drawResultData.loading}
               onSearch={() => {
-                console.log('开始1', drawConfig)
+                onStartDraw()
               }}
               onChange={(e) => {
                 setDrawConfig((c) => ({ ...c, prompt: e.target.value }))

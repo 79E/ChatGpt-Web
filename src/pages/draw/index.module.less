@@ -37,12 +37,45 @@
 
 	&_mydraw{
 		width: 100%;
-		h4 {
-			color: #333;
+		&_header{
+			h4 {
+				color: #333;
+			}
+			p{
+				color: #999;
+				font-size: 12px;
+			}
+			margin-bottom: 20px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			&_icon {
+				cursor: pointer;
+				font-size: 20px;
+				padding: 4px;
+				border-radius: 4px;
+				background-color: transparent;
+				transition: background-color 0.3s ease-in-out;
+				border: 1px solid #d9d9d9;
+				&:hover{
+					background-color: #d9d9d9;
+				}
+			}
 		}
-		p{
-			color: #999;
-			font-size: 12px;
+		&_list{
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(213px, 1fr));
+			grid-gap: 10px;
+			&_item{
+				p{
+					display: block;
+					font-size: 14px;
+					color: #333;
+					overflow:hidden;
+					text-overflow:ellipsis;
+					white-space:nowrap;
+				}
+			}
 		}
 	}
 
@@ -67,16 +100,25 @@
 	}
 
 	&_create{
+		height: auto;
 		overflow: hidden;
-		height: 220px;
+		min-height: 220px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		gap: 16px;
 		flex-wrap: wrap;
 		margin-bottom: 32px;
 		transition: all 0.4s ease-in-out;
 	}
 
+	&_image {
+		border-radius: 4px;
+	}
+
+	[class*='ant-image-mask']{
+		border-radius: 4px;
+	}
 
 	[class*='ant-pro-layout-content']{
         padding-block: 0;

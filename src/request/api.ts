@@ -1,5 +1,6 @@
 import {
   RequestChatOptions,
+  RequestImagesGenerations,
   RequestLoginParams,
   RequestOpenChatOptions,
   ResponseLoginData,
@@ -47,4 +48,16 @@ export function postChatCompletions(
     { ...params, stream: true },
     config
   )
+}
+
+// 请求三方直接链接 绘画
+export function postImagesGenerations(
+  url: string,
+  params: RequestImagesGenerations,
+  headers?: { [key: string]: any },
+  options?: { [key: string]: any }
+) {
+  return request
+    .post<Array<{ url: string }>>(`${url}/v1/images/generations`, { ...params }, headers, options)
+    .then((r) => ({ status: 0, data: r.data || [], message: r.message || '' }))
 }
