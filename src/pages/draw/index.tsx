@@ -1,10 +1,14 @@
 import { ProLayout } from '@ant-design/pro-components'
 import styles from './index.module.less'
 import HeaderRender from '@/components/HeaderRender'
-import { Input, Radio, Slider } from 'antd'
+import { Button, Empty, Input, Radio, Slider, Space } from 'antd'
 import { useState } from 'react'
+import useStore from '@/store'
+import OpenAiLogo from '@/components/OpenAiLogo'
 
 function DrawPage() {
+  const { setConfigModal } = useStore()
+
   const [drawConfig, setDrawConfig] = useState({
     prompt: '',
     n: 1,
@@ -45,23 +49,42 @@ function DrawPage() {
         }}
       >
         <div className={styles.drawPage_container}>
-          <div className={styles.drawPage_container_one} />
+          <div className={styles.drawPage_container_one}>
+            <div className={styles.drawPage_header}>
+              <img
+                src="https://www.imageoss.com/images/2023/05/05/Midjourneybf2f31b4a2ac2dc9.png"
+                alt="Midjourney"
+              />
+              <h2>AI 一下，妙笔生画</h2>
+              <h4>只需一句话，让你的文字变成画作</h4>
+            </div>
+            <div className={styles.drawPage_create} style={{ height: 0 }}>
+              <OpenAiLogo rotate width="3em" height="3em" />
+            </div>
+            <div className={styles.drawPage_mydraw}>
+              <h4>我的绘画</h4>
+              <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="暂无生成记录" />
+              <div className={styles.drawPage_mydraw_list}>{/*  */}</div>
+            </div>
+          </div>
           <div className={styles.drawPage_container_two}>
             <div className={styles.drawPage_config}>
-              <p>图片尺寸({drawConfig.size})</p>
-              <Radio.Group
-                buttonStyle="solid"
-                defaultValue={drawConfig.size}
-                value={drawConfig.size}
-                onChange={(e) => {
-                  setDrawConfig((c) => ({ ...c, size: e.target.value }))
-                }}
-              >
-                <Radio.Button value={'256x256'}>256x256</Radio.Button>
-                <Radio.Button value={'512x512'}>512x512</Radio.Button>
-                <Radio.Button value={'1024x1024'}>1024x1024</Radio.Button>
-              </Radio.Group>
-              <p>图片数量({drawConfig.n}张)</p>
+              <Space direction="vertical">
+                <p>图片尺寸({drawConfig.size})</p>
+                <Radio.Group
+                  buttonStyle="solid"
+                  defaultValue={drawConfig.size}
+                  value={drawConfig.size}
+                  onChange={(e) => {
+                    setDrawConfig((c) => ({ ...c, size: e.target.value }))
+                  }}
+                >
+                  <Radio.Button value={'256x256'}>256x256</Radio.Button>
+                  <Radio.Button value={'512x512'}>512x512</Radio.Button>
+                  <Radio.Button value={'1024x1024'}>1024x1024</Radio.Button>
+                </Radio.Group>
+                <p>图片数量({drawConfig.n}张)</p>
+              </Space>
               <Slider
                 defaultValue={drawConfig.n}
                 value={drawConfig.n}
@@ -71,6 +94,18 @@ function DrawPage() {
                   setDrawConfig((c) => ({ ...c, n: e }))
                 }}
               />
+              <Button
+                block
+                type="dashed"
+                style={{
+                  background: 'transparent'
+                }}
+                onClick={() => {
+                  setConfigModal(true)
+                }}
+              >
+                系统配置
+              </Button>
             </div>
             <Input.Search
               value={drawConfig.prompt}

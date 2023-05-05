@@ -23,7 +23,7 @@
     }
 
 	&_config{
-		padding: 20px;
+		padding: 12px 20px 20px;
 		background-color: rgba(231,234,243,.5);
 		position: relative;
 		top: 8px;
@@ -31,10 +31,47 @@
 		border-top-left-radius: 12px;
 		p {
 			font-size: 12px;
-			margin: 8px 4px;
+			color: #333;
 		}
 	}
 
+	&_mydraw{
+		width: 100%;
+		h4 {
+			color: #333;
+		}
+	}
+
+	&_header{
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-direction: column;
+		padding: 50px 0 32px 0;
+		img{
+			width: 80px;
+			margin-bottom: 12px;
+		}
+		h2 {
+			color: #333;
+			font-size: 36px;
+		}
+		h4{
+			color: #666;
+			font-size: 14px;
+		}
+	}
+
+	&_create{
+		overflow: hidden;
+		height: 220px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-wrap: wrap;
+		margin-bottom: 32px;
+		transition: all 0.4s ease-in-out;
+	}
 
 
 	[class*='ant-pro-layout-content']{
