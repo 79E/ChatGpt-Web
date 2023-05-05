@@ -63,6 +63,7 @@ function DrawPage() {
             </div>
             <div className={styles.drawPage_mydraw}>
               <h4>我的绘画</h4>
+              <p>请及时保存绘画图片，链接可能会失效</p>
               <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="暂无生成记录" />
               <div className={styles.drawPage_mydraw_list}>{/*  */}</div>
             </div>
