@@ -48,6 +48,9 @@ function DrawPage() {
       },
       {
         Authorization: `Bearer ${config.api_key}`
+      },
+      {
+        timeout: 0
       }
     )
       .then((res) => {
