@@ -91,3 +91,16 @@ export interface ChatGpt {
   role: 'assistant' | 'user' | string
   requestOptions: RequestChatOptions
 }
+
+export interface RequestImagesGenerations {
+  prompt: string
+  n?: number
+  size?: string
+  response_format?: string
+}
+
+export interface ImagesInfo extends RequestImagesGenerations {
+  id: string
+  dateTime: string
+  url: string
+}

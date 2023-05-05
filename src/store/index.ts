@@ -4,6 +4,7 @@ import {
   ChatGpt,
   ChatGptConfig,
   ChatsInfo,
+  ImagesInfo,
   PromptInfo,
   ResponseLoginData,
   UserDetail
@@ -25,6 +26,8 @@ export interface State {
   config: ChatGptConfig
   // 本地角色
   localPrompt: Array<PromptInfo>
+  // 历史绘画数据
+  historyDrawImages: Array<ImagesInfo>
   // 修改登录弹窗
   setLoginModal: (value: boolean) => void
   // 修改配置弹窗
@@ -70,6 +73,10 @@ export interface State {
   clearChatMessage: (id: string | number) => void
   // 删除某条消息
   delChatMessage: (id: string | number, messageId: string | number) => void
+  // 清除历史绘画数据
+  clearhistoryDrawImages: () => void
+  // 新增绘画数据
+  addDrawImage: (images: Array<ImagesInfo>) => void
 }
 
 const useStore = create<State>()(
@@ -79,6 +86,7 @@ const useStore = create<State>()(
       configModal: false,
       user_detail: undefined,
       token: undefined,
+      historyDrawImages: [],
       models: [
         {
           label: 'GPT-3.5',
@@ -122,6 +130,14 @@ const useStore = create<State>()(
       localPrompt: [],
       chats: [],
       selectChatId: '',
+      clearhistoryDrawImages: () => set({ historyDrawImages: [] }),
+      addDrawImage: (images) =>
+        set((state: State) => {
+          const newData = [...state.historyDrawImages, ...images]
+          return {
+            historyDrawImages: [...newData]
+          }
+        }),
       setLoginModal: (value) => set({ loginModal: value }),
       setConfigModal: (value) => set({ configModal: value }),
       delChatMessage: (id, messageId) =>

@@ -1,0 +1,131 @@
+.drawPage {
+    &_container{
+        display: flex;
+		width: 100%;
+		max-width: 1000px;
+		margin: 0 auto;
+        flex-direction: column;
+        height: calc(100vh - 56px);
+
+        &_one{
+            flex: 1;
+            width: 100%;
+            max-width: 900px;
+            align-self: center;
+            overflow: auto;
+            &::-webkit-scrollbar {
+                display: none;
+            }
+        }
+        &_two{
+            padding: 12px 12px 20px;
+        }
+    }
+
+	&_config{
+		padding: 12px 20px 20px;
+		background-color: rgba(231,234,243,.5);
+		position: relative;
+		top: 8px;
+		border-top-right-radius: 12px;
+		border-top-left-radius: 12px;
+		p {
+			font-size: 12px;
+			color: #333;
+		}
+	}
+
+	&_mydraw{
+		width: 100%;
+		&_header{
+			h4 {
+				color: #333;
+			}
+			p{
+				color: #999;
+				font-size: 12px;
+			}
+			margin-bottom: 20px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			&_icon {
+				cursor: pointer;
+				font-size: 20px;
+				padding: 4px;
+				border-radius: 4px;
+				background-color: transparent;
+				transition: background-color 0.3s ease-in-out;
+				border: 1px solid #d9d9d9;
+				&:hover{
+					background-color: #d9d9d9;
+				}
+			}
+		}
+		&_list{
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(213px, 1fr));
+			grid-gap: 10px;
+			&_item{
+				p{
+					display: block;
+					font-size: 14px;
+					color: #333;
+					overflow:hidden;
+					text-overflow:ellipsis;
+					white-space:nowrap;
+				}
+			}
+		}
+	}
+
+	&_header{
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-direction: column;
+		padding: 50px 0 32px 0;
+		img{
+			width: 80px;
+			margin-bottom: 12px;
+		}
+		h2 {
+			color: #333;
+			font-size: 36px;
+		}
+		h4{
+			color: #666;
+			font-size: 14px;
+		}
+	}
+
+	&_create{
+		height: auto;
+		overflow: hidden;
+		min-height: 220px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 16px;
+		flex-wrap: wrap;
+		margin-bottom: 32px;
+		transition: all 0.4s ease-in-out;
+	}
+
+	&_image {
+		border-radius: 4px;
+	}
+
+	[class*='ant-image-mask']{
+		border-radius: 4px;
+	}
+
+	[class*='ant-pro-layout-content']{
+        padding-block: 0;
+    }
+    @media (max-width: 600px) {
+        [class*='ant-pro-layout-content']{
+            padding-inline: 4px;
+        }
+    }
+}
