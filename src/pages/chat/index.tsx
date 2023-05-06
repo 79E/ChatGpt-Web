@@ -321,21 +321,21 @@ function ChatPage() {
     const controller = new AbortController()
     const signal = controller.signal
     setFetchController(controller)
-    if (isProxy && config.api && config.api_key) {
+    if (token) {
+      serverChatCompletions({
+        requestOptions,
+        signal,
+        userMessageId
+      })
+    } else if (isProxy && config.api && config.api_key) {
       // 这里是 openai 公共
       openChatCompletions({
         requestOptions,
         signal,
         userMessageId
       })
-    } else if (token && !isProxy) {
-      serverChatCompletions({
-        requestOptions,
-        signal,
-        userMessageId
-      })
     } else {
-      message.error('数据状态异常')
+      message.error('配置数据错误')
       controller.abort()
     }
   }
