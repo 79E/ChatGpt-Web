@@ -141,6 +141,19 @@ function ChatPage() {
       for (let i = 0; i < texts.length; i++) {
         const { id, dateTime, parentMessageId, role, text, segment } = texts[i]
         alltext += text ? text : ''
+        if (segment === 'stop') {
+          setFetchController(null)
+          setChatDataInfo(selectChatId, userMessageId, {
+            status: 'pass'
+          })
+          setChatDataInfo(selectChatId, id, {
+            text: alltext,
+            dateTime,
+            status: 'pass'
+          })
+          break
+        }
+
         if (segment === 'start') {
           setChatDataInfo(selectChatId, userMessageId, {
             status: 'pass'
@@ -161,17 +174,6 @@ function ChatPage() {
           )
         }
         if (segment === 'text') {
-          setChatDataInfo(selectChatId, id, {
-            text: alltext,
-            dateTime,
-            status: 'pass'
-          })
-        }
-        if (segment === 'stop') {
-          setFetchController(null)
-          setChatDataInfo(selectChatId, userMessageId, {
-            status: 'pass'
-          })
           setChatDataInfo(selectChatId, id, {
             text: alltext,
             dateTime,
@@ -321,21 +323,21 @@ function ChatPage() {
     const controller = new AbortController()
     const signal = controller.signal
     setFetchController(controller)
-    if (isProxy && config.api && config.api_key) {
+    if (token) {
+      serverChatCompletions({
+        requestOptions,
+        signal,
+        userMessageId
+      })
+    } else if (isProxy && config.api && config.api_key) {
       // 这里是 openai 公共
       openChatCompletions({
         requestOptions,
         signal,
         userMessageId
       })
-    } else if (token && !isProxy) {
-      serverChatCompletions({
-        requestOptions,
-        signal,
-        userMessageId
-      })
     } else {
-      message.error('数据状态异常')
+      message.error('配置数据错误')
       controller.abort()
     }
   }

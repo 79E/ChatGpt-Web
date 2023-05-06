@@ -5,12 +5,13 @@ import { Button, Empty, Input, Image, Radio, Slider, Space, Popconfirm, notifica
 import { useState } from 'react'
 import useStore from '@/store'
 import OpenAiLogo from '@/components/OpenAiLogo'
-import { postImagesGenerations } from '@/request/api'
+import { postApiImagesGenerations, postImagesGenerations } from '@/request/api'
 import { ClearOutlined } from '@ant-design/icons'
 import { formatTime, generateUUID } from '@/utils'
+import { ResponseData } from '@/request'
 
 function DrawPage() {
-  const { config, setConfigModal, historyDrawImages, clearhistoryDrawImages, addDrawImage } =
+  const { token, config, setConfigModal, historyDrawImages, clearhistoryDrawImages, addDrawImage } =
     useStore()
 
   const [drawConfig, setDrawConfig] = useState({
@@ -28,50 +29,57 @@ function DrawPage() {
     list: []
   })
 
+  const handleDraw = (res: ResponseData<Array<{ url: string }>>) => {
+    if (res.data.length <= 0) return
+    setDrawResultData({
+      loading: false,
+      list: res.data
+    })
+    const addImagesData = res.data.map((item) => {
+      return {
+        ...item,
+        ...drawConfig,
+        id: generateUUID(),
+        dateTime: formatTime()
+      }
+    })
+    addDrawImage(addImagesData)
+  }
+
   const onStartDraw = async () => {
-    if (!config.api || !config.api_key) {
-      notification.warning({
-        message: '目前仅为代理模式',
-        description: '请配置正确的AI API 和 KEY后方可使用！'
-      })
-      setConfigModal(true)
-      return
-    }
     setDrawResultData({
       loading: true,
       list: []
     })
-    await postImagesGenerations(
-      config.api,
-      {
-        ...drawConfig
-      },
-      {
-        Authorization: `Bearer ${config.api_key}`
-      },
-      {
-        timeout: 0
-      }
-    )
-      .then((res) => {
-        if (res.data.length <= 0) return
-        setDrawResultData({
-          loading: false,
-          list: res.data
+    if (token) {
+      await postImagesGenerations(drawConfig, {}, { timeout: 0 })
+        .then(handleDraw)
+        .finally(() => {
+          setDrawResultData((dr) => ({ ...dr, loading: false }))
         })
-        const addImagesData = res.data.map((item) => {
-          return {
-            ...item,
-            ...drawConfig,
-            id: generateUUID(),
-            dateTime: formatTime()
-          }
+    } else if (config.api && config.api_key) {
+      await postApiImagesGenerations(
+        config.api,
+        {
+          ...drawConfig
+        },
+        {
+          Authorization: `Bearer ${config.api_key}`
+        },
+        {
+          timeout: 0
+        }
+      )
+        .then(handleDraw)
+        .finally(() => {
+          setDrawResultData((dr) => ({ ...dr, loading: false }))
         })
-        addDrawImage(addImagesData)
+    } else {
+      notification.warning({
+        message: '目前仅为代理模式',
+        description: '请配置正确的AI API 和 KEY后方可使用！'
       })
-      .finally(() => {
-        setDrawResultData((dr) => ({ ...dr, loading: false }))
-      })
+    }
   }
 
   return (

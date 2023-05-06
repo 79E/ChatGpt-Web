@@ -2,7 +2,7 @@ import { notification } from 'antd'
 import store from '@/store'
 
 export type ResponseData<T> = {
-  status: number
+  code: number
   data: T
   message: string
 }
@@ -64,7 +64,7 @@ const interceptorsRequest = (config: { url: string; options?: RequestInit }) => 
 const interceptorsResponse = async <T>(options: any, response: any): Promise<ResponseData<T>> => {
   console.log('响应拦截器：', options, response)
   const data: ResponseData<T> = await response.json()
-  if (data.status) {
+  if (data.code) {
     if (response.status === 401 || response.status === 400) {
       store.getState().logout()
     }
@@ -133,9 +133,9 @@ const request = <T>(
     }
     return new Promise((resolve) => {
       timeoutId = setTimeout(() => {
-        const data = { status: 504, data: [], message: '请求超时，请稍后重新尝试。' }
+        const data = { code: 504, data: [], message: '请求超时，请稍后重新尝试。' }
         interceptorsErrorResponse(data)
-        controller.abort();
+        controller.abort()
         resolve(data)
       }, timeout)
     })
@@ -159,7 +159,7 @@ const request = <T>(
           // We know it's been canceled!
           return
         }
-        const data = { status: 504, data: error, message: '网络异常，请稍后重新尝试。' }
+        const data = { code: 504, data: error, message: '网络异常，请稍后重新尝试。' }
         await interceptorsErrorResponse(data)
         await reject(data)
       })
@@ -269,7 +269,7 @@ const postStreams = async <T>(
   url: string,
   data?: { [key: string]: any } | string | any,
   o?: {
-    headers?: HeadersInit,
+    headers?: HeadersInit
     options?: { [key: string]: any }
   }
 ) => {
