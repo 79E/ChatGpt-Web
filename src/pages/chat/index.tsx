@@ -141,6 +141,19 @@ function ChatPage() {
       for (let i = 0; i < texts.length; i++) {
         const { id, dateTime, parentMessageId, role, text, segment } = texts[i]
         alltext += text ? text : ''
+        if (segment === 'stop') {
+          setFetchController(null)
+          setChatDataInfo(selectChatId, userMessageId, {
+            status: 'pass'
+          })
+          setChatDataInfo(selectChatId, id, {
+            text: alltext,
+            dateTime,
+            status: 'pass'
+          })
+          break
+        }
+
         if (segment === 'start') {
           setChatDataInfo(selectChatId, userMessageId, {
             status: 'pass'
@@ -161,17 +174,6 @@ function ChatPage() {
           )
         }
         if (segment === 'text') {
-          setChatDataInfo(selectChatId, id, {
-            text: alltext,
-            dateTime,
-            status: 'pass'
-          })
-        }
-        if (segment === 'stop') {
-          setFetchController(null)
-          setChatDataInfo(selectChatId, userMessageId, {
-            status: 'pass'
-          })
           setChatDataInfo(selectChatId, id, {
             text: alltext,
             dateTime,
