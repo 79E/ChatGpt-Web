@@ -92,7 +92,7 @@ function ConfigModal(props: Props) {
         <ProFormSlider name="frequency_penalty" max={2} min={-2} step={0.1} />
       </FormItemCard>
       <FormItemCard title="单次回复限制" describe="单次交互所用的最大 Token 数">
-        <ProFormSlider name="max_tokens" max={10000} min={2000} step={1} />
+        <ProFormSlider name="max_tokens" max={3666} min={100} step={1} />
       </FormItemCard>
     </ModalForm>
   )

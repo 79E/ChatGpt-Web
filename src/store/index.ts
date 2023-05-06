@@ -123,7 +123,7 @@ const useStore = create<State>()(
         presence_penalty: 0,
         frequency_penalty: 0,
         limit_message: 4,
-        max_tokens: 4000,
+        max_tokens: 2000,
         api: 'https://api.openai.com',
         api_key: ''
       },
