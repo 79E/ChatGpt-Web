@@ -49,7 +49,7 @@ function LoginModal(props: Props) {
           return new Promise((resolve, reject) => {
             fetchLogin({ ...e })
               .then((res) => {
-                if (res.status) {
+                if (res.code) {
                   reject(false)
                   return
                 }
