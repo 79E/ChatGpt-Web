@@ -4,6 +4,7 @@ import {
   RequestLoginParams,
   RequestOpenChatOptions,
   ResponseLoginData,
+  SubscriptionInfo,
   UserDetail
 } from '@/types'
 import request from '.'
@@ -79,29 +80,28 @@ export function postImagesGenerations(
 
 // 暂停
 export async function getKeyUsage(url: string, key:string){
-  const now = new Date();
-  const startDate = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
-  const endDate = new Date(now.getTime() + 24 * 60 * 60 * 1000);
-  const creditGrantsUrl = `${url}/dashboard/billing/credit_grants`
-  const subscriptionUrl = `${url}/v1/dashboard/billing/subscription`
+  const subscriptionUrl = `${url}/dashboard/billing/subscription`
 
-  // const grantsRes = await request.get(creditGrantsUrl,{},{
-  //   'Authorization': 'Bearer ' + key,
-  // })
-
-  // const subscriptionRes = await request.get(subscriptionUrl,{},{
-  //   'Authorization': 'Bearer ' + key,
-  // })
-
-  // console.log(grantsRes)
-
-  const usageUrl = `${url}/v1/dashboard/billing/usage`
-
-  const usageres = await request.get(usageUrl,{
-    start_date: formatTime('yyyy-MM-dd', new Date(startDate)),
-    end_date: formatTime('yyyy-MM-dd', new Date(endDate))
-  },{
+  const subscriptionRes = await request.get<SubscriptionInfo>(subscriptionUrl, {}, {
     'Authorization': 'Bearer ' + key,
-  })
-  console.log(usageres)
+  });
+
+  let remaining = subscriptionRes.data.hard_limit_usd || 0;
+  if(subscriptionRes.data.has_payment_method){
+    const now = new Date();
+    const startDate = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
+    const endDate = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+    const usageUrl = `${url}/dashboard/billing/usage`
+    const usageres = await request.get<{total_usage: number}>(usageUrl,{
+      start_date: formatTime('yyyy-MM-dd', new Date(startDate)),
+      end_date: formatTime('yyyy-MM-dd', new Date(endDate))
+    },{
+      'Authorization': 'Bearer ' + key,
+    })
+    if(!usageres.code){
+      remaining -= usageres.data.total_usage;
+    }
+  }
+
+  return remaining;
 }

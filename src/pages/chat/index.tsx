@@ -87,7 +87,13 @@ function ChatPage() {
           //   })
           //   return
           // }
-          addChat()
+          // addChat()
+          if(config.api_key && config.api){
+            getKeyUsage(config.api , config.api_key).then((res)=>{
+              console.log(res)
+            })
+          }
+          
         }}
       >
         新建对话

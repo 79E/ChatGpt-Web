@@ -9,6 +9,10 @@ export type ResponseData<T> = {
 
 export type RequestConfig = { timeout?: number }
 
+function isResponseData<T>(obj: any): obj is ResponseData<T> {
+  return 'code' in obj && 'data' in obj && 'message' in obj;
+}
+
 // 判断是否需要基础域名前缀
 const getBaseUrl = (url: string) => {
   const baseURL = import.meta.env.VITE_APP_REQUEST_HOST
@@ -63,7 +67,16 @@ const interceptorsRequest = (config: { url: string; options?: RequestInit }) => 
 // 响应拦截器
 const interceptorsResponse = async <T>(options: any, response: any): Promise<ResponseData<T>> => {
   console.log('响应拦截器：', options, response)
-  const data: ResponseData<T> = await response.json()
+  let data: ResponseData<T> = await response.json()
+
+  if(!isResponseData(data)){
+    data = {
+      code: response.status,
+      data,
+      message: ''
+    }
+  }
+
   if (data.code) {
     if (response.status === 401 || response.status === 400) {
       store.getState().logout()
