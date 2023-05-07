@@ -7,6 +7,7 @@ import {
   UserDetail
 } from '@/types'
 import request from '.'
+import { formatTime } from '@/utils'
 
 // 获取验证码
 export function getCode(params: Omit<RequestLoginParams, 'code'>) {
@@ -74,4 +75,33 @@ export function postImagesGenerations(
     headers,
     options
   )
+}
+
+// 暂停
+export async function getKeyUsage(url: string, key:string){
+  const now = new Date();
+  const startDate = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
+  const endDate = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+  const creditGrantsUrl = `${url}/dashboard/billing/credit_grants`
+  const subscriptionUrl = `${url}/v1/dashboard/billing/subscription`
+
+  // const grantsRes = await request.get(creditGrantsUrl,{},{
+  //   'Authorization': 'Bearer ' + key,
+  // })
+
+  // const subscriptionRes = await request.get(subscriptionUrl,{},{
+  //   'Authorization': 'Bearer ' + key,
+  // })
+
+  // console.log(grantsRes)
+
+  const usageUrl = `${url}/v1/dashboard/billing/usage`
+
+  const usageres = await request.get(usageUrl,{
+    start_date: formatTime('yyyy-MM-dd', new Date(startDate)),
+    end_date: formatTime('yyyy-MM-dd', new Date(endDate))
+  },{
+    'Authorization': 'Bearer ' + key,
+  })
+  console.log(usageres)
 }

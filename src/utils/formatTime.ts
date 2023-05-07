@@ -1,4 +1,4 @@
-export function formatTime (fmt = 'yyyy-MM-dd HH:mm:ss', timeDate?: any) {
+export function formatTime (fmt = 'yyyy-MM-dd HH:mm:ss', timeDate?: Date) {
     const date = timeDate ? timeDate : new Date();
     const add0 = (num: number) => num < 10 ? `0${num}` : num;
     const o: {[key:string]: any} = {
