@@ -26,8 +26,9 @@ function MenuList(props: Props) {
     >
       {
         menuListData.map((item) => {
+          const isExternal = /^(http:\/\/|https:\/\/)/.test(item.path);
           return (
-            <Link key={item.path} to={item.path}>
+            <Link key={item.path} to={item.path} target={isExternal ? '_blank' : '_self'}>
               <div className={joinTrim([
                 styles.item,
                 pathname === item.path ? styles.select_item : ''

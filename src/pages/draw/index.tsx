@@ -1,6 +1,4 @@
-import { ProLayout } from '@ant-design/pro-components'
 import styles from './index.module.less'
-import HeaderRender from '@/components/HeaderRender'
 import { Button, Empty, Input, Image, Radio, Slider, Space, Popconfirm, notification } from 'antd'
 import { useState } from 'react'
 import useStore from '@/store'
@@ -9,6 +7,7 @@ import { postApiImagesGenerations, postImagesGenerations } from '@/request/api'
 import { ClearOutlined } from '@ant-design/icons'
 import { formatTime, generateUUID } from '@/utils'
 import { ResponseData } from '@/request'
+import Layout from '@/components/Layout'
 
 function DrawPage() {
   const { token, config, setConfigModal, historyDrawImages, clearhistoryDrawImages, addDrawImage } =
@@ -84,36 +83,7 @@ function DrawPage() {
 
   return (
     <div className={styles.drawPage}>
-      <ProLayout
-        title={import.meta.env.VITE_APP_TITLE}
-        logo={import.meta.env.VITE_APP_LOGO}
-        layout="mix"
-        splitMenus={false}
-        contentWidth="Fluid"
-        fixedHeader
-        fixSiderbar
-        headerRender={HeaderRender}
-        contentStyle={{
-          height: 'calc(100vh - 56px)',
-          background: '#fff'
-        }}
-        siderMenuType="group"
-        style={{
-          background: '#fff'
-        }}
-        menu={{
-          hideMenuWhenCollapsed: true,
-          locale: false,
-          collapsedShowGroupTitle: false
-        }}
-        suppressSiderWhenMenuEmpty
-        siderWidth={300}
-        avatarProps={{
-          src: 'https://cdn.jsdelivr.net/gh/duogongneng/testuitc/1682426702646avatarf3db669b024fad66-1930929abe2847093.png',
-          size: 'small',
-          render: (props, dom) => <>{dom}</>
-        }}
-      >
+      <Layout>
         <div className={styles.drawPage_container}>
           <div className={styles.drawPage_container_one}>
             <div className={styles.drawPage_header}>
@@ -235,7 +205,7 @@ function DrawPage() {
             />
           </div>
         </div>
-      </ProLayout>
+      </Layout>
     </div>
   )
 }
