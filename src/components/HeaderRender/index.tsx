@@ -15,7 +15,6 @@ import MenuList from '../MenuList'
 import { getKeyUsage } from '@/request/api'
 
 function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
-  console.log(props)
   const isProxy = import.meta.env.VITE_APP_MODE === 'proxy'
 
   const { token, user_detail, logout, setLoginModal, config } = useStore()
