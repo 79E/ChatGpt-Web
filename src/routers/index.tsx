@@ -14,6 +14,7 @@ export interface RouteOptions extends Omit<Omit<RouteObject, 'children'>, 'index
 
 const ChatPage = React.lazy(() => import('@/pages/chat'))
 const DrawPage = React.lazy(() => import('@/pages/draw'))
+const ShopPage = React.lazy(() => import('@/pages/shop'))
 
 const routes: RouteOptions[] = [
   {
@@ -37,7 +38,7 @@ const routes: RouteOptions[] = [
   {
     id: 'ShopPage',
     path: '/shop',
-    element: <ChatPage />,
+    element: <ShopPage />,
     children: [],
     configure: {
       verifToken: true

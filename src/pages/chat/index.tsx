@@ -1,5 +1,4 @@
 import { CommentOutlined, DeleteOutlined } from '@ant-design/icons'
-import { ProLayout } from '@ant-design/pro-components'
 import { Button, Modal, Popconfirm, Space, Tabs, Select, message } from 'antd'
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 
@@ -21,7 +20,7 @@ import {
 } from '@/utils'
 import { useScroll } from '@/hooks/useScroll'
 import useDocumentResize from '@/hooks/useDocumentResize'
-import HeaderRender from '@/components/HeaderRender'
+import Layout from '@/components/Layout'
 
 function ChatPage() {
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -88,7 +87,7 @@ function ChatPage() {
           //   })
           //   return
           // }
-          addChat()
+          addChat() 
         }}
       >
         新建对话
@@ -344,30 +343,7 @@ function ChatPage() {
 
   return (
     <div className={styles.chatPage}>
-      <ProLayout
-        title={import.meta.env.VITE_APP_TITLE}
-        logo={import.meta.env.VITE_APP_LOGO}
-        layout="mix"
-        splitMenus={false}
-        contentWidth="Fluid"
-        fixedHeader
-        fixSiderbar
-        headerRender={HeaderRender}
-        contentStyle={{
-          height: 'calc(100vh - 56px)',
-          background: '#fff'
-        }}
-        siderMenuType="group"
-        style={{
-          background: '#fff'
-        }}
-        menu={{
-          hideMenuWhenCollapsed: true,
-          locale: false,
-          collapsedShowGroupTitle: false
-        }}
-        suppressSiderWhenMenuEmpty
-        siderWidth={300}
+      <Layout
         menuExtraRender={() => <CreateChat />}
         route={{
           path: '/',
@@ -405,11 +381,6 @@ function ChatPage() {
               </div>
             </div>
           )
-        }}
-        avatarProps={{
-          src: 'https://cdn.jsdelivr.net/gh/duogongneng/testuitc/1682426702646avatarf3db669b024fad66-1930929abe2847093.png',
-          size: 'small',
-          render: (props, dom) => <>{dom}</>
         }}
         menuFooterRender={(props) => {
           //   if (props?.collapsed) return undefined;
@@ -475,7 +446,6 @@ function ChatPage() {
             }
           }
         }}
-        breadcrumbRender={() => []}
       >
         <div className={styles.chatPage_container}>
           <div ref={scrollRef} className={styles.chatPage_container_one}>
@@ -518,7 +488,7 @@ function ChatPage() {
             />
           </div>
         </div>
-      </ProLayout>
+      </Layout>
 
       {/* AI角色预设 */}
       <Modal

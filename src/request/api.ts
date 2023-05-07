@@ -4,9 +4,11 @@ import {
   RequestLoginParams,
   RequestOpenChatOptions,
   ResponseLoginData,
+  SubscriptionInfo,
   UserDetail
 } from '@/types'
 import request from '.'
+import { formatTime } from '@/utils'
 
 // 获取验证码
 export function getCode(params: Omit<RequestLoginParams, 'code'>) {
@@ -74,4 +76,35 @@ export function postImagesGenerations(
     headers,
     options
   )
+}
+
+// 暂停
+export async function getKeyUsage(url: string, key:string){
+  const subscriptionUrl = `${url}/dashboard/billing/subscription`
+
+  const subscriptionRes = await request.get<SubscriptionInfo>(subscriptionUrl, {}, {
+    'Authorization': 'Bearer ' + key,
+  });
+
+  let remaining = subscriptionRes.data.hard_limit_usd || 0;
+  const now = new Date();
+  const usageUrl = `${url}/dashboard/billing/usage`
+  let startDate = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
+  const endDate = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+  if(subscriptionRes.data.has_payment_method){
+    const day = now.getDate();  // 本月过去的天数
+    startDate = new Date(now.getTime() - (day - 1) * 24 * 60 * 60 * 1000); // 本月第一天
+  }
+
+  const usageres = await request.get<{total_usage: number}>(usageUrl,{
+    start_date: formatTime('yyyy-MM-dd', new Date(startDate)),
+    end_date: formatTime('yyyy-MM-dd', new Date(endDate))
+  },{
+    'Authorization': 'Bearer ' + key,
+  })
+  if(!usageres.code){
+    remaining -= usageres.data.total_usage;
+  }
+
+  return remaining;
 }

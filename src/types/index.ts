@@ -104,3 +104,9 @@ export interface ImagesInfo extends RequestImagesGenerations {
   dateTime: string
   url: string
 }
+
+// 三方订阅 信息
+export interface SubscriptionInfo {
+  hard_limit_usd: number
+  has_payment_method: boolean
+}

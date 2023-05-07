@@ -1,28 +1,54 @@
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { HeaderViewProps } from '@ant-design/pro-layout/es/components/Header'
 import styles from './index.module.less'
 import {
   AppstoreOutlined,
   CloudSyncOutlined,
   LogoutOutlined,
-  MenuUnfoldOutlined
+  MenuUnfoldOutlined,
+  SyncOutlined
 } from '@ant-design/icons'
 import useStore from '@/store'
-import { Avatar, Button, Dropdown } from 'antd'
+import { Avatar, Button, Dropdown, message } from 'antd'
 import { getEmailPre } from '@/utils'
 import MenuList from '../MenuList'
+import { getKeyUsage } from '@/request/api'
 
 function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
-  console.log(props)
   const isProxy = import.meta.env.VITE_APP_MODE === 'proxy'
 
-  const { token, user_detail, logout, setLoginModal } = useStore()
+  const { token, user_detail, logout, setLoginModal, config } = useStore()
 
   const renderLogo = useMemo(() => {
     if (typeof props.logo === 'string')
       return <img className={styles.header__logo} src={props.logo} />
     return <>{props.logo}</>
   }, [props.logo])
+
+  useEffect(()=>{
+    onRefreshBalance()
+  },[token, config.api, config.api_key])
+
+  const [balance, setBalance] = useState({
+    number: 0,
+    loading: false
+  })
+
+  function onRefreshBalance (){
+    if(token){
+      // 获取用户信息
+    }else if(config.api_key && config.api){
+      setBalance(b => ({...b, loading: true}));
+      getKeyUsage(config.api , config.api_key).then((res)=>{
+        console.log(res)
+        setBalance(b => ({number: res, loading: false}));
+      }).finally(()=>{
+        setBalance(b => ({...b, loading: false}));
+      })
+    }else{
+      message.error('请填写正确配置')
+    }
+  }
 
   return (
     <div className={styles.header}>
@@ -107,6 +133,12 @@ function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
             登录 / 注册
           </Button>
         )}
+         <div className={styles.header__balance} onClick={()=>{
+          onRefreshBalance()
+         }}
+         >
+            <p>{balance.number}</p> <SyncOutlined spin={balance.loading} />
+         </div>
         {props.isMobile && (
           <Dropdown
             arrow
