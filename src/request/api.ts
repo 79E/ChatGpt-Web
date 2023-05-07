@@ -87,20 +87,23 @@ export async function getKeyUsage(url: string, key:string){
   });
 
   let remaining = subscriptionRes.data.hard_limit_usd || 0;
+  const now = new Date();
+  const usageUrl = `${url}/dashboard/billing/usage`
+  let startDate = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
+  const endDate = new Date(now.getTime() + 24 * 60 * 60 * 1000);
   if(subscriptionRes.data.has_payment_method){
-    const now = new Date();
-    const startDate = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
-    const endDate = new Date(now.getTime() + 24 * 60 * 60 * 1000);
-    const usageUrl = `${url}/dashboard/billing/usage`
-    const usageres = await request.get<{total_usage: number}>(usageUrl,{
-      start_date: formatTime('yyyy-MM-dd', new Date(startDate)),
-      end_date: formatTime('yyyy-MM-dd', new Date(endDate))
-    },{
-      'Authorization': 'Bearer ' + key,
-    })
-    if(!usageres.code){
-      remaining -= usageres.data.total_usage;
-    }
+    const day = now.getDate();  // 本月过去的天数
+    startDate = new Date(now.getTime() - (day - 1) * 24 * 60 * 60 * 1000); // 本月第一天
+  }
+
+  const usageres = await request.get<{total_usage: number}>(usageUrl,{
+    start_date: formatTime('yyyy-MM-dd', new Date(startDate)),
+    end_date: formatTime('yyyy-MM-dd', new Date(endDate))
+  },{
+    'Authorization': 'Bearer ' + key,
+  })
+  if(!usageres.code){
+    remaining -= usageres.data.total_usage;
   }
 
   return remaining;
