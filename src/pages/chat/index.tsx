@@ -9,7 +9,7 @@ import RoleLocal from './components/RoleLocal'
 import AllInput from './components/AllInput'
 import ChatMessage from './components/ChatMessage'
 import { RequestChatOptions } from '@/types'
-import { getKeyUsage, postChatCompletions, postCompletions } from '@/request/api'
+import { postChatCompletions, postCompletions } from '@/request/api'
 import Reminder from '@/components/Reminder'
 import {
   filterObjectNull,
@@ -87,13 +87,7 @@ function ChatPage() {
           //   })
           //   return
           // }
-          // addChat()
-          if(config.api_key && config.api){
-            getKeyUsage(config.api , config.api_key).then((res)=>{
-              console.log(res)
-            })
-          }
-          
+          addChat() 
         }}
       >
         新建对话
@@ -405,14 +399,6 @@ function ChatPage() {
                   })
                 }}
               />
-              <Button onClick={()=>{
-                if(config.api && config.api_key){
-                  getKeyUsage(config.api, config.api_key)
-                }
-              }}
-              >
-                点击
-              </Button>
               <Button
                 block
                 onClick={() => {

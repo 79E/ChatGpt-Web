@@ -28,7 +28,7 @@ function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
 
   useEffect(()=>{
     onRefreshBalance()
-  },[])
+  },[token, config.api, config.api_key])
 
   const [balance, setBalance] = useState({
     number: 0,
