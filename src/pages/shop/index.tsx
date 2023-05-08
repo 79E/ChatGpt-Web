@@ -70,9 +70,7 @@ function GoodsPay() {
     const { order_sn, payurl, qrcode } = payres.data
     setPayModal((p) => ({ ...p, status: 'pay', ...payres.data }))
     if (order_sn && payurl && !qrcode) {
-      setTimeout(() => {
-        window.open(payurl, '_blank')
-      }, 500)
+      window.open(payurl, '_blank')
     }
   }
 
