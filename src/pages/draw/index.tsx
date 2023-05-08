@@ -75,8 +75,8 @@ function DrawPage() {
         })
     } else {
       notification.warning({
-        message: '目前仅为代理模式',
-        description: '请配置正确的AI API 和 KEY后方可使用！'
+        message: '数据错误',
+        description: '请配置正确的API KEY或登录后方可使用！'
       })
     }
   }
@@ -176,7 +176,7 @@ function DrawPage() {
                   setDrawConfig((c) => ({ ...c, n: e }))
                 }}
               />
-              <Button
+              {/* <Button
                 block
                 type="dashed"
                 style={{
@@ -187,7 +187,7 @@ function DrawPage() {
                 }}
               >
                 系统配置
-              </Button>
+              </Button> */}
             </div>
             <Input.Search
               value={drawConfig.prompt}

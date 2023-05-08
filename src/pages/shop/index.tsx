@@ -142,7 +142,6 @@ function GoodsPay() {
                     render: (data) => {
                       return (
                         <a key={data.integral}>
-                          {Number(data.type) === 2 ? '-' : '+'}
                           {data.integral}分
                         </a>
                       )

@@ -165,7 +165,7 @@ function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
               onRefreshBalance()
             }}
           >
-            <p>{balance.number}</p> <SyncOutlined spin={balance.loading} />
+            <p>余额：{balance.number}</p> <SyncOutlined spin={balance.loading} />
           </div>
         )}
         {props.isMobile && (

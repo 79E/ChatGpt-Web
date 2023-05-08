@@ -78,7 +78,7 @@ const interceptorsResponse = async <T>(options: any, response: any): Promise<Res
   }
 
   if (data.code) {
-    if (response.status === 401 || response.status === 400) {
+    if (response.status === 401) {
       store.getState().logout()
     }
     if (data.message) {
