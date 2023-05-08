@@ -56,7 +56,6 @@ function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
     } else if (config.api_key && config.api) {
       getKeyUsage(config.api, config.api_key)
         .then((res) => {
-          console.log(res)
           setBalance((b) => ({ number: res, loading: false }))
         })
         .finally(() => {
