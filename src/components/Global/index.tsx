@@ -30,9 +30,9 @@ function Global(props: Props) {
       const id = chats[0].id
       changeSelectChatId(id)
     }
-    if (token) {
-      fetchUserInfo()
-    }
+    // if (token) {
+    //   fetchUserInfo()
+    // }
   }, [])
 
   return (
