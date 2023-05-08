@@ -72,7 +72,7 @@ const interceptorsResponse = async <T>(options: any, response: any): Promise<Res
   if(!isResponseData(data)){
     data = {
       code: response.status,
-      data,
+      data: (data as any).data,
       message: ''
     }
   }

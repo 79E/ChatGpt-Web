@@ -10,8 +10,11 @@ import { ResponseData } from '@/request'
 import Layout from '@/components/Layout'
 
 function DrawPage() {
-  const { token, config, setConfigModal, historyDrawImages, clearhistoryDrawImages, addDrawImage } =
+  const { token, config, setConfigModal, setLoginModal, historyDrawImages, clearhistoryDrawImages, addDrawImage } =
     useStore()
+
+    const isProxy = import.meta.env.VITE_APP_MODE === 'proxy' 
+    const isBusiness = import.meta.env.VITE_APP_MODE === 'business' 
 
   const [drawConfig, setDrawConfig] = useState({
     prompt: '',
@@ -74,6 +77,15 @@ function DrawPage() {
           setDrawResultData((dr) => ({ ...dr, loading: false }))
         })
     } else {
+
+      if(isProxy){
+        setConfigModal(true)
+      }
+
+      if(isBusiness){
+        setLoginModal(true)
+      }
+      setDrawResultData((dr) => ({ ...dr, loading: false }))
       notification.warning({
         message: '数据错误',
         description: '请配置正确的API KEY或登录后方可使用！'

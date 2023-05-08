@@ -63,7 +63,6 @@ export function postApiImagesGenerations(
 ) {
   return request
     .post<Array<{ url: string }>>(`${url}/v1/images/generations`, { ...params }, headers, options)
-    .then((r) => ({ code: r.code || 0, data: r.data || [], message: r.message || '' }))
 }
 
 // 请求三方直接链接 绘画
@@ -82,6 +81,7 @@ export function postImagesGenerations(
 
 // 获取Key余额
 export async function getKeyUsage(url: string, key: string) {
+  if(!url || !key) return 0;
   const subscriptionUrl = `${url}/dashboard/billing/subscription`
 
   const subscriptionRes = await request.get<SubscriptionInfo>(
@@ -92,12 +92,12 @@ export async function getKeyUsage(url: string, key: string) {
     }
   )
 
-  let remaining = subscriptionRes.data.hard_limit_usd || 0
+  let remaining = subscriptionRes?.data?.hard_limit_usd || 0
   const now = new Date()
   const usageUrl = `${url}/dashboard/billing/usage`
   let startDate = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000)
   const endDate = new Date(now.getTime() + 24 * 60 * 60 * 1000)
-  if (subscriptionRes.data.has_payment_method) {
+  if (subscriptionRes?.data?.has_payment_method) {
     const day = now.getDate() // 本月过去的天数
     startDate = new Date(now.getTime() - (day - 1) * 24 * 60 * 60 * 1000) // 本月第一天
   }
