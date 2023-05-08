@@ -68,17 +68,17 @@ const interceptorsRequest = (config: { url: string; options?: RequestInit }) => 
 const interceptorsResponse = async <T>(options: any, response: any): Promise<ResponseData<T>> => {
   console.log('响应拦截器：', options, response)
   let data: ResponseData<T> = await response.json()
-
+  
   if(!isResponseData(data)){
     data = {
       code: response.status,
-      data,
+      data: (data as any)?.data ? (data as any).data : data,
       message: ''
     }
   }
 
   if (data.code) {
-    if (response.status === 401 || response.status === 400) {
+    if (response.status === 401) {
       store.getState().logout()
     }
     if (data.message) {

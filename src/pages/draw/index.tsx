@@ -1,5 +1,5 @@
 import styles from './index.module.less'
-import { Button, Empty, Input, Image, Radio, Slider, Space, Popconfirm, notification } from 'antd'
+import { Button, Empty, Input, Image, Radio, Slider, Space, Popconfirm, notification, message } from 'antd'
 import { useState } from 'react'
 import useStore from '@/store'
 import OpenAiLogo from '@/components/OpenAiLogo'
@@ -10,8 +10,11 @@ import { ResponseData } from '@/request'
 import Layout from '@/components/Layout'
 
 function DrawPage() {
-  const { token, config, setConfigModal, historyDrawImages, clearhistoryDrawImages, addDrawImage } =
+  const { token, config, setConfigModal, setLoginModal, historyDrawImages, clearhistoryDrawImages, addDrawImage } =
     useStore()
+
+    const isProxy = import.meta.env.VITE_APP_MODE === 'proxy' 
+    const isBusiness = import.meta.env.VITE_APP_MODE === 'business' 
 
   const [drawConfig, setDrawConfig] = useState({
     prompt: '',
@@ -27,9 +30,11 @@ function DrawPage() {
     loading: false,
     list: []
   })
-
   const handleDraw = (res: ResponseData<Array<{ url: string }>>) => {
-    if (res.data.length <= 0) return
+    if (res.code || res.data.length <= 0) {
+      message.error('请求错误 🙅')
+      return
+    }
     setDrawResultData({
       loading: false,
       list: res.data
@@ -74,9 +79,18 @@ function DrawPage() {
           setDrawResultData((dr) => ({ ...dr, loading: false }))
         })
     } else {
+
+      if(isProxy){
+        setConfigModal(true)
+      }
+
+      if(isBusiness){
+        setLoginModal(true)
+      }
+      setDrawResultData((dr) => ({ ...dr, loading: false }))
       notification.warning({
-        message: '目前仅为代理模式',
-        description: '请配置正确的AI API 和 KEY后方可使用！'
+        message: '数据错误',
+        description: '请配置正确的API KEY或登录后方可使用！'
       })
     }
   }
@@ -176,7 +190,7 @@ function DrawPage() {
                   setDrawConfig((c) => ({ ...c, n: e }))
                 }}
               />
-              <Button
+              {/* <Button
                 block
                 type="dashed"
                 style={{
@@ -187,7 +201,7 @@ function DrawPage() {
                 }}
               >
                 系统配置
-              </Button>
+              </Button> */}
             </div>
             <Input.Search
               value={drawConfig.prompt}

@@ -56,7 +56,6 @@ function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
     } else if (config.api_key && config.api) {
       getKeyUsage(config.api, config.api_key)
         .then((res) => {
-          console.log(res)
           setBalance((b) => ({ number: res, loading: false }))
         })
         .finally(() => {
@@ -165,7 +164,7 @@ function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
               onRefreshBalance()
             }}
           >
-            <p>{balance.number}</p> <SyncOutlined spin={balance.loading} />
+            <p>余额：{balance.number}</p> <SyncOutlined spin={balance.loading} />
           </div>
         )}
         {props.isMobile && (
