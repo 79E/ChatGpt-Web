@@ -95,6 +95,11 @@ Chat Web Logo。
 1. 安装 nodejs 和 yarn，具体细节请询问 ChatGPT；
 2. 执行 `yarn install && yarn dev` 即可。
 
+#### 服务端
+
+1. 目前服务端还不完善所以暂时未开源
+2. 前端请求服务端的 [接口文档](https://console-docs.apipost.cn/preview/dcf9a900ac5a1154/00eeb0b3f589d8e6) 你们可以按照这个接口文档进行开发
+
 ## 🎯 部署
 > 直接将打包好的 `dist` 目录上传到服务器即可。WEB项目暂时不直接访问 OpenAI API 所有不要求服务器地址。
 
