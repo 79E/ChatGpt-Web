@@ -1,3 +1,4 @@
+import ResultPage from '@/pages/result'
 import React from 'react'
 import type { RouteObject } from 'react-router-dom'
 
@@ -42,6 +43,15 @@ const routes: RouteOptions[] = [
     children: [],
     configure: {
       verifToken: true
+    }
+  },
+  {
+    id: 'ResultPage',
+    path: '/result',
+    element: <ResultPage />,
+    children: [],
+    configure: {
+      verifToken: false
     }
   }
 ]

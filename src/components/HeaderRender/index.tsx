@@ -27,7 +27,7 @@ function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
 
   useEffect(() => {
     onRefreshBalance()
-  }, [token, config.api, config.api_key])
+  }, [user_detail, token, config.api, config.api_key])
 
   const [balance, setBalance] = useState({
     number: 0,
@@ -35,21 +35,28 @@ function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
   })
 
   function onRefreshBalance() {
-    setBalance(b => ({ ...b, loading: true }));
+    setBalance((b) => ({ ...b, loading: true }))
     if (token) {
       // 获取用户信息
-      getUserInfo().then().finally(() => {
-        setBalance(b => ({ ...b, loading: false }));
-      })
+      getUserInfo()
+        .then((res) => {
+          if (res.code) return
+          setBalance((b) => ({ ...b, number: res.data.integral, loading: false }))
+        })
+        .finally(() => {
+          setBalance((b) => ({ ...b, loading: false }))
+        })
     } else if (config.api_key && config.api) {
-      getKeyUsage(config.api, config.api_key).then((res) => {
-        console.log(res)
-        setBalance(b => ({ number: res, loading: false }));
-      }).finally(() => {
-        setBalance(b => ({ ...b, loading: false }));
-      })
+      getKeyUsage(config.api, config.api_key)
+        .then((res) => {
+          console.log(res)
+          setBalance((b) => ({ number: res, loading: false }))
+        })
+        .finally(() => {
+          setBalance((b) => ({ ...b, loading: false }))
+        })
     } else {
-      setBalance(b => ({ ...b, loading: false }));
+      setBalance((b) => ({ ...b, loading: false }))
     }
   }
 
@@ -136,16 +143,16 @@ function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
             登录 / 注册
           </Button>
         )}
-        {
-          ((config.api && config.api_key) || token) && (
-            <div className={styles.header__balance} onClick={() => {
+        {((config.api && config.api_key) || token) && (
+          <div
+            className={styles.header__balance}
+            onClick={() => {
               onRefreshBalance()
             }}
-            >
-              <p>{balance.number}</p> <SyncOutlined spin={balance.loading} />
-            </div>
-          )
-        }
+          >
+            <p>{balance.number}</p> <SyncOutlined spin={balance.loading} />
+          </div>
+        )}
         {props.isMobile && (
           <Dropdown
             arrow

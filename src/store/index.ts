@@ -5,6 +5,7 @@ import {
   ChatGptConfig,
   ChatsInfo,
   ImagesInfo,
+  ProductInfo,
   PromptInfo,
   ResponseLoginData,
   UserDetail
@@ -12,8 +13,11 @@ import {
 import { formatTime, generateChatInfo } from '@/utils'
 
 export interface State {
+  // 登录弹窗开关
   loginModal: boolean
+  // 配置弹窗开关
   configModal: boolean
+  // 模型
   models: Array<{
     label: string
     value: string
@@ -28,6 +32,8 @@ export interface State {
   localPrompt: Array<PromptInfo>
   // 历史绘画数据
   historyDrawImages: Array<ImagesInfo>
+  // 商品列表
+  goodsList: Array<ProductInfo>
   // 修改登录弹窗
   setLoginModal: (value: boolean) => void
   // 修改配置弹窗
@@ -77,6 +83,8 @@ export interface State {
   clearhistoryDrawImages: () => void
   // 新增绘画数据
   addDrawImage: (images: Array<ImagesInfo>) => void
+  // 修改商品列表
+  changeGoodsList: (list: Array<ProductInfo>) => void
 }
 
 const useStore = create<State>()(
@@ -130,6 +138,8 @@ const useStore = create<State>()(
       localPrompt: [],
       chats: [],
       selectChatId: '',
+      goodsList: [],
+      changeGoodsList: (list) => set({ goodsList: list }),
       clearhistoryDrawImages: () => set({ historyDrawImages: [] }),
       addDrawImage: (images) =>
         set((state: State) => {
