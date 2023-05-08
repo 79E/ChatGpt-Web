@@ -10,6 +10,7 @@ import { fetchProduct, fetchUserInfo } from '@/store/async'
 import { getIntegralLogs, postPrepay } from '@/request/api'
 import { ProductInfo } from '@/types'
 import OpenAiLogo from '@/components/OpenAiLogo'
+import { generateUUID } from '@/utils'
 
 function GoodsPay() {
   const { goodsList, user_detail } = useStore()
@@ -118,6 +119,7 @@ function GoodsPay() {
               </h4>
               <Table
                 bordered
+                key={generateUUID()}
                 loading={log.loading}
                 dataSource={log.data}
                 pagination={{
@@ -127,17 +129,22 @@ function GoodsPay() {
                 columns={[
                   {
                     title: '描述',
-                    dataIndex: 'title',
                     key: 'title'
                   },
                   {
                     title: '额度',
-                    dataIndex: 'integral',
-                    key: 'integral'
+                    key: 'integral',
+                    render: (data) => {
+                      return (
+                        <a>
+                          {Number(data.type) === 2 ? '-' : '+'}
+                          {data.integral}分
+                        </a>
+                      )
+                    }
                   },
                   {
                     title: '日期',
-                    dataIndex: 'created_at',
                     key: 'created_at'
                   }
                 ]}
