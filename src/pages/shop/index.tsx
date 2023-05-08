@@ -48,7 +48,8 @@ function GoodsPay() {
       pageSize: log.pageSize
     })
       .then((res: any) => {
-        setLog((l) => ({ ...l, page, data: res.data, loading: false }))
+        const data = res.data.map((item: any, index: number) => ({ ...item, id: index + 1 }))
+        setLog((l) => ({ ...l, page, data, loading: false }))
       })
       .finally(() => {
         setLog((l) => ({ ...l, page, loading: false }))
@@ -117,16 +118,22 @@ function GoodsPay() {
               </h4>
               <Table
                 bordered
-                key={generateUUID()}
                 loading={log.loading}
                 dataSource={log.data}
                 pagination={{
                   hideOnSinglePage: true,
                   defaultPageSize: 1000
                 }}
+                rowKey="id"
                 columns={[
                   {
+                    title: '序号',
+                    dataIndex: 'id',
+                    key: 'id'
+                  },
+                  {
                     title: '描述',
+                    dataIndex: 'title',
                     key: 'title'
                   },
                   {
@@ -134,7 +141,7 @@ function GoodsPay() {
                     key: 'integral',
                     render: (data) => {
                       return (
-                        <a>
+                        <a key={data.integral}>
                           {Number(data.type) === 2 ? '-' : '+'}
                           {data.integral}分
                         </a>
@@ -143,6 +150,7 @@ function GoodsPay() {
                   },
                   {
                     title: '日期',
+                    dataIndex: 'created_at',
                     key: 'created_at'
                   }
                 ]}
