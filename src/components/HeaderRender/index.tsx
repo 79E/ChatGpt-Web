@@ -9,13 +9,16 @@ import {
   SyncOutlined
 } from '@ant-design/icons'
 import useStore from '@/store'
-import { Avatar, Button, Dropdown, message } from 'antd'
+import { Avatar, Button, Dropdown } from 'antd'
 import { getEmailPre } from '@/utils'
 import MenuList from '../MenuList'
 import { getKeyUsage, getUserInfo } from '@/request/api'
+import { useNavigate } from 'react-router-dom'
 
 function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
   const isProxy = import.meta.env.VITE_APP_MODE === 'proxy'
+
+  const navigate = useNavigate()
 
   const { token, user_detail, logout, setLoginModal, config } = useStore()
 
@@ -83,28 +86,36 @@ function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
             trigger={['click']}
             menu={{
               items: [
-                // {
-                //   key:'info',
-                //   icon: <CloudSyncOutlined />,
-                //   label: '用户信息',
-                //   onClick: ()=>{
-
-                //   }
-                // },
-                // {
-                //   key:'yue',
-                //   icon: <CloudSyncOutlined />,
-                //   label: '我的余额',
-                //   onClick: ()=>{
-
-                //   }
-                // },
+                {
+                  key: 'yonghuxinxi',
+                  icon: <CloudSyncOutlined />,
+                  label: '用户信息',
+                  onClick: () => {
+                    navigate('/shop')
+                  }
+                },
+                {
+                  key: 'wodeyue',
+                  icon: <CloudSyncOutlined />,
+                  label: '我的余额',
+                  onClick: () => {
+                    navigate('/shop')
+                  }
+                },
+                {
+                  key: 'xiaofeijilu',
+                  icon: <CloudSyncOutlined />,
+                  label: '消费记录',
+                  onClick: () => {
+                    navigate('/shop')
+                  }
+                },
                 {
                   key: 'zhifuzhongxin',
                   icon: <CloudSyncOutlined />,
                   label: '支付中心',
                   onClick: () => {
-                    // setGoodsPayOptions({ open: true })
+                    navigate('/shop')
                   }
                 },
                 {
