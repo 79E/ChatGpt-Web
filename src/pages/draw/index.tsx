@@ -1,5 +1,5 @@
 import styles from './index.module.less'
-import { Button, Empty, Input, Image, Radio, Slider, Space, Popconfirm, notification } from 'antd'
+import { Button, Empty, Input, Image, Radio, Slider, Space, Popconfirm, notification, message } from 'antd'
 import { useState } from 'react'
 import useStore from '@/store'
 import OpenAiLogo from '@/components/OpenAiLogo'
@@ -30,9 +30,11 @@ function DrawPage() {
     loading: false,
     list: []
   })
-
   const handleDraw = (res: ResponseData<Array<{ url: string }>>) => {
-    if (res.data.length <= 0) return
+    if (res.code || res.data.length <= 0) {
+      message.error('请求错误 🙅')
+      return
+    }
     setDrawResultData({
       loading: false,
       list: res.data
