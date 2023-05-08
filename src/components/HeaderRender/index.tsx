@@ -6,7 +6,11 @@ import {
   CloudSyncOutlined,
   LogoutOutlined,
   MenuUnfoldOutlined,
-  SyncOutlined
+  PayCircleOutlined,
+  ReconciliationOutlined,
+  SyncOutlined,
+  UserOutlined,
+  WalletOutlined
 } from '@ant-design/icons'
 import useStore from '@/store'
 import { Avatar, Button, Dropdown } from 'antd'
@@ -88,7 +92,7 @@ function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
               items: [
                 {
                   key: 'yonghuxinxi',
-                  icon: <CloudSyncOutlined />,
+                  icon: <UserOutlined />,
                   label: '用户信息',
                   onClick: () => {
                     navigate('/shop')
@@ -96,7 +100,7 @@ function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
                 },
                 {
                   key: 'wodeyue',
-                  icon: <CloudSyncOutlined />,
+                  icon: <PayCircleOutlined />,
                   label: '我的余额',
                   onClick: () => {
                     navigate('/shop')
@@ -104,7 +108,7 @@ function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
                 },
                 {
                   key: 'xiaofeijilu',
-                  icon: <CloudSyncOutlined />,
+                  icon: <ReconciliationOutlined />,
                   label: '消费记录',
                   onClick: () => {
                     navigate('/shop')
@@ -112,7 +116,7 @@ function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
                 },
                 {
                   key: 'zhifuzhongxin',
-                  icon: <CloudSyncOutlined />,
+                  icon: <WalletOutlined />,
                   label: '支付中心',
                   onClick: () => {
                     navigate('/shop')
