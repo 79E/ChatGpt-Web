@@ -1,4 +1,6 @@
 import {
+  ProductInfo,
+  RequesPrepay,
   RequestChatOptions,
   RequestImagesGenerations,
   RequestLoginParams,
@@ -78,33 +80,62 @@ export function postImagesGenerations(
   )
 }
 
-// 暂停
-export async function getKeyUsage(url: string, key:string){
+// 获取Key余额
+export async function getKeyUsage(url: string, key: string) {
   const subscriptionUrl = `${url}/dashboard/billing/subscription`
 
-  const subscriptionRes = await request.get<SubscriptionInfo>(subscriptionUrl, {}, {
-    'Authorization': 'Bearer ' + key,
-  });
+  const subscriptionRes = await request.get<SubscriptionInfo>(
+    subscriptionUrl,
+    {},
+    {
+      Authorization: 'Bearer ' + key
+    }
+  )
 
-  let remaining = subscriptionRes.data.hard_limit_usd || 0;
-  const now = new Date();
+  let remaining = subscriptionRes.data.hard_limit_usd || 0
+  const now = new Date()
   const usageUrl = `${url}/dashboard/billing/usage`
-  let startDate = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
-  const endDate = new Date(now.getTime() + 24 * 60 * 60 * 1000);
-  if(subscriptionRes.data.has_payment_method){
-    const day = now.getDate();  // 本月过去的天数
-    startDate = new Date(now.getTime() - (day - 1) * 24 * 60 * 60 * 1000); // 本月第一天
+  let startDate = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000)
+  const endDate = new Date(now.getTime() + 24 * 60 * 60 * 1000)
+  if (subscriptionRes.data.has_payment_method) {
+    const day = now.getDate() // 本月过去的天数
+    startDate = new Date(now.getTime() - (day - 1) * 24 * 60 * 60 * 1000) // 本月第一天
   }
 
-  const usageres = await request.get<{total_usage: number}>(usageUrl,{
-    start_date: formatTime('yyyy-MM-dd', new Date(startDate)),
-    end_date: formatTime('yyyy-MM-dd', new Date(endDate))
-  },{
-    'Authorization': 'Bearer ' + key,
-  })
-  if(!usageres.code){
-    remaining -= usageres.data.total_usage;
+  const usageres = await request.get<{ total_usage: number }>(
+    usageUrl,
+    {
+      start_date: formatTime('yyyy-MM-dd', new Date(startDate)),
+      end_date: formatTime('yyyy-MM-dd', new Date(endDate))
+    },
+    {
+      Authorization: 'Bearer ' + key
+    }
+  )
+  if (!usageres.code) {
+    remaining -= usageres.data.total_usage
   }
 
-  return remaining;
+  return remaining
 }
+
+// 获取商品列表
+export function getProduct() {
+  return request.get<Array<ProductInfo>>('/product')
+}
+
+// 获取用户消费记录
+export function getIntegralLogs(params: { page: number; pageSize: number }) {
+  return request.get('/integral_logs', params)
+}
+
+// 提交订单
+export function postPrepay(params: RequesPrepay) {
+  return request.post<{
+    order_sn: string
+    payurl: string
+    qrcode: string
+  }>('/prepay', params)
+}
+
+// 卡密充值

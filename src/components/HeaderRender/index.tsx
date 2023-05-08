@@ -9,13 +9,16 @@ import {
   SyncOutlined
 } from '@ant-design/icons'
 import useStore from '@/store'
-import { Avatar, Button, Dropdown, message } from 'antd'
+import { Avatar, Button, Dropdown } from 'antd'
 import { getEmailPre } from '@/utils'
 import MenuList from '../MenuList'
-import { getKeyUsage } from '@/request/api'
+import { getKeyUsage, getUserInfo } from '@/request/api'
+import { useNavigate } from 'react-router-dom'
 
 function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
   const isProxy = import.meta.env.VITE_APP_MODE === 'proxy'
+
+  const navigate = useNavigate()
 
   const { token, user_detail, logout, setLoginModal, config } = useStore()
 
@@ -25,28 +28,38 @@ function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
     return <>{props.logo}</>
   }, [props.logo])
 
-  useEffect(()=>{
+  useEffect(() => {
     onRefreshBalance()
-  },[token, config.api, config.api_key])
+  }, [user_detail, token, config.api, config.api_key])
 
   const [balance, setBalance] = useState({
     number: 0,
     loading: false
   })
 
-  function onRefreshBalance (){
-    if(token){
+  function onRefreshBalance() {
+    setBalance((b) => ({ ...b, loading: true }))
+    if (token) {
       // 获取用户信息
-    }else if(config.api_key && config.api){
-      setBalance(b => ({...b, loading: true}));
-      getKeyUsage(config.api , config.api_key).then((res)=>{
-        console.log(res)
-        setBalance(b => ({number: res, loading: false}));
-      }).finally(()=>{
-        setBalance(b => ({...b, loading: false}));
-      })
-    }else{
-      message.error('请填写正确配置')
+      getUserInfo()
+        .then((res) => {
+          if (res.code) return
+          setBalance((b) => ({ ...b, number: res.data.integral, loading: false }))
+        })
+        .finally(() => {
+          setBalance((b) => ({ ...b, loading: false }))
+        })
+    } else if (config.api_key && config.api) {
+      getKeyUsage(config.api, config.api_key)
+        .then((res) => {
+          console.log(res)
+          setBalance((b) => ({ number: res, loading: false }))
+        })
+        .finally(() => {
+          setBalance((b) => ({ ...b, loading: false }))
+        })
+    } else {
+      setBalance((b) => ({ ...b, loading: false }))
     }
   }
 
@@ -73,28 +86,36 @@ function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
             trigger={['click']}
             menu={{
               items: [
-                // {
-                //   key:'info',
-                //   icon: <CloudSyncOutlined />,
-                //   label: '用户信息',
-                //   onClick: ()=>{
-
-                //   }
-                // },
-                // {
-                //   key:'yue',
-                //   icon: <CloudSyncOutlined />,
-                //   label: '我的余额',
-                //   onClick: ()=>{
-
-                //   }
-                // },
+                {
+                  key: 'yonghuxinxi',
+                  icon: <CloudSyncOutlined />,
+                  label: '用户信息',
+                  onClick: () => {
+                    navigate('/shop')
+                  }
+                },
+                {
+                  key: 'wodeyue',
+                  icon: <CloudSyncOutlined />,
+                  label: '我的余额',
+                  onClick: () => {
+                    navigate('/shop')
+                  }
+                },
+                {
+                  key: 'xiaofeijilu',
+                  icon: <CloudSyncOutlined />,
+                  label: '消费记录',
+                  onClick: () => {
+                    navigate('/shop')
+                  }
+                },
                 {
                   key: 'zhifuzhongxin',
                   icon: <CloudSyncOutlined />,
                   label: '支付中心',
                   onClick: () => {
-                    // setGoodsPayOptions({ open: true })
+                    navigate('/shop')
                   }
                 },
                 {
@@ -133,12 +154,16 @@ function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
             登录 / 注册
           </Button>
         )}
-         <div className={styles.header__balance} onClick={()=>{
-          onRefreshBalance()
-         }}
-         >
+        {((config.api && config.api_key) || token) && (
+          <div
+            className={styles.header__balance}
+            onClick={() => {
+              onRefreshBalance()
+            }}
+          >
             <p>{balance.number}</p> <SyncOutlined spin={balance.loading} />
-         </div>
+          </div>
+        )}
         {props.isMobile && (
           <Dropdown
             arrow

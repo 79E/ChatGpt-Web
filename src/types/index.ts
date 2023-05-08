@@ -10,6 +10,7 @@ export interface UserDetail {
   status: number
   ip: string
   created_at: string
+  integral: number
 }
 
 export interface ResponseLoginData {
@@ -109,4 +110,17 @@ export interface ImagesInfo extends RequestImagesGenerations {
 export interface SubscriptionInfo {
   hard_limit_usd: number
   has_payment_method: boolean
+}
+
+export interface RequesPrepay {
+  pay_type: 'alipay' | 'wxpay'
+  product_id: number
+  num: number
+}
+
+export interface ProductInfo {
+  id: number
+  title: string
+  amount: string
+  integral: number
 }
