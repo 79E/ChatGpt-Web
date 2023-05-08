@@ -3,6 +3,11 @@
 		width: 100%;
 		max-width: 1000px;
 		margin:0 auto;
+		overflow: auto;
+		padding: 20px 0;
+		&::-webkit-scrollbar {
+			display: none; /* Chrome Safari */
+		}
 	}
 	&_card {
 		background-color: #f8f9fa;
@@ -15,6 +20,9 @@
 			cursor: pointer;
 		}
 	}
+	[class*='ant-pro-layout-content']{
+        padding-block: 0;
+    }
 }
 
 .payModal{
