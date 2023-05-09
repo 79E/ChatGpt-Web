@@ -3,7 +3,7 @@ import UserInfoCard from '@/components/UserInfoCard'
 import styles from './index.module.less'
 import Layout from '@/components/Layout'
 import useStore from '@/store'
-import { Button, Input, Modal, Space, Table, message } from 'antd'
+import { Button, Input, Modal, QRCode, Space, Table, message } from 'antd'
 import GoodsList from '@/components/GoodsList'
 import { CloseCircleFilled, SyncOutlined } from '@ant-design/icons'
 import { fetchProduct, fetchUserInfo } from '@/store/async'
@@ -11,6 +11,7 @@ import { getIntegralLogs, postPrepay } from '@/request/api'
 import { ProductInfo } from '@/types'
 import OpenAiLogo from '@/components/OpenAiLogo'
 import { generateUUID } from '@/utils'
+import { Link } from 'react-router-dom'
 
 function GoodsPay() {
   const { goodsList, user_detail } = useStore()
@@ -71,7 +72,11 @@ function GoodsPay() {
     const { order_sn, payurl, qrcode } = payres.data
     setPayModal((p) => ({ ...p, status: 'pay', ...payres.data }))
     if (order_sn && payurl && !qrcode) {
-      window.open(payurl, '_blank')
+      const link = document.createElement('a');
+      link.target = '_blank';
+      link.href = payurl;
+      link.click();
+      link.remove();
     }
   }
 
@@ -117,6 +122,9 @@ function GoodsPay() {
                 订单记录 <SyncOutlined spin={log.loading} />
               </h4>
               <Table
+                scroll={{
+                  x: 800
+                }}
                 bordered
                 loading={log.loading}
                 dataSource={log.data}
@@ -170,12 +178,35 @@ function GoodsPay() {
             width={320}
           >
             <div className={styles.payModal}>
-              {payModal.status === 'fail' ? (
+              {payModal.status === 'fail' && (
                 <CloseCircleFilled className={styles.payModal_icon} />
-              ) : (
-                <OpenAiLogo rotate width="3em" height="3em" />
               )}
-              {payModal.status === 'fail' ? <p>支付失败，请重新尝试</p> : <p>正在等待支付中...</p>}
+              {
+                payModal.status === 'loading' && (
+                  <OpenAiLogo rotate width="3em" height="3em" />
+                )
+              }
+
+{
+                payModal.status === 'pay' && (
+                  <img width="50px" src="https://pic.616pic.com/ys_img/00/03/78/04RotuWM2Y.jpg" alt="" srcSet="" />
+                )
+              }
+
+              {(payModal.payurl && payModal.status === 'pay') && (
+                <Link to={payModal.payurl} target="_blank">
+                  <QRCode
+                    value={payModal.payurl}
+                    color="#1677ff"
+                    style={{
+                      margin: 16,
+                    }}
+                  />
+                </Link>
+              )}
+              {payModal.status === 'fail' ? <p>支付失败，请重新尝试</p> : 
+              payModal.status === 'loading' ? <p>正在创建订单中...</p> :
+              <p style={{ textAlign:'center' }}>如未跳转可截图支付宝扫码支付<br /> 或点击二维码再次跳转</p>}
               <Space>
                 <Button
                   danger
