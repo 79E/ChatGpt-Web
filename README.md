@@ -1,10 +1,11 @@
 <div align="center">
-<img src="./src/assets/vite.svg" style="width:60px;height:60px" alt="icon"/>
 <img src="./src/assets/openai.svg" style="width:64px;height:64px;margin:0 32px" alt="icon"/>
-<img src="./src/assets/react.svg" style="width:60px;height:60px" alt="icon"/>
 
 <h1 align="center">ChatGPT Web</h1>
 
+English / [简体中文](https://github.com/79E/ChatGpt-Web/blob/main/README-CN.md)
+
+A commercially-viable ChatGpt web application built with React.
 
 可部署商业化的 ChatGpt 网页应用。
 
@@ -14,69 +15,70 @@
 
 [![Deploy to Vercel](https://vercel.com/button)](https://vercel.com/import/project?template=https://github.com/79E/ChatGpt-Web)
 
-![cover](https://cdn.jsdelivr.net/gh/duogongneng/testuitc/1682393823691cover.png)
+![cover](https://cdn.jsdelivr.net/gh/duogongneng/testuitc/1683604333996c1.png)
+![cover](https://cdn.jsdelivr.net/gh/duogongneng/testuitc/1683604333960c2.png)
 
-
+![群组](https://files.catbox.moe/kbx65k.png)
 </div>
 
 
-## 🤖 主要功能
+## 🤖 Major Function
 
-- 用户系统可对使用进行相关限制
-- 精心设计的 UI，响应式设计。
-- 极快的首屏加载速度（~100kb）
-- 海量的内置 prompt 列表，来自[中文](https://github.com/PlexPt/awesome-chatgpt-prompts-zh)和[英文](https://github.com/f/awesome-chatgpt-prompts)
-- 一键导出聊天记录，完整的 Markdown 支持
-- 支持自定义API地址（如：[openAI](https://api.openai.com) / [API2D](https://api2d.com/r/192767)）
-## 🎮 开始使用
-**Node 环境**
+- The user system can impose relevant restrictions on usage
+- Carefully designed UI, responsive design.
+- Extremely fast first screen loading speed（~100kb）
+- Massive built-in prompt list from[Chinese](https://github.com/PlexPt/awesome-chatgpt-prompts-zh) AND [English](https://github.com/f/awesome-chatgpt-prompts)
+- One click export of chat records, complete Markdown support.
+- Support for custom API addresses（example：[openAI](https://api.openai.com) / [API2D](https://api2d.com/r/192767)）
+## 🎮 Start Using
+**Node**
 
-`node` 需要 `^16 || ^18 || ^19` 版本（node >= 16），可以使用 nvm 管理本地多个 node 版本。
+Node requires version `^ 16 | | ^ 18 | | ^ 19 `(node>=16), and NVM can be used to manage multiple local node versions.
 
 ```
-# 查看 node 版本
+# View node version
 node -v
 
-# 查看 npm 版本
+# View npm version
 npm -v
 
-# 查看 yarn 版本
+# View yarn version
 yarn -v
 
 ```
 
-**1.先 `Fork` 本项目，然后克隆到本地。**
+**1.First `Fork` this project, then clone it locally.**
 ```
 git clone https://github.com/79E/ChatGpt-Web.git
 ```
 
-**2.安装依赖**
+**2.Installation dependencies**
 ```
 yarn install
 ```
 
-**3.运行**
+**3.Run**
 ```
 yarn dev
 ```
 
-**4.打包**
+**4.Build**
 ```
 yarn build
 ```
 
 
-## ⛺️ 环境变量
+## ⛺️ Environment Variable
 
-> 本项目大多数配置项都通过环境变量来设置。
+> Most configuration items in this project are set through environment variables.
 
 #### `VITE_APP_REQUEST_HOST` 
 
-请求服务端的`Host`地址。
+Request the `Host` address of the server.
 
 #### `VITE_APP_TITLE` 
 
-Chat Web 标题名称。
+Chat Web title.
 
 #### `VITE_APP_LOGO` 
 
@@ -84,57 +86,34 @@ Chat Web Logo。
 
 #### `VITE_APP_MODE` 
 
-应用模式可选：商业模式（business）代理模式（proxy）混合模式（mix）
+Optional application mode: business mode proxy pattern mixed mode.
 
-## 🚧 开发
+## 🚧 Develop
 
-> 强烈不建议在本地进行开发或者部署，由于一些技术原因，很难在本地配置好 OpenAI API 代理，除非你能保证可以直连 OpenAI 服务器。
+> It is strongly not recommended to develop or deploy locally. Due to technical reasons, it is difficult to configure OpenAI API proxies locally, unless you can guarantee direct connection to the OpenAI server.
 
-#### 本地开发
+#### Local development
 
-1. 安装 nodejs 和 yarn，具体细节请询问 ChatGPT；
-2. 执行 `yarn install && yarn dev` 即可。
+1. Install `Nodejs` and `Yarn`, please consult ChatGPT for specific details;
+2. Execute `yarn install && yarn dev`.
 
-#### 服务端
+#### Server side
 
-1. 目前服务端还不完善所以暂时未开源
-2. 前端请求服务端的 [接口文档](https://console-docs.apipost.cn/preview/dcf9a900ac5a1154/00eeb0b3f589d8e6) 你们可以按照这个接口文档进行开发
+1. Currently, the server is not yet fully developed, so it is currently not open source.
+2. Front end request server's [interface document](https://console-docs.apipost.cn/preview/dcf9a900ac5a1154/00eeb0b3f589d8e6) You can develop according to this interface document.
 
-## 🎯 部署
-> 直接将打包好的 `dist` 目录上传到服务器即可。WEB项目暂时不直接访问 OpenAI API 所有不要求服务器地址。
+## 🎯 Arrange
+> Simply upload the packaged `dist` directory to the server. The WEB project temporarily does not directly access the OpenAI API and does not require a server address.
 
 ### Vercel
-如果你将其托管在自己的 Vercel 服务器上，可点击 deploy 按钮来开始你的部署！
+If you host it on your own Vercel server, you can click the deploy button to start your deployment!
 
 [![Deploy to Vercel](https://vercel.com/button)](https://vercel.com/import/project?template=https://github.com/79E/ChatGpt-Web)
 
-<details>
- <summary>设置 Vercel 的指导</summary>
+## 🧘 Contributor
 
-1. 前往 [vercel.com](https://vercel.com/)
-1. 点击 `Log in`
-   ![](https://files.catbox.moe/tct1wg.png)
-1. 点击 `Continue with GitHub` 通过 GitHub 进行登录
-   ![](https://files.catbox.moe/btd78j.jpeg)
-1. 登录 GitHub 并允许访问所有存储库（如果系统这样提示）
-1. Fork 这个仓库
-1. 返回到你的 [Vercel dashboard](https://vercel.com/dashboard)
-1. 选择 `Import Project`
-   ![](https://files.catbox.moe/qckos0.png)
-1. 选择 `Import Git Repository`
-   ![](https://files.catbox.moe/pqub9q.png)
-1. 选择 root 并将所有内容保持不变，并且只需添加名为 PAT_1 的环境变量（如图所示），其中将包含一个个人访问令牌（PAT），你可以在[这里](https://github.com/settings/tokens/new)轻松创建（保留默认，并且只需要命名下，名字随便）
-   ![](https://files.catbox.moe/0ez4g7.png)
-1. 点击 deploy，这就完成了，查看你的域名就可使用 API 了！
+[See project contributor list](https://github.com/79E/ChatGPT-Web/graphs/contributors)
 
-</details>
-
-
-
-## 🧘 贡献者
-
-[见项目贡献者列表](https://github.com/79E/ChatGPT-Web/graphs/contributors)
-
-## 📋 开源协议
+## 📋 License
 
 [![License MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg)](https://github.com/79E/ChatGpt-Web/blob/master/license)

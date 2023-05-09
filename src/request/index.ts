@@ -10,7 +10,7 @@ export type ResponseData<T> = {
 export type RequestConfig = { timeout?: number }
 
 function isResponseData<T>(obj: any): obj is ResponseData<T> {
-  return 'code' in obj && 'data' in obj && 'message' in obj;
+  return 'code' in obj && 'data' in obj && 'message' in obj
 }
 
 // 判断是否需要基础域名前缀
@@ -68,10 +68,10 @@ const interceptorsRequest = (config: { url: string; options?: RequestInit }) => 
 const interceptorsResponse = async <T>(options: any, response: any): Promise<ResponseData<T>> => {
   console.log('响应拦截器：', options, response)
   let data: ResponseData<T> = await response.json()
-  
-  if(!isResponseData(data)){
+
+  if (!isResponseData(data)) {
     data = {
-      code: response.status,
+      code: response.status === 200 ? 0 : response.status,
       data: (data as any)?.data ? (data as any).data : data,
       message: ''
     }
