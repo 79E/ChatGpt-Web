@@ -89,6 +89,14 @@ Chat Web Logo。
 
 应用模式可选：商业模式（business）代理模式（proxy）混合模式（mix）
 
+#### `VITE_APP_AI_BASE_URL`
+
+可在内置请求地址设置（如用户未设置自己的key则走这里） 
+
+#### `VITE_APP_AI_KEYS`
+
+ Api 请求使用的 key, 支持多个 key，以逗号分隔（,）
+
 ## 🚧 开发
 
 > 强烈不建议在本地进行开发或者部署，由于一些技术原因，很难在本地配置好 OpenAI API 代理，除非你能保证可以直连 OpenAI 服务器。
