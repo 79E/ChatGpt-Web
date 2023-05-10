@@ -18,7 +18,7 @@ A commercially-viable ChatGpt web application built with React.
 ![cover](https://cdn.jsdelivr.net/gh/duogongneng/testuitc/1683604333996c1.png)
 ![cover](https://cdn.jsdelivr.net/gh/duogongneng/testuitc/1683604333960c2.png)
 
-![群组](https://files.catbox.moe/kbx65k.png)
+![群组](https://files.catbox.moe/hqwrq4.png)
 
 </div>
 
