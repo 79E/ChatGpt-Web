@@ -15,6 +15,7 @@ import {
   filterObjectNull,
   formatTime,
   generateUUID,
+  getAiKey,
   handleChatData,
   handleOpenChatData
 } from '@/utils'
@@ -87,7 +88,7 @@ function ChatPage() {
           //   })
           //   return
           // }
-          addChat() 
+          addChat()
         }}
       >
         新建对话
@@ -204,8 +205,9 @@ function ChatPage() {
         sendMessages.unshift(...list)
       }
     }
+    const systemConfig = getAiKey(config)
     const response = await postChatCompletions(
-      config.api,
+      systemConfig.api,
       {
         model: config.model,
         messages: sendMessages,
@@ -213,7 +215,7 @@ function ChatPage() {
       },
       {
         headers: {
-          Authorization: `Bearer ${config.api_key}`
+          Authorization: `Bearer ${systemConfig.api_key}`
         },
         options: {
           signal
@@ -322,13 +324,15 @@ function ChatPage() {
     const controller = new AbortController()
     const signal = controller.signal
     setFetchController(controller)
+    const systemConfig = getAiKey(config)
+    console.log('systemConfig', systemConfig)
     if (token) {
       serverChatCompletions({
         requestOptions,
         signal,
         userMessageId
       })
-    } else if (isProxy && config.api && config.api_key) {
+    } else if (isProxy && systemConfig.api && systemConfig.api_key) {
       // 这里是 openai 公共
       openChatCompletions({
         requestOptions,

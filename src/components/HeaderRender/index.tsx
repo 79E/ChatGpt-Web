@@ -14,7 +14,7 @@ import {
 } from '@ant-design/icons'
 import useStore from '@/store'
 import { Avatar, Button, Dropdown } from 'antd'
-import { getEmailPre } from '@/utils'
+import { getAiKey, getEmailPre } from '@/utils'
 import MenuList from '../MenuList'
 import { getKeyUsage, getUserInfo } from '@/request/api'
 import { useNavigate } from 'react-router-dom'
@@ -45,6 +45,7 @@ function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
   })
 
   function onRefreshBalance() {
+    const systemConfig = getAiKey(config)
     setBalance((b) => ({ ...b, loading: true }))
     if (token) {
       // 获取用户信息
@@ -56,8 +57,8 @@ function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
         .finally(() => {
           setBalance((b) => ({ ...b, loading: false }))
         })
-    } else if (config.api_key && config.api) {
-      getKeyUsage(config.api, config.api_key)
+    } else if (systemConfig.api_key && systemConfig.api) {
+      getKeyUsage(systemConfig.api, systemConfig.api_key)
         .then((res) => {
           setBalance((b) => ({ number: res, loading: false }))
         })

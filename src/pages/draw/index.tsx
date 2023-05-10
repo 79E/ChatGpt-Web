@@ -1,20 +1,38 @@
 import styles from './index.module.less'
-import { Button, Empty, Input, Image, Radio, Slider, Space, Popconfirm, notification, message } from 'antd'
+import {
+  Button,
+  Empty,
+  Input,
+  Image,
+  Radio,
+  Slider,
+  Space,
+  Popconfirm,
+  notification,
+  message
+} from 'antd'
 import { useState } from 'react'
 import useStore from '@/store'
 import OpenAiLogo from '@/components/OpenAiLogo'
 import { postApiImagesGenerations, postImagesGenerations } from '@/request/api'
 import { ClearOutlined } from '@ant-design/icons'
-import { formatTime, generateUUID } from '@/utils'
+import { formatTime, generateUUID, getAiKey } from '@/utils'
 import { ResponseData } from '@/request'
 import Layout from '@/components/Layout'
 
 function DrawPage() {
-  const { token, config, setConfigModal, setLoginModal, historyDrawImages, clearhistoryDrawImages, addDrawImage } =
-    useStore()
+  const {
+    token,
+    config,
+    setConfigModal,
+    setLoginModal,
+    historyDrawImages,
+    clearhistoryDrawImages,
+    addDrawImage
+  } = useStore()
 
-    const isProxy = import.meta.env.VITE_APP_MODE === 'proxy' 
-    const isBusiness = import.meta.env.VITE_APP_MODE === 'business' 
+  const isProxy = import.meta.env.VITE_APP_MODE === 'proxy'
+  const isBusiness = import.meta.env.VITE_APP_MODE === 'business'
 
   const [drawConfig, setDrawConfig] = useState({
     prompt: '',
@@ -55,20 +73,21 @@ function DrawPage() {
       loading: true,
       list: []
     })
+    const systemConfig = getAiKey(config)
     if (token) {
       await postImagesGenerations(drawConfig, {}, { timeout: 0 })
         .then(handleDraw)
         .finally(() => {
           setDrawResultData((dr) => ({ ...dr, loading: false }))
         })
-    } else if (config.api && config.api_key) {
+    } else if (systemConfig.api && systemConfig.api_key) {
       await postApiImagesGenerations(
-        config.api,
+        systemConfig.api,
         {
           ...drawConfig
         },
         {
-          Authorization: `Bearer ${config.api_key}`
+          Authorization: `Bearer ${systemConfig.api_key}`
         },
         {
           timeout: 0
@@ -79,12 +98,11 @@ function DrawPage() {
           setDrawResultData((dr) => ({ ...dr, loading: false }))
         })
     } else {
-
-      if(isProxy){
+      if (isProxy) {
         setConfigModal(true)
       }
 
-      if(isBusiness){
+      if (isBusiness) {
         setLoginModal(true)
       }
       setDrawResultData((dr) => ({ ...dr, loading: false }))
