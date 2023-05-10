@@ -88,6 +88,14 @@ Chat Web Logo。
 
 Optional application mode: business mode proxy pattern mixed mode.
 
+#### `VITE_APP_AI_BASE_URL`
+
+Built in request address and KEY settings
+
+#### `VITE_APP_AI_KEYS`
+
+The key used by Api requests, supporting multiple keys separated by commas (,)
+
 ## 🚧 Develop
 
 > It is strongly not recommended to develop or deploy locally. Due to technical reasons, it is difficult to configure OpenAI API proxies locally, unless you can guarantee direct connection to the OpenAI server.
