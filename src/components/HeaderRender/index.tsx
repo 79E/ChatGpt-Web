@@ -161,7 +161,7 @@ function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
             登录 / 注册
           </Button>
         )}
-        {((config.api && config.api_key) || token) && (
+        {((getAiKey(config).api && getAiKey(config).api_key) || token) && (
           <div
             className={styles.header__balance}
             onClick={() => {
