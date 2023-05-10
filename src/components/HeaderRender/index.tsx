@@ -36,7 +36,10 @@ function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
     onRefreshBalance()
   }, [user_detail, token, config.api, config.api_key])
 
-  const [balance, setBalance] = useState({
+  const [balance, setBalance] = useState<{
+    number: string | number
+    loading: boolean
+  }>({
     number: 0,
     loading: false
   })

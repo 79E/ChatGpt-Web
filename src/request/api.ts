@@ -61,8 +61,12 @@ export function postApiImagesGenerations(
   headers?: { [key: string]: any },
   options?: { [key: string]: any }
 ) {
-  return request
-    .post<Array<{ url: string }>>(`${url}/v1/images/generations`, { ...params }, headers, options)
+  return request.post<Array<{ url: string }>>(
+    `${url}/v1/images/generations`,
+    { ...params },
+    headers,
+    options
+  )
 }
 
 // 请求三方直接链接 绘画
@@ -81,7 +85,7 @@ export function postImagesGenerations(
 
 // 获取Key余额
 export async function getKeyUsage(url: string, key: string) {
-  if(!url || !key) return 0;
+  if (!url || !key) return 0
   const subscriptionUrl = `${url}/dashboard/billing/subscription`
 
   const subscriptionRes = await request.get<SubscriptionInfo>(
@@ -97,6 +101,13 @@ export async function getKeyUsage(url: string, key: string) {
   const usageUrl = `${url}/dashboard/billing/usage`
   let startDate = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000)
   const endDate = new Date(now.getTime() + 24 * 60 * 60 * 1000)
+  const subDate = new Date(now)
+  subDate.setDate(1)
+
+  if (remaining > 20) {
+    startDate = subDate
+  }
+
   if (subscriptionRes?.data?.has_payment_method) {
     const day = now.getDate() // 本月过去的天数
     startDate = new Date(now.getTime() - (day - 1) * 24 * 60 * 60 * 1000) // 本月第一天
@@ -112,11 +123,12 @@ export async function getKeyUsage(url: string, key: string) {
       Authorization: 'Bearer ' + key
     }
   )
+
   if (!usageres.code) {
-    remaining -= usageres.data.total_usage
+    remaining -= usageres.data.total_usage / 100
   }
 
-  return remaining
+  return remaining.toFixed(2)
 }
 
 // 获取商品列表
