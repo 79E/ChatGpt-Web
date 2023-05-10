@@ -11,7 +11,7 @@ import {
   UserDetail
 } from '@/types'
 import { formatTime, generateChatInfo } from '@/utils'
-
+import promptszh from '@/assets/prompts-zh.json'
 export interface State {
   // 登录弹窗开关
   loginModal: boolean
@@ -135,7 +135,7 @@ const useStore = create<State>()(
         api: 'https://api.openai.com',
         api_key: ''
       },
-      localPrompt: [],
+      localPrompt: [...promptszh],
       chats: [],
       selectChatId: '',
       goodsList: [],
