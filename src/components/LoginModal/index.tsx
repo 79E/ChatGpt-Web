@@ -33,14 +33,14 @@ function LoginModal(props: Props) {
         logo={import.meta.env.VITE_APP_LOGO}
         title=""
         subTitle="全网最便宜的人工智能对话"
-        actions={
+        actions={(
           <Space>
             <HeartFilled />
             <RedditCircleFilled />
             <SlackCircleFilled />
             <TwitterCircleFilled />
           </Space>
-        }
+        )}
         contentStyle={{
           width: 'auto',
           minWidth: '100px'
@@ -68,11 +68,12 @@ function LoginModal(props: Props) {
             prefix: <MobileOutlined />
           }}
           name="account"
-          placeholder="邮箱或手机号"
+          placeholder="邮箱"
           rules={[
             {
               required: true,
-              message: '邮箱或手机号'
+              message: '请输入正确邮箱',
+              pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
             }
           ]}
         />

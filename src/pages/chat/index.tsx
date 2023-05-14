@@ -9,13 +9,12 @@ import RoleLocal from './components/RoleLocal'
 import AllInput from './components/AllInput'
 import ChatMessage from './components/ChatMessage'
 import { RequestChatOptions } from '@/types'
-import { postChatCompletions, postCompletions } from '@/request/api'
+import { postCompletions } from '@/request/api'
 import Reminder from '@/components/Reminder'
 import {
   filterObjectNull,
   formatTime,
   generateUUID,
-  getAiKey,
   handleChatData,
   handleOpenChatData
 } from '@/utils'
@@ -45,8 +44,6 @@ function ChatPage() {
     delChatMessage,
     setLoginModal
   } = useStore()
-
-  const isProxy = import.meta.env.VITE_APP_MODE !== 'business'
 
   const bodyResize = useDocumentResize()
 
@@ -185,115 +182,12 @@ function ChatPage() {
     }
   }
 
-  // 三方代码请求处理
-  async function openChatCompletions({
-    requestOptions,
-    signal,
-    userMessageId
-  }: {
-    userMessageId: string
-    signal: AbortSignal
-    requestOptions: RequestChatOptions
-  }) {
-    const sendMessages: Array<{ role: string; content: string }> = [
-      { role: 'user', content: requestOptions.prompt }
-    ]
-    if (config.limit_message > 0) {
-      const limitMessage = chatMessages.slice(-config.limit_message)
-      if (limitMessage.length) {
-        const list = limitMessage.map((item: any) => ({ role: item.role, content: item.text }))
-        sendMessages.unshift(...list)
-      }
-    }
-    const systemConfig = getAiKey(config)
-    const response = await postChatCompletions(
-      systemConfig.api,
-      {
-        model: config.model,
-        messages: sendMessages,
-        ...requestOptions.options
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${systemConfig.api_key}`
-        },
-        options: {
-          signal
-        }
-      }
-    )
-    if (!(response instanceof Response)) {
-      setChatDataInfo(selectChatId, userMessageId, {
-        status: 'error'
-      })
-      setFetchController(null)
-      message.error('请求失败')
-      return
-    }
-    const reader = response.body?.getReader?.()
-    let alltext = ''
-    while (true) {
-      const { done, value } = (await reader?.read()) || {}
-      if (done) {
-        setFetchController(null)
-        break
-      }
-      const text = new TextDecoder('utf-8').decode(value)
-      const texts = handleOpenChatData(text)
-      for (let i = 0; i < texts.length; i++) {
-        const { id, dateTime, parentMessageId, role, text, segment } = texts[i]
-        alltext += text ? text : ''
-        if (segment === 'start') {
-          setChatDataInfo(selectChatId, userMessageId, {
-            status: 'pass'
-          })
-          setChatInfo(
-            selectChatId,
-            {
-              parentMessageId
-            },
-            {
-              id,
-              text: alltext,
-              dateTime,
-              status: 'loading',
-              role,
-              requestOptions
-            }
-          )
-        }
-        if (segment === 'text') {
-          setChatDataInfo(selectChatId, id, {
-            text: alltext,
-            dateTime,
-            status: 'pass',
-            role,
-            requestOptions
-          })
-        }
-        if (segment === 'stop') {
-          setFetchController(null)
-          setChatDataInfo(selectChatId, userMessageId, {
-            status: 'pass'
-          })
-          setChatDataInfo(selectChatId, id, {
-            text: alltext,
-            dateTime,
-            status: 'pass',
-            role,
-            requestOptions
-          })
-        }
-      }
-      scrollToBottomIfAtBottom()
-    }
-  }
 
   const [fetchController, setFetchController] = useState<AbortController | null>(null)
 
   // 对话
   async function sendChatCompletions(vaule: string) {
-    if (!token && !isProxy) {
+    if (!token) {
       setLoginModal(true)
       return
     }
@@ -324,25 +218,11 @@ function ChatPage() {
     const controller = new AbortController()
     const signal = controller.signal
     setFetchController(controller)
-    const systemConfig = getAiKey(config)
-    console.log('systemConfig', systemConfig)
-    if (token) {
-      serverChatCompletions({
-        requestOptions,
-        signal,
-        userMessageId
-      })
-    } else if (isProxy && systemConfig.api && systemConfig.api_key) {
-      // 这里是 openai 公共
-      openChatCompletions({
-        requestOptions,
-        signal,
-        userMessageId
-      })
-    } else {
-      message.error('配置数据错误')
-      controller.abort()
-    }
+    serverChatCompletions({
+      requestOptions,
+      signal,
+      userMessageId
+    })
   }
 
   return (

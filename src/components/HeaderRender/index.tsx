@@ -14,13 +14,12 @@ import {
 } from '@ant-design/icons'
 import useStore from '@/store'
 import { Avatar, Button, Dropdown } from 'antd'
-import { getAiKey, getEmailPre } from '@/utils'
+import { getEmailPre } from '@/utils'
 import MenuList from '../MenuList'
-import { getKeyUsage, getUserInfo } from '@/request/api'
+import { getUserInfo } from '@/request/api'
 import { useNavigate } from 'react-router-dom'
 
 function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
-  const isProxy = import.meta.env.VITE_APP_MODE === 'proxy'
 
   const navigate = useNavigate()
 
@@ -45,7 +44,6 @@ function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
   })
 
   function onRefreshBalance() {
-    const systemConfig = getAiKey(config)
     setBalance((b) => ({ ...b, loading: true }))
     if (token) {
       // 获取用户信息
@@ -53,14 +51,6 @@ function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
         .then((res) => {
           if (res.code) return
           setBalance((b) => ({ ...b, number: res.data.integral, loading: false }))
-        })
-        .finally(() => {
-          setBalance((b) => ({ ...b, loading: false }))
-        })
-    } else if (systemConfig.api_key && systemConfig.api) {
-      getKeyUsage(systemConfig.api, systemConfig.api_key)
-        .then((res) => {
-          setBalance((b) => ({ number: res, loading: false }))
         })
         .finally(() => {
           setBalance((b) => ({ ...b, loading: false }))
@@ -84,9 +74,7 @@ function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
       </div>
       {!props.isMobile && <MenuList />}
       <div className={styles.header__actives}>
-        {isProxy ? (
-          <></>
-        ) : token ? (
+        {token ? (
           <Dropdown
             arrow
             placement="bottomRight"
@@ -136,7 +124,7 @@ function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
               ]
             }}
           >
-            <div>
+            <div className={styles.header__actives_dropdown}>
               <Avatar src={user_detail?.avatar} />
               {!props.isMobile && (
                 <span
@@ -149,7 +137,16 @@ function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
                   {getEmailPre(user_detail?.account)}
                 </span>
               )}
+              <div
+                className={styles.header__balance}
+                onClick={() => {
+                  onRefreshBalance()
+                }}
+              >
+              <p>余额：{balance.number}</p> <SyncOutlined spin={balance.loading} />
+              </div>
             </div>
+            
           </Dropdown>
         ) : (
           <Button
@@ -160,16 +157,6 @@ function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
           >
             登录 / 注册
           </Button>
-        )}
-        {((getAiKey(config).api && getAiKey(config).api_key) || token) && (
-          <div
-            className={styles.header__balance}
-            onClick={() => {
-              onRefreshBalance()
-            }}
-          >
-            <p>余额：{balance.number}</p> <SyncOutlined spin={balance.loading} />
-          </div>
         )}
         {props.isMobile && (
           <Dropdown

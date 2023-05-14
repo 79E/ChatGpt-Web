@@ -26,27 +26,24 @@ function MenuList(props: Props) {
     >
       {
         menuListData.map((item) => {
-          if(item.modes.includes(import.meta.env.VITE_APP_MODE)){
-            const isExternal = /^(http:\/\/|https:\/\/)/.test(item.path);
-            return (
-              <Link key={item.path} to={item.path} target={isExternal ? '_blank' : '_self'}>
-                <div className={joinTrim([
-                  styles.item,
-                  pathname === item.path ? styles.select_item : ''
-                ])}
-                >
-                  <span className={styles.item_icon}>
-                    {item.icon}
-                  </span>
-                  <div className={styles.item_text}>
-                    <p className={styles.item_title}>{item.name}</p>
-                    {mode !== 'horizontal' && <span className={styles.item_message}>{item.message}</span>}
-                  </div>
+          const isExternal = /^(http:\/\/|https:\/\/)/.test(item.path);
+          return (
+            <Link key={item.path} to={item.path} target={isExternal ? '_blank' : '_self'}>
+              <div className={joinTrim([
+                styles.item,
+                pathname === item.path ? styles.select_item : ''
+              ])}
+              >
+                <span className={styles.item_icon}>
+                  {item.icon}
+                </span>
+                <div className={styles.item_text}>
+                  <p className={styles.item_title}>{item.name}</p>
+                  {mode !== 'horizontal' && <span className={styles.item_message}>{item.message}</span>}
                 </div>
-              </Link>
-            )
-          }
-          return null
+              </div>
+            </Link>
+          )
         })
       }
     </div>

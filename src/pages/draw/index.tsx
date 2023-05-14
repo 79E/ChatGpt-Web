@@ -8,31 +8,25 @@ import {
   Slider,
   Space,
   Popconfirm,
-  notification,
   message
 } from 'antd'
 import { useState } from 'react'
 import useStore from '@/store'
 import OpenAiLogo from '@/components/OpenAiLogo'
-import { postApiImagesGenerations, postImagesGenerations } from '@/request/api'
+import { postImagesGenerations } from '@/request/api'
 import { ClearOutlined } from '@ant-design/icons'
-import { formatTime, generateUUID, getAiKey } from '@/utils'
+import { formatTime, generateUUID } from '@/utils'
 import { ResponseData } from '@/request'
 import Layout from '@/components/Layout'
 
 function DrawPage() {
   const {
     token,
-    config,
-    setConfigModal,
     setLoginModal,
     historyDrawImages,
     clearhistoryDrawImages,
     addDrawImage
   } = useStore()
-
-  const isProxy = import.meta.env.VITE_APP_MODE === 'proxy'
-  const isBusiness = import.meta.env.VITE_APP_MODE === 'business'
 
   const [drawConfig, setDrawConfig] = useState({
     prompt: '',
@@ -73,43 +67,15 @@ function DrawPage() {
       loading: true,
       list: []
     })
-    const systemConfig = getAiKey(config)
     if (token) {
       await postImagesGenerations(drawConfig, {}, { timeout: 0 })
         .then(handleDraw)
         .finally(() => {
           setDrawResultData((dr) => ({ ...dr, loading: false }))
         })
-    } else if (systemConfig.api && systemConfig.api_key) {
-      await postApiImagesGenerations(
-        systemConfig.api,
-        {
-          ...drawConfig
-        },
-        {
-          Authorization: `Bearer ${systemConfig.api_key}`
-        },
-        {
-          timeout: 0
-        }
-      )
-        .then(handleDraw)
-        .finally(() => {
-          setDrawResultData((dr) => ({ ...dr, loading: false }))
-        })
     } else {
-      if (isProxy) {
-        setConfigModal(true)
-      }
-
-      if (isBusiness) {
-        setLoginModal(true)
-      }
+      setLoginModal(true)
       setDrawResultData((dr) => ({ ...dr, loading: false }))
-      notification.warning({
-        message: '数据错误',
-        description: '请配置正确的API KEY或登录后方可使用！'
-      })
     }
   }
 

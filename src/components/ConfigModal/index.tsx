@@ -16,7 +16,6 @@ type Props = {
 }
 
 function ConfigModal(props: Props) {
-  const isProxy = import.meta.env.VITE_APP_MODE !== 'business'
 
   const [chatGptConfigform] = Form.useForm<ChatGptConfig>()
   const onCancel = () => {
@@ -64,21 +63,6 @@ function ConfigModal(props: Props) {
           }}
         />
       </FormItemCard>
-      {isProxy && (
-        <>
-          <FormItemCard title="代理API" describe="代理地址可以是任何三方代理（ChatGpt）">
-            <ProFormText
-              allowClear={false}
-              name="api"
-              placeholder="请输入代理地址"
-              rules={[{ required: true, message: '请填写代理API地址' }]}
-            />
-          </FormItemCard>
-          <FormItemCard title="API Key" describe="使用自己的OpenApiKey 或者其他代理。">
-            <ProFormText allowClear={false} name="api_key" placeholder="请输入key 密钥" />
-          </FormItemCard>
-        </>
-      )}
       <FormItemCard title="携带历史消息数" describe="每次请求携带的历史消息数">
         <ProFormSlider name="limit_message" max={10} min={0} step={1} />
       </FormItemCard>

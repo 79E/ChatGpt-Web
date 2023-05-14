@@ -8,6 +8,5 @@ export * from './filterObjectNull'
 export * from './handleOpenChatData'
 export * from './copyToClipboard'
 export * from './getEmailPre'
-export * from './getAiKey'
 import is from './is'
 export { is }
