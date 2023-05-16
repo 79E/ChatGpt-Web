@@ -1,0 +1,59 @@
+.header{
+	height: 56px;
+	display: flex;
+	align-items: center;
+	padding: 0 12px;
+	&__menuIcon{
+		font-size: 18px;
+		margin-right: 12px;
+	}
+	&__logo{
+		display: flex;
+		height: 28px;
+		img{
+			width: 28px;
+		}
+		h1{
+			margin-block: 0;
+			margin-inline: 0;
+			margin-inline-start: 8px;
+			font-weight: 600;
+			color: rgba(0, 0, 0, 0.88);
+			font-size: 18px;
+			line-height: 1.6;
+		}
+	}
+
+	&__actives{
+		display: flex;
+		align-items: center;
+		margin-left: auto;
+		&_menu{
+			font-size: 24px;
+			margin-left: 12px;
+			color: #666;
+			cursor: pointer;
+			&:hover{
+				color: #1877ff;
+			}
+		}
+	}
+	&__balance {
+		height: 34px;
+		padding: 0 8px;
+		margin: 0 8px;
+		background-color: #f1f1f1;
+		border-radius: 4px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+		transition: all 0.3s ease-in-out;
+		&:hover{
+			background-color: #d9d9d9;
+		}
+		p{
+			margin-right: 12px;
+		}
+	}
+}
