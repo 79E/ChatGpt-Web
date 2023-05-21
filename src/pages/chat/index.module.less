@@ -70,14 +70,15 @@
     [class*='ant-layout-sider-children']{
         padding-inline: 12px !important;
     }
+
     [class*='ant-pro-sider-extra']{
-        margin-inline: 0px;
+        margin-inline: 0px !important;
     }
     [class*='ant-menu-item']{
         width: 100%;
-        margin-top: 8px;
-        margin-left: 0;
-        margin-right: 0;
+        margin-top: 8px !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
         padding: 0 !important;
         background-color: transparent !important;
         &:hover{
@@ -94,8 +95,11 @@
         background-color: #fff;
     }
     [class*='ant-pro-layout-content']{
-        padding-block: 0;
+        padding-block: 0 !important;
     }
+	[class*='ant-pro-sider-hide-menu-collapsed']{
+		inset-inline-start: -52px !important;
+	}
     @media (max-width: 600px) {
         [class*='ant-pro-layout-content']{
             padding-inline: 4px;

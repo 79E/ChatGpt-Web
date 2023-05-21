@@ -3,38 +3,47 @@
 
 <h1 align="center">ChatGPT Web</h1>
 
-[English](https://github.com/79E/ChatGpt-Web) / 简体中文
+English / [简体中文](https://github.com/79E/ChatGpt-Web/blob/master/README-CN.md)
 
 A commercially-viable ChatGpt web application built with React.
 
 可部署商业化的 ChatGpt 网页应用。
 
-[Proxy Demo]() / [Business Demo](https://chatgpt79.vercel.app/) / [Issues](https://github.com/79E/ChatGPT-Web/issues) / [Buy Me a Coffee](https://www.buymeacoffee.com/beggar)
-
-[代理（proxy）演示](https://chatgpt79.vercel.app/) / [商业（business）演示](https://aizj.top/) / [反馈](https://github.com/79E/ChatGPT-Web/issues) / [赞助我](https://www.imageoss.com/images/2023/05/06/e38f4a42046a1909773b955c56468d6b83fcd9b5d593c449.jpg)
+[Issues](https://github.com/79E/ChatGPT-Web/issues) / [Buy Me a Coffee](https://www.buymeacoffee.com/beggar) / [赞助我](https://files.catbox.moe/o0znrg.JPG)
 
 [![Deploy to Vercel](https://vercel.com/button)](https://vercel.com/import/project?template=https://github.com/79E/ChatGpt-Web)
 
-![cover](https://cdn.jsdelivr.net/gh/duogongneng/testuitc/1683604333996c1.png)
-![cover](https://cdn.jsdelivr.net/gh/duogongneng/testuitc/1683604333960c2.png)
-
-![群组](https://files.catbox.moe/hqwrq4.png)
-
 </div>
 
+## 🐶 演示
+### 页面链接
+[Web 演示: https://www.aizj.top/](https://www.aizj.top/)
+
+[Admin 演示: https://www.aizj.top/admin](https://www.aizj.top/admin)
+
+如需帮助请提交 [Issues](https://github.com/79E/ChatGPT-Web/issues) 或赞赏时留下联系方式。
+
+### 页面截图
+
+![cover](https://files.catbox.moe/tp963e.png)
+![cover](https://files.catbox.moe/y5avbx.png)
+![cover](https://files.catbox.moe/k16jsz.png)
+![cover](https://files.catbox.moe/8o5oja.png)
 
 ## 🤖 主要功能
 
-- 用户系统可对使用进行相关限制
-- 精心设计的 UI，响应式设计。
+- 后台管理系统,可对用户,Token,商品,卡密等进行管理
+- 精心设计的 UI，响应式设计
 - 极快的首屏加载速度（~100kb）
+- 支持Midjourney绘画和DALL·E模型绘画,GPT4等应用
 - 海量的内置 prompt 列表，来自[中文](https://github.com/PlexPt/awesome-chatgpt-prompts-zh)和[英文](https://github.com/f/awesome-chatgpt-prompts)
 - 一键导出聊天记录，完整的 Markdown 支持
 - 支持自定义API地址（如：[openAI](https://api.openai.com) / [API2D](https://api2d.com/r/192767)）
+
 ## 🎮 开始使用
 **Node 环境**
 
-`node` 需要 `^16 || ^18 || ^19` 版本（node >= 16），可以使用 nvm 管理本地多个 node 版本。
+`node` 需要 `^16 || ^18 || ^19` 版本（node >= 16.19.0），可以使用 nvm 管理本地多个 node 版本。
 
 ```
 # 查看 node 版本
@@ -60,14 +69,14 @@ yarn install
 
 **3.运行**
 ```
-yarn dev
+# web项目启动
+yarn dev:web
 ```
 
 **4.打包**
 ```
 yarn build
 ```
-
 
 ## ⛺️ 环境变量
 
@@ -85,61 +94,32 @@ Chat Web 标题名称。
 
 Chat Web Logo。
 
-#### `VITE_APP_MODE` 
-
-应用模式可选：商业模式（business）代理模式（proxy）混合模式（mix）
-
-#### `VITE_APP_AI_BASE_URL`
-
-可在内置请求地址设置（如用户未设置自己的key则走这里） 
-
-#### `VITE_APP_AI_KEYS`
-
- Api 请求使用的 key, 支持多个 key，以逗号分隔（,）
-
 ## 🚧 开发
 
 > 强烈不建议在本地进行开发或者部署，由于一些技术原因，很难在本地配置好 OpenAI API 代理，除非你能保证可以直连 OpenAI 服务器。
 
 #### 本地开发
 
-1. 安装 nodejs 和 yarn，具体细节请询问 ChatGPT；
-2. 执行 `yarn install && yarn dev` 即可。
+1. 安装 nodejs 和 yarn具体细节请询问 ChatGPT
+2. 执行 `yarn install` 即可
+3. web项目开发 `yarn dev:web`
+4. 服务端项目开发 `yarn dev`
+5. 打包项目 `yarn build`
 
 #### 服务端
 
-1. 目前服务端还不完善所以暂时未开源
-2. 前端请求服务端的 [接口文档](https://console-docs.apipost.cn/preview/dcf9a900ac5a1154/00eeb0b3f589d8e6) 你们可以按照这个接口文档进行开发
+1. 前端请求服务端的 [接口文档](https://console-docs.apipost.cn/preview/38826c52f656ef05/044846bd536b67bb) 你们可以按照这个接口文档进行开发
+2. 如需帮助请提交 [Issues](https://github.com/79E/ChatGPT-Web/issues) 或赞赏时留下联系方式。
 
 ## 🎯 部署
-> 直接将打包好的 `dist` 目录上传到服务器即可。WEB项目暂时不直接访问 OpenAI API 所有不要求服务器地址。
+> 直接将`WEB`项目打包好的 `dist` 目录上传到服务器即可。注意服务器IP地址位置！
 
 ### Vercel
 如果你将其托管在自己的 Vercel 服务器上，可点击 deploy 按钮来开始你的部署！
 
 [![Deploy to Vercel](https://vercel.com/button)](https://vercel.com/import/project?template=https://github.com/79E/ChatGpt-Web)
 
-<details>
- <summary>设置 Vercel 的指导</summary>
-
-1. 前往 [vercel.com](https://vercel.com/)
-1. 点击 `Log in`
-   ![](https://files.catbox.moe/tct1wg.png)
-1. 点击 `Continue with GitHub` 通过 GitHub 进行登录
-   ![](https://files.catbox.moe/btd78j.jpeg)
-1. 登录 GitHub 并允许访问所有存储库（如果系统这样提示）
-1. Fork 这个仓库
-1. 返回到你的 [Vercel dashboard](https://vercel.com/dashboard)
-1. 选择 `Import Project`
-   ![](https://files.catbox.moe/qckos0.png)
-1. 选择 `Import Git Repository`
-   ![](https://files.catbox.moe/pqub9q.png)
-1. 选择 root 并将所有内容保持不变，并且只需添加名为 PAT_1 的环境变量（如图所示），其中将包含一个个人访问令牌（PAT），你可以在[这里](https://github.com/settings/tokens/new)轻松创建（保留默认，并且只需要命名下，名字随便）
-   ![](https://files.catbox.moe/0ez4g7.png)
-1. 点击 deploy，这就完成了，查看你的域名就可使用 API 了！
-
-</details>
-
+如需帮助请提交 [Issues](https://github.com/79E/ChatGPT-Web/issues) 或赞赏时留下联系方式。
 
 ## 🧘 贡献者
 

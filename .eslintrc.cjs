@@ -5,8 +5,7 @@ module.exports = {
         'node': true,
         'es6': true
     },
-    'overrides': [
-    ],
+    'overrides': [],
     'parser': '@typescript-eslint/parser',
     'parserOptions': {
         'ecmaVersion': 'latest',

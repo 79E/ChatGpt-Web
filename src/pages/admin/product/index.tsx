@@ -1,0 +1,274 @@
+import { getAdminProducts, delAdminProduct, postAdminProduct, putAdminProduct } from '@/request/adminApi';
+import { ProductInfo } from '@/types/admin';
+import { ActionType, ModalForm, ProColumns, ProFormDigit, ProFormGroup, ProFormRadio, ProFormText } from '@ant-design/pro-components';
+import { ProTable } from '@ant-design/pro-components';
+import { Button, Form, Tag, message } from 'antd';
+import { useRef, useState } from 'react';
+
+function ProductPage() {
+
+    const tableActionRef = useRef<ActionType>();
+    const [form] = Form.useForm<ProductInfo>();
+    const [edidInfoModal, setEdidInfoModal] = useState<{
+        open: boolean,
+        info: ProductInfo | undefined
+    }>({
+        open: false,
+        info: undefined
+    });
+    const columns: ProColumns<ProductInfo>[] = [
+        {
+            title: 'ID',
+            dataIndex: 'id',
+            width: 180,
+        },
+        {
+            title: '标题',
+            dataIndex: 'title',
+        },
+        {
+            title: '价格',
+            dataIndex: 'price',
+            render: (_, data) => {
+                return <a>{data.price}分</a>
+            }
+        },
+        {
+            title: '原价',
+            dataIndex: 'original_price',
+            render: (_, data) => {
+                return <a>{data.original_price}分</a>
+            }
+        },
+        {
+            title: '积分/天数',
+            dataIndex: 'integral',
+            render: (_, data) => {
+                return <a>{data.integral ? data.integral + '积分' : data.day ? data.day + '天' : '-'}</a>
+            }
+        },
+        {
+            title: '状态值',
+            dataIndex: 'status',
+            render: (_, data) => <Tag color={data.status ? 'green' : 'red'}>{data.status ? '上架' : '下架'}</Tag>
+        },
+        {
+            title: '创建时间',
+            dataIndex: 'create_time',
+        },
+        {
+            title: '更新时间',
+            dataIndex: 'update_time',
+        },
+        {
+            title: '操作',
+            width: 160,
+            valueType: 'option',
+            fixed: 'right',
+            render: (_, data) => [
+                <Button
+                    key="edit"
+                    type="link"
+                    onClick={() => {
+                        setEdidInfoModal(() => {
+                            form?.setFieldsValue({
+                                ...data
+                            });
+                            return {
+                                open: true,
+                                info: data
+                            }
+                        });
+                    }}
+                >
+                    编辑
+                </Button>,
+                <Button
+                    key="del"
+                    type="text"
+                    danger
+                    onClick={() => {
+                        delAdminProduct({
+                            id: data.id
+                        }).then((res) => {
+                            if (res.code) return
+                            message.success('删除成功')
+                            tableActionRef.current?.reload()
+                        })
+                    }}
+                >
+                    删除
+                </Button>
+            ]
+        }
+    ];
+
+    return (
+        <div>
+            <ProTable
+                actionRef={tableActionRef}
+                columns={columns}
+                scroll={{
+                    x: 1200
+                }}
+                request={async (params, sorter, filter) => {
+                    // 表单搜索项会从 params 传入，传递给后端接口。
+                    const res = await getAdminProducts({
+                        page: params.current || 1,
+                        page_size: params.pageSize || 10,
+                    });
+                    return Promise.resolve({
+                        data: res.data.rows,
+                        total: res.data.count,
+                        success: true,
+                    });
+                }}
+                toolbar={{
+                    actions: [
+                        <Button
+                            key="primary"
+                            type="primary"
+                            size="small"
+                            onClick={() => {
+                                setEdidInfoModal(() => {
+                                    return {
+                                        open: true,
+                                        info: undefined
+                                    }
+                                });
+                            }}
+                        >
+                            新增商品
+                        </Button>
+                    ]
+                }}
+                rowKey="id"
+                search={false}
+                bordered
+            />
+            <ModalForm<ProductInfo>
+                title="商品信息"
+                open={edidInfoModal.open}
+                form={form}
+                initialValues={{
+                    status: 1
+                }}
+                onOpenChange={(visible) => {
+                    if (!visible) {
+                        form.resetFields();
+                    }
+                    setEdidInfoModal((info) => {
+                        return {
+                            ...info,
+                            open: visible
+                        }
+                    })
+                }}
+                onFinish={async (values) => {
+                    console.log(values);
+                    if(!values.integral && !values.day){
+                        message.error('请填写积分或者天数')
+                        return false
+                    }
+                    const data = { ...values }
+                    if(values.integral){
+                        data.day = 0
+                    }else if (values.day) {
+                        data.integral = 0
+                    }
+                    if (edidInfoModal.info?.id) {
+                        console.log('进入编辑')
+                        const res = await putAdminProduct({
+                            ...data,
+                            id: edidInfoModal.info?.id,
+                        });
+                        if (res.code) {
+                            message.error('编辑失败')
+                            return false;
+                        }
+                        tableActionRef.current?.reload?.();
+                    } else {
+                        const res = await postAdminProduct(data);
+                        if (res.code) {
+                            message.error('新增失败')
+                            return false
+                        }
+                        tableActionRef.current?.reloadAndRest?.();
+                        message.success('提交成功');
+                    }
+                    return true;
+                }}
+                size="large"
+                modalProps={{
+                    cancelText: '取消',
+                    okText: '提交'
+                }}
+            >
+                <ProFormGroup>
+                    <ProFormText
+                        name="title"
+                        label="标题"
+                        placeholder="标题"
+                        rules={[{ required: true, message: '请输入商品标题' }]}
+                    />
+                    <ProFormText
+                        name="badge"
+                        label="角标"
+                        placeholder="角标"
+                        rules={[{ required: true, message: '请输入角标' }]}
+                    />
+                    <ProFormRadio.Group
+                        name="status"
+                        label="状态"
+                        radioType="button"
+                        options={[
+                            {
+                                label: '下架',
+                                value: 0,
+                            },
+                            {
+                                label: '上架',
+                                value: 1,
+                            },
+                        ]}
+                    />
+                </ProFormGroup>
+
+                <ProFormGroup>
+                    <ProFormDigit
+                        label="价格(分)"
+                        name="price"
+                        min={1}
+                        max={1000000}
+                        rules={[{ required: true, message: '请输入商品价格,单位为分' }]}
+                    />
+                    <ProFormDigit
+                        label="原价(分)"
+                        name="original_price"
+                        min={0}
+                        max={1000000}
+                    />
+                </ProFormGroup>
+                <ProFormGroup>
+                    <ProFormDigit
+                        width="sm"
+                        label="积分"
+                        name="integral"
+                        min={0}
+                        max={1000000}
+                    />
+                    <ProFormDigit
+                        width="sm"
+                        label="会员天数"
+                        name="day"
+                        min={0}
+                        max={1000000}
+                    />
+                </ProFormGroup>
+                <p>积分与天数只能填写一个（如两个都填写优先拿积分）</p>
+            </ModalForm>
+        </div>
+    )
+}
+
+export default ProductPage;

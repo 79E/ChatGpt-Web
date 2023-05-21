@@ -13,10 +13,10 @@ function GoodsList(props: { list: Array<ProductInfo>; onClick: (item: ProductInf
               props.onClick?.(item)
             }}
           >
-            <h3>{item.integral}分</h3>
-            <p>{item.amount}元</p>
+            {item.integral ? <h3>{item.integral}分</h3> : <h3>{item.day}天</h3>}
+            <p>{item.price / 100}元</p>
             <div className={styles.goodsList_item_button}>立即充值</div>
-            <span className={styles.goodsList_item_tag}>特惠</span>
+            <span className={styles.goodsList_item_tag}>{item.badge}</span>
           </div>
         )
       })}

@@ -2,7 +2,7 @@ import { AutoComplete, Button, Input, Modal, message } from 'antd'
 import styles from './index.module.less'
 import { ClearOutlined, CloudDownloadOutlined, SyncOutlined } from '@ant-design/icons'
 import { useMemo, useState } from 'react'
-import useStore from '@/store'
+import { promptStore } from '@/store'
 import html2canvas from 'html2canvas'
 import useDocumentResize from '@/hooks/useDocumentResize'
 
@@ -15,7 +15,7 @@ type Props = {
 
 function AllInput(props: Props) {
   const [prompt, setPrompt] = useState('')
-  const { localPrompt } = useStore()
+  const { localPrompt } = promptStore()
 
   const bodyResize = useDocumentResize()
 

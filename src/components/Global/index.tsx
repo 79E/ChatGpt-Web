@@ -1,27 +1,18 @@
-import useStore from '@/store'
-import { fetchUserInfo } from '@/store/async'
+import { chatStore, configStore } from '@/store'
+// import { fetchUserInfo } from '@/store/async'
 import { useEffect } from 'react'
 import LoginModal from '../LoginModal'
 import ConfigModal from '../ConfigModal'
+import { userStore } from '@/store'
 
 type Props = {
   children: React.ReactElement
 }
 
 function Global(props: Props) {
-  const {
-    config,
-    models,
-    token,
-    chats,
-    configModal,
-    changeConfig,
-    setConfigModal,
-    addChat,
-    changeSelectChatId,
-    loginModal,
-    setLoginModal
-  } = useStore()
+  const { models, config, configModal, changeConfig, setConfigModal } = configStore()
+  const { chats, addChat, changeSelectChatId } = chatStore()
+  const { token, loginModal, setLoginModal } = userStore()
 
   useEffect(() => {
     if (chats.length <= 0) {

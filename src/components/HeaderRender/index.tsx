@@ -12,29 +12,26 @@ import {
   UserOutlined,
   WalletOutlined
 } from '@ant-design/icons'
-import useStore from '@/store'
+import { userStore } from '@/store'
 import { Avatar, Button, Dropdown } from 'antd'
-import { getAiKey, getEmailPre } from '@/utils'
+import { getEmailPre } from '@/utils'
 import MenuList from '../MenuList'
-import { getKeyUsage, getUserInfo } from '@/request/api'
 import { useNavigate } from 'react-router-dom'
+import { fetchUserInfo } from '@/store/user/async'
 
 function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
-  const isProxy = import.meta.env.VITE_APP_MODE === 'proxy'
-
   const navigate = useNavigate()
 
-  const { token, user_detail, logout, setLoginModal, config } = useStore()
+  const { token, user_info, logout, setLoginModal } = userStore()
 
   const renderLogo = useMemo(() => {
-    if (typeof props.logo === 'string')
-      return <img className={styles.header__logo} src={props.logo} />
+    if (typeof props.logo === 'string') return <img src={props.logo} />
     return <>{props.logo}</>
   }, [props.logo])
 
   useEffect(() => {
     onRefreshBalance()
-  }, [user_detail, token, config.api, config.api_key])
+  }, [token])
 
   const [balance, setBalance] = useState<{
     number: string | number
@@ -45,22 +42,13 @@ function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
   })
 
   function onRefreshBalance() {
-    const systemConfig = getAiKey(config)
     setBalance((b) => ({ ...b, loading: true }))
     if (token) {
       // 获取用户信息
-      getUserInfo()
+      fetchUserInfo()
         .then((res) => {
           if (res.code) return
           setBalance((b) => ({ ...b, number: res.data.integral, loading: false }))
-        })
-        .finally(() => {
-          setBalance((b) => ({ ...b, loading: false }))
-        })
-    } else if (systemConfig.api_key && systemConfig.api) {
-      getKeyUsage(systemConfig.api, systemConfig.api_key)
-        .then((res) => {
-          setBalance((b) => ({ number: res, loading: false }))
         })
         .finally(() => {
           setBalance((b) => ({ ...b, loading: false }))
@@ -84,73 +72,86 @@ function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
       </div>
       {!props.isMobile && <MenuList />}
       <div className={styles.header__actives}>
-        {isProxy ? (
-          <></>
-        ) : token ? (
-          <Dropdown
-            arrow
-            placement="bottomRight"
-            trigger={['click']}
-            menu={{
-              items: [
-                {
-                  key: 'yonghuxinxi',
-                  icon: <UserOutlined />,
-                  label: '用户信息',
-                  onClick: () => {
-                    navigate('/shop')
-                  }
-                },
-                {
-                  key: 'wodeyue',
-                  icon: <PayCircleOutlined />,
-                  label: '我的余额',
-                  onClick: () => {
-                    navigate('/shop')
-                  }
-                },
-                {
-                  key: 'xiaofeijilu',
-                  icon: <ReconciliationOutlined />,
-                  label: '消费记录',
-                  onClick: () => {
-                    navigate('/shop')
-                  }
-                },
-                {
-                  key: 'zhifuzhongxin',
-                  icon: <WalletOutlined />,
-                  label: '支付中心',
-                  onClick: () => {
-                    navigate('/shop')
-                  }
-                },
-                {
-                  key: 'logout',
-                  icon: <LogoutOutlined />,
-                  label: '退出登录',
-                  onClick: () => {
-                    logout()
-                  }
-                }
-              ]
+        {token ? (
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
             }}
           >
-            <div>
-              <Avatar src={user_detail?.avatar} />
-              {!props.isMobile && (
-                <span
-                  style={{
-                    fontSize: 14,
-                    color: '#999',
-                    marginLeft: 4
-                  }}
-                >
-                  {getEmailPre(user_detail?.account)}
-                </span>
-              )}
+            <Dropdown
+              arrow
+              placement="bottomRight"
+              trigger={['click']}
+              menu={{
+                items: [
+                  {
+                    key: 'lijiqiandao',
+                    icon: <UserOutlined />,
+                    label: '立即签到',
+                    onClick: () => {
+                      navigate('/shop')
+                    }
+                  },
+                  {
+                    key: 'wodeyue',
+                    icon: <PayCircleOutlined />,
+                    label: '我的余额',
+                    onClick: () => {
+                      navigate('/shop')
+                    }
+                  },
+                  {
+                    key: 'xiaofeijilu',
+                    icon: <ReconciliationOutlined />,
+                    label: '消费记录',
+                    onClick: () => {
+                      navigate('/shop')
+                    }
+                  },
+                  {
+                    key: 'logout',
+                    icon: <LogoutOutlined />,
+                    label: '退出登录',
+                    onClick: () => {
+                      logout()
+                      navigate('/login')
+                    }
+                  }
+                ]
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                <Avatar src={user_info?.avatar} />
+                {!props.isMobile && (
+                  <span
+                    style={{
+                      fontSize: 14,
+                      color: '#999',
+                      marginLeft: 4
+                    }}
+                  >
+                    {getEmailPre(user_info?.account)}
+                  </span>
+                )}
+              </div>
+            </Dropdown>
+            <div
+              className={styles.header__balance}
+              onClick={() => {
+                onRefreshBalance()
+              }}
+            >
+              <p>余额：{balance.number}</p> <SyncOutlined spin={balance.loading} />
             </div>
-          </Dropdown>
+          </div>
         ) : (
           <Button
             type="primary"
@@ -160,16 +161,6 @@ function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
           >
             登录 / 注册
           </Button>
-        )}
-        {((getAiKey(config).api && getAiKey(config).api_key) || token) && (
-          <div
-            className={styles.header__balance}
-            onClick={() => {
-              onRefreshBalance()
-            }}
-          >
-            <p>余额：{balance.number}</p> <SyncOutlined spin={balance.loading} />
-          </div>
         )}
         {props.isMobile && (
           <Dropdown

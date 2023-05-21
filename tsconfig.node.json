@@ -1,9 +1,45 @@
 {
   "compilerOptions": {
-    "composite": true,
-    "module": "ESNext",
-    "moduleResolution": "Node",
-    "allowSyntheticDefaultImports": true
+    "target": "esnext",
+    "module": "commonjs",
+    "pretty": true,
+    "sourceMap": true,
+    "outDir": "build",
+    "importHelpers": true,
+    "strict": true,
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "moduleResolution": "node",
+    "baseUrl": ".",
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "lib": [
+        "es5",
+        "es6",
+        "dom",
+        "es2015.core",
+        "es2015.collection",
+        "es2015.generator",
+        "es2015.iterable",
+        "es2015.promise",
+        "es2015.proxy",
+        "es2015.reflect",
+        "es2015.symbol",
+        "es2015.symbol.wellknown",
+        "esnext.asynciterable"
+    ]
   },
-  "include": ["vite.config.ts"]
+  "include": ["./server"],
+  "exclude": [
+      "node_modules"
+  ]
 }

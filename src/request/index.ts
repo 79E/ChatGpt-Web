@@ -1,5 +1,5 @@
 import { notification } from 'antd'
-import store from '@/store'
+import { userStore } from '@/store'
 
 export type ResponseData<T> = {
   code: number
@@ -58,7 +58,7 @@ const interceptorsRequest = (config: { url: string; options?: RequestInit }) => 
     ...config.options,
     headers: {
       ...config.options?.headers,
-      'Keep-Token': store.getState().token
+      token: userStore.getState().token
     }
   }
   return { ...options }
@@ -79,7 +79,7 @@ const interceptorsResponse = async <T>(options: any, response: any): Promise<Res
 
   if (data.code) {
     if (response.status === 401) {
-      store.getState().logout()
+      userStore.getState().logout()
     }
     if (data.message) {
       notification.error({

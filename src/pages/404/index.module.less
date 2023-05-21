@@ -1,0 +1,37 @@
+.page404 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 100vw;
+    height: 80vh;
+    &_icon {
+        width: 100%;
+        max-width: 500px;
+    }
+    &_text{
+        margin: 30px 0;
+        text-align: center;
+        h3{
+            font-size: 24px;
+        }
+        p{
+            color: #999;
+            margin-top: 8px;
+        }
+    }
+    
+    &_button{
+        padding: 10px 20px;
+        border-radius: 4px;
+        background: #7baced;
+        color: #fff;
+        font-weight: 500;
+        transition: all 0.4 ease-in-out;
+        cursor: pointer;
+        opacity: 1;
+        &:hover{
+            opacity: 0.9;
+        }
+    }
+}

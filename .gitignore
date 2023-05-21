@@ -12,6 +12,7 @@ node_modules
 dist
 dist-ssr
 *.local
+.vite
 
 # Editor directories and files
 .vscode/*
@@ -24,3 +25,34 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+*.pem
+
+# local env files
+.env*.local
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts

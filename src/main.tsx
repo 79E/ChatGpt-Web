@@ -15,7 +15,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <AuthRouter>
       <Global>
         <React.Suspense
-          fallback={
+          fallback={(
             <div
               style={{
                 width: '100vw',
@@ -27,7 +27,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
             >
               <OpenAiLogo rotate width="3em" height="3em" />
             </div>
-          }
+          )}
         >
           <App />
         </React.Suspense>

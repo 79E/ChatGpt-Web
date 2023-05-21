@@ -66,7 +66,7 @@ function ChatMessage({
   }
 
   function highlightBlock(str: string, lang: string, code: string) {
-    return `<pre class="code-block-wrapper"><div class="code-block-header"><span class="code-block-header__lang">${lang}</span><span class="code-block-header__copy" onclick="copyTextToClipboard('${code}')">复制代码</span></div><code class="hljs code-block-body ${lang}">${str}</code></pre>`
+    return `<pre class="code-block-wrapper"><div class="code-block-header"><span class="code-block-header__lang">${lang}</span><span class="code-block-header__copy">复制代码</span></div><code class="hljs code-block-body ${lang}">${str}</code></pre>`
   }
 
   const mdi = new MarkdownIt({
@@ -131,7 +131,7 @@ function ChatMessage({
       {position === 'left' &&
         chatAvatar({
           style: { marginRight: 8 },
-          icon: 'https://cdn.jsdelivr.net/gh/duogongneng/testuitc/svg-1681898659579.svg'
+          icon: 'https://u1.dl0.cn/icon/openailogo.svg'
         })}
       <div className={styles.chatMessage_content}>
         <span
@@ -164,7 +164,7 @@ function ChatMessage({
       {position === 'right' &&
         chatAvatar({
           style: { marginLeft: 8 },
-          icon: 'https://cdn.jsdelivr.net/gh/duogongneng/testuitc/1682426702646avatarf3db669b024fad66-1930929abe2847093.png'
+          icon: 'https://u1.dl0.cn/icon/1682426702646avatarf3db669b024fad66-1930929abe2847093.png'
         })}
     </div>
   )

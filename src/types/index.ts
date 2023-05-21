@@ -3,18 +3,21 @@ export interface RequestLoginParams {
   code: string | number
 }
 
-export interface UserDetail {
+export interface UserInfo {
   account: string
   nickname: string
   avatar: string
+  role: string
   status: number
   ip: string
   created_at: string
   integral: number
+  subscribe: string
+  is_signin: number
 }
 
 export interface ResponseLoginData {
-  user_detail: UserDetail
+  user_info: UserInfo
   token?: string
 }
 
@@ -32,7 +35,7 @@ export interface ChatGptConfig {
   // 惩罚频率 -2 - 2
   frequency_penalty?: number
   // 携带历史消息数
-  limit_message: number
+  limit_message?: number
   // 单次回复限制
   max_tokens?: number
 }
@@ -44,7 +47,7 @@ export interface PromptInfo {
 
 export interface RequestChatOptions {
   prompt: string
-  options?: Omit<ChatGptConfig, 'api' | 'api_key' | 'limit_message'>
+  options?: Omit<ChatGptConfig, 'api' | 'api_key'>
   parentMessageId?: string
 }
 
@@ -68,9 +71,8 @@ export interface RequestOpenChatOptions {
 
 export interface ChatsInfo {
   path: string
-  id: number | string
+  id: string
   name: string
-  parentMessageId?: string
   data: Array<ChatGpt>
 }
 
@@ -80,7 +82,6 @@ export interface ChatResultInfo {
   text: string
   dateTime: string
   segment: string
-  parentMessageId: string
 }
 
 // 对话记录
@@ -121,6 +122,21 @@ export interface RequesPrepay {
 export interface ProductInfo {
   id: number
   title: string
-  amount: string
+  price: number
+  original_price: number
+  badge: string
+  day: number
   integral: number
+  status: number
+  create_time: string
+  update_time: string
+}
+
+export interface TurnoverInfo {
+  id: string
+  user_id: string
+  value: string
+  describe: string
+  create_time: string
+  update_time: string
 }

@@ -4,10 +4,10 @@ import { is } from '@/utils'
 import { FolderAddOutlined, LinkOutlined } from '@ant-design/icons'
 import { Input, message } from 'antd'
 import { useState } from 'react'
-import useStore from '@/store'
+import { promptStore } from '@/store'
 
 function RoleNetwork() {
-  const { addPrompts } = useStore()
+  const { addPrompts } = promptStore()
 
   //   const emoji = () => {
   // return Object.keys(emojis)[Math.floor(Math.random() * Object.keys(emojis).length)];

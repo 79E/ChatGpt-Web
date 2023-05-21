@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import useStore from '@/store'
+import { promptStore } from '@/store'
 import { paginate } from '@/utils'
 import { Button, Empty, Form, Input, Pagination, Space, message } from 'antd'
 import styles from './index.module.less'
@@ -8,7 +8,7 @@ import { DeleteOutlined, FormOutlined } from '@ant-design/icons'
 import { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-components'
 
 function RoleLocal() {
-  const { localPrompt, clearPrompts, addPrompts, delPrompt, editPrompt } = useStore()
+  const { localPrompt, clearPrompts, addPrompts, delPrompt, editPrompt } = promptStore()
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(9)
   const [keyword, setKeyword] = useState('')

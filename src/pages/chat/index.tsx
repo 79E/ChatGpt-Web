@@ -3,22 +3,15 @@ import { Button, Modal, Popconfirm, Space, Tabs, Select, message } from 'antd'
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 
 import styles from './index.module.less'
-import useStore from '@/store'
+import { chatStore, configStore, userStore } from '@/store'
 import RoleNetwork from './components/RoleNetwork'
 import RoleLocal from './components/RoleLocal'
 import AllInput from './components/AllInput'
 import ChatMessage from './components/ChatMessage'
 import { RequestChatOptions } from '@/types'
-import { postChatCompletions, postCompletions } from '@/request/api'
+import { postChatCompletions } from '@/request/api'
 import Reminder from '@/components/Reminder'
-import {
-  filterObjectNull,
-  formatTime,
-  generateUUID,
-  getAiKey,
-  handleChatData,
-  handleOpenChatData
-} from '@/utils'
+import { filterObjectNull, formatTime, generateUUID, handleChatData } from '@/utils'
 import { useScroll } from '@/hooks/useScroll'
 import useDocumentResize from '@/hooks/useDocumentResize'
 import Layout from '@/components/Layout'
@@ -26,13 +19,9 @@ import Layout from '@/components/Layout'
 function ChatPage() {
   const scrollRef = useRef<HTMLDivElement>(null)
   const { scrollToBottomIfAtBottom, scrollToBottom } = useScroll(scrollRef.current)
-
+  const { token, setLoginModal } = userStore()
+  const { config, models, changeConfig, setConfigModal } = configStore()
   const {
-    models,
-    token,
-    config,
-    changeConfig,
-    setConfigModal,
     chats,
     addChat,
     delChat,
@@ -42,11 +31,8 @@ function ChatPage() {
     setChatInfo,
     setChatDataInfo,
     clearChatMessage,
-    delChatMessage,
-    setLoginModal
-  } = useStore()
-
-  const isProxy = import.meta.env.VITE_APP_MODE !== 'business'
+    delChatMessage
+  } = chatStore()
 
   const bodyResize = useDocumentResize()
 
@@ -100,13 +86,15 @@ function ChatPage() {
   async function serverChatCompletions({
     requestOptions,
     signal,
-    userMessageId
+    userMessageId,
+    assistantMessageId
   }: {
     userMessageId: string
     signal: AbortSignal
     requestOptions: RequestChatOptions
+    assistantMessageId: string
   }) {
-    const response = await postCompletions(requestOptions, {
+    const response = await postChatCompletions(requestOptions, {
       options: {
         signal
       }
@@ -118,20 +106,26 @@ function ChatPage() {
         // 终止： AbortError
         console.log(error.name)
       })
+
     if (!(response instanceof Response)) {
       // 这里返回是错误 ...
       setChatDataInfo(selectChatId, userMessageId, {
         status: 'error'
       })
+      setChatDataInfo(selectChatId, assistantMessageId, {
+        status: 'error'
+      })
+      fetchController?.abort()
       setFetchController(null)
       message.error('请求失败')
       return
     }
     const reader = response.body?.getReader?.()
-    let alltext = ''
+    let allContent = ''
     while (true) {
       const { done, value } = (await reader?.read()) || {}
       if (done) {
+        fetchController?.abort()
         setFetchController(null)
         break
       }
@@ -139,15 +133,15 @@ function ChatPage() {
       const text = new TextDecoder('utf-8').decode(value)
       const texts = handleChatData(text)
       for (let i = 0; i < texts.length; i++) {
-        const { id, dateTime, parentMessageId, role, text, segment } = texts[i]
-        alltext += text ? text : ''
+        const { dateTime, role, content, segment } = texts[i]
+        allContent += content ? content : ''
         if (segment === 'stop') {
           setFetchController(null)
           setChatDataInfo(selectChatId, userMessageId, {
             status: 'pass'
           })
-          setChatDataInfo(selectChatId, id, {
-            text: alltext,
+          setChatDataInfo(selectChatId, assistantMessageId, {
+            text: allContent,
             dateTime,
             status: 'pass'
           })
@@ -158,130 +152,19 @@ function ChatPage() {
           setChatDataInfo(selectChatId, userMessageId, {
             status: 'pass'
           })
-          setChatInfo(
-            selectChatId,
-            {
-              parentMessageId
-            },
-            {
-              id,
-              text: alltext,
-              dateTime,
-              status: 'loading',
-              role,
-              requestOptions
-            }
-          )
-        }
-        if (segment === 'text') {
-          setChatDataInfo(selectChatId, id, {
-            text: alltext,
+          setChatDataInfo(selectChatId, assistantMessageId, {
+            text: allContent,
             dateTime,
-            status: 'pass'
-          })
-        }
-      }
-      scrollToBottomIfAtBottom()
-    }
-  }
-
-  // 三方代码请求处理
-  async function openChatCompletions({
-    requestOptions,
-    signal,
-    userMessageId
-  }: {
-    userMessageId: string
-    signal: AbortSignal
-    requestOptions: RequestChatOptions
-  }) {
-    const sendMessages: Array<{ role: string; content: string }> = [
-      { role: 'user', content: requestOptions.prompt }
-    ]
-    if (config.limit_message > 0) {
-      const limitMessage = chatMessages.slice(-config.limit_message)
-      if (limitMessage.length) {
-        const list = limitMessage.map((item: any) => ({ role: item.role, content: item.text }))
-        sendMessages.unshift(...list)
-      }
-    }
-    const systemConfig = getAiKey(config)
-    const response = await postChatCompletions(
-      systemConfig.api,
-      {
-        model: config.model,
-        messages: sendMessages,
-        ...requestOptions.options
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${systemConfig.api_key}`
-        },
-        options: {
-          signal
-        }
-      }
-    )
-    if (!(response instanceof Response)) {
-      setChatDataInfo(selectChatId, userMessageId, {
-        status: 'error'
-      })
-      setFetchController(null)
-      message.error('请求失败')
-      return
-    }
-    const reader = response.body?.getReader?.()
-    let alltext = ''
-    while (true) {
-      const { done, value } = (await reader?.read()) || {}
-      if (done) {
-        setFetchController(null)
-        break
-      }
-      const text = new TextDecoder('utf-8').decode(value)
-      const texts = handleOpenChatData(text)
-      for (let i = 0; i < texts.length; i++) {
-        const { id, dateTime, parentMessageId, role, text, segment } = texts[i]
-        alltext += text ? text : ''
-        if (segment === 'start') {
-          setChatDataInfo(selectChatId, userMessageId, {
-            status: 'pass'
-          })
-          setChatInfo(
-            selectChatId,
-            {
-              parentMessageId
-            },
-            {
-              id,
-              text: alltext,
-              dateTime,
-              status: 'loading',
-              role,
-              requestOptions
-            }
-          )
-        }
-        if (segment === 'text') {
-          setChatDataInfo(selectChatId, id, {
-            text: alltext,
-            dateTime,
-            status: 'pass',
+            status: 'loading',
             role,
             requestOptions
           })
         }
-        if (segment === 'stop') {
-          setFetchController(null)
-          setChatDataInfo(selectChatId, userMessageId, {
-            status: 'pass'
-          })
-          setChatDataInfo(selectChatId, id, {
-            text: alltext,
+        if (segment === 'text') {
+          setChatDataInfo(selectChatId, assistantMessageId, {
+            text: allContent,
             dateTime,
-            status: 'pass',
-            role,
-            requestOptions
+            status: 'pass'
           })
         }
       }
@@ -293,11 +176,11 @@ function ChatPage() {
 
   // 对话
   async function sendChatCompletions(vaule: string) {
-    if (!token && !isProxy) {
+    if (!token) {
       setLoginModal(true)
       return
     }
-    const parentMessageId = chats.filter((c) => c.id === selectChatId)[0].parentMessageId
+    const parentMessageId = chats.filter((c) => c.id === selectChatId)[0].id
     const userMessageId = generateUUID()
     const requestOptions = {
       prompt: vaule,
@@ -309,40 +192,32 @@ function ChatPage() {
         limit_message: null
       })
     }
-    setChatInfo(
-      selectChatId,
-      {},
-      {
-        id: userMessageId,
-        text: vaule,
-        dateTime: formatTime(),
-        status: 'pass',
-        role: 'user',
-        requestOptions
-      }
-    )
+    setChatInfo(selectChatId, {
+      id: userMessageId,
+      text: vaule,
+      dateTime: formatTime(),
+      status: 'pass',
+      role: 'user',
+      requestOptions
+    })
+    const assistantMessageId = generateUUID()
+    setChatInfo(selectChatId, {
+      id: assistantMessageId,
+      text: '',
+      dateTime: formatTime(),
+      status: 'loading',
+      role: 'assistant',
+      requestOptions
+    })
     const controller = new AbortController()
     const signal = controller.signal
     setFetchController(controller)
-    const systemConfig = getAiKey(config)
-    console.log('systemConfig', systemConfig)
-    if (token) {
-      serverChatCompletions({
-        requestOptions,
-        signal,
-        userMessageId
-      })
-    } else if (isProxy && systemConfig.api && systemConfig.api_key) {
-      // 这里是 openai 公共
-      openChatCompletions({
-        requestOptions,
-        signal,
-        userMessageId
-      })
-    } else {
-      message.error('配置数据错误')
-      controller.abort()
-    }
+    serverChatCompletions({
+      requestOptions,
+      signal,
+      userMessageId,
+      assistantMessageId
+    })
   }
 
   return (

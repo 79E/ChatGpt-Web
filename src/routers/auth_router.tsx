@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import routes, { searchRouteDetail } from './index'
-import useStore from '@/store'
+import { adminRouter, searchRouteDetail, webRouter } from './index'
+import { userStore } from '@/store'
 
 type AuthRouterProps = {
   children?: React.ReactNode
@@ -10,21 +10,26 @@ type AuthRouterProps = {
 function AuthRouter(props: AuthRouterProps) {
   const navigate = useNavigate()
   const location = useLocation()
-  const { token } = useStore()
+  const { token, user_info } = userStore()
   const { pathname } = location
 
-  const routerDetail = searchRouteDetail(pathname, routes)
+  const routerDetail = searchRouteDetail(pathname, [...webRouter, ...adminRouter])
   const title = routerDetail?.configure?.title
   useEffect(() => {
     if (title) {
       document.title = title
     }
-    if (routerDetail?.configure?.verifToken && !token) {
-      navigate('/', {
+    const userRole = user_info?.role || 'no-role';
+    if ((routerDetail?.configure?.verifToken && !token)) {
+      navigate('/')
+      navigate('/login', {
         state: {
-          form: routerDetail.path
+          form: routerDetail?.path
         }
       })
+    } else if(token && !(routerDetail?.configure?.role.includes(userRole))){
+      navigate('/')
+      navigate('/404')
     }
   }, [pathname, routerDetail])
 
