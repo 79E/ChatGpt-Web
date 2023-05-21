@@ -83,7 +83,7 @@ function ChatMessage({
   })
 
   mdi.use(mila, { attrs: { target: '_blank', rel: 'noopener' } })
-  mdi.use(mdKatex, { blockClass: 'katex-block', errorColor: ' #cc0000' })
+  mdi.use(mdKatex, { blockClass: 'katex-block', errorColor: ' #cc0000', output: 'mathml' })
 
   const text = useMemo(() => {
     const value = content || ''
