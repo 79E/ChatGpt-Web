@@ -187,9 +187,6 @@ function ChatPage() {
       parentMessageId,
       options: filterObjectNull({
         ...config,
-        api: null,
-        api_key: null,
-        limit_message: null
       })
     }
     setChatInfo(selectChatId, {

@@ -57,10 +57,10 @@ const configStore = create<ConfigState>()(
         temperature: 0,
         presence_penalty: 0,
         frequency_penalty: 0,
-        limit_message: 4,
+        // limit_message: 4,
         max_tokens: 2000,
-        api: 'https://api.openai.com',
-        api_key: '',
+        // api: 'https://api.openai.com',
+        // api_key: '',
       },
       setConfigModal: (value) => set({ configModal: value }),
       changeConfig: (config) =>

@@ -23,9 +23,9 @@ export interface ResponseLoginData {
 
 export interface ChatGptConfig {
   // api
-  api: string
+  // api: string
   // api-key
-  api_key?: string
+  // api_key?: string
   // 模型
   model: string
   // 输出随机性 0 - 2
@@ -35,7 +35,7 @@ export interface ChatGptConfig {
   // 惩罚频率 -2 - 2
   frequency_penalty?: number
   // 携带历史消息数
-  limit_message?: number
+  // limit_message?: number
   // 单次回复限制
   max_tokens?: number
 }
