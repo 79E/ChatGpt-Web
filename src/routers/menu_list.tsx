@@ -10,6 +10,7 @@ import {
   InsuranceFilled,
   LockFilled,
   MessageFilled,
+  MoneyCollectFilled,
   PictureOutlined,
   ReconciliationFilled,
   ScheduleFilled,
@@ -119,6 +120,11 @@ const admin = {
           path: '/admin/product',
           name: '商品列表',
           icon: <ShopFilled />
+        },
+        {
+          path: '/admin/payment',
+          name: '支付配置',
+          icon: <MoneyCollectFilled />
         },
         {
           path: '/admin/order',

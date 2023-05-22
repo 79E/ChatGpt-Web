@@ -19,15 +19,15 @@ function AuthRouter(props: AuthRouterProps) {
     if (title) {
       document.title = title
     }
-    const userRole = user_info?.role || 'no-role';
-    if ((routerDetail?.configure?.verifToken && !token)) {
+    const userRole = user_info?.role || 'user'
+    if (routerDetail?.configure?.verifToken && !token) {
       navigate('/')
       navigate('/login', {
         state: {
           form: routerDetail?.path
         }
       })
-    } else if(token && !(routerDetail?.configure?.role.includes(userRole))){
+    } else if (token && !routerDetail?.configure?.role.includes(userRole)) {
       navigate('/')
       navigate('/404')
     }

@@ -1,4 +1,3 @@
-
 import React from 'react'
 import type { RouteObject } from 'react-router-dom'
 
@@ -30,6 +29,8 @@ import AdminMessagePage from '@/pages/admin/message'
 import AdminProductPage from '@/pages/admin/product'
 import AdminTokenPage from '@/pages/admin/token'
 import AdminConfigPage from '@/pages/admin/config'
+import AdminPaymentPage from '@/pages/admin/payment'
+import AdminOrderPage from '@/pages/admin/order'
 
 export const webRouter: RouteOptions[] = [
   {
@@ -101,7 +102,7 @@ export const webRouter: RouteOptions[] = [
       verifToken: false,
       role: ['user', 'administrator']
     }
-  },
+  }
 ]
 
 export const adminRouter: RouteOptions[] = [
@@ -177,12 +178,34 @@ export const adminRouter: RouteOptions[] = [
         }
       },
       {
+        id: 'AdminPaymentPage',
+        path: '/admin/payment',
+        element: <AdminPaymentPage />,
+        index: false,
+        configure: {
+          title: '支付配置',
+          verifToken: true,
+          role: ['administrator']
+        }
+      },
+      {
         id: 'AdminTokenPage',
         path: '/admin/token',
         element: <AdminTokenPage />,
         index: false,
         configure: {
           title: 'Toekn管理',
+          verifToken: true,
+          role: ['administrator']
+        }
+      },
+      {
+        id: 'AdminOrderPage',
+        path: '/admin/order',
+        element: <AdminOrderPage />,
+        index: false,
+        configure: {
+          title: '订单管理',
           verifToken: true,
           role: ['administrator']
         }

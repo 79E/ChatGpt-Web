@@ -186,7 +186,7 @@ function ChatPage() {
       prompt: vaule,
       parentMessageId,
       options: filterObjectNull({
-        ...config,
+        ...config
       })
     }
     setChatInfo(selectChatId, {

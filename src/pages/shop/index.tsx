@@ -7,7 +7,7 @@ import { Button, Input, Modal, Pagination, QRCode, Space, Table, message } from 
 import GoodsList from '@/components/GoodsList'
 import { CloseCircleFilled, SyncOutlined } from '@ant-design/icons'
 import { shopAsync, userAsync } from '@/store/async'
-import { getUserTurnover, postPrepay, postUseCarmi, postSignin } from '@/request/api'
+import { getUserTurnover, postPayPrecreate, postUseCarmi, postSignin } from '@/request/api'
 import { ProductInfo, TurnoverInfo } from '@/types'
 import OpenAiLogo from '@/components/OpenAiLogo'
 import { Link } from 'react-router-dom'
@@ -33,15 +33,14 @@ function GoodsPay() {
   const [payModal, setPayModal] = useState<{
     open: boolean
     status: 'loading' | 'fail' | 'pay'
-    order_sn?: string
-    payurl?: string
-    qrcode?: string
+    order_id?: string
+    pay_url?: string
+    pay_key?: string
   }>({
     open: false,
     status: 'loading',
-    order_sn: '',
-    payurl: '',
-    qrcode: ''
+    order_id: '',
+    pay_url: '',
   })
 
   useEffect(() => {
@@ -66,25 +65,16 @@ function GoodsPay() {
 
   async function onPay(item: ProductInfo) {
     setPayModal((p) => ({ ...p, open: true }))
-    const payres = await postPrepay({
+    const payres = await postPayPrecreate({
       pay_type: 'alipay',
       product_id: item.id,
-      num: 1
+      quantity: 1
     })
-
     if (payres.code) {
       setPayModal((p) => ({ ...p, status: 'fail' }))
       return
     }
-    const { order_sn, payurl, qrcode } = payres.data
     setPayModal((p) => ({ ...p, status: 'pay', ...payres.data }))
-    if (order_sn && payurl && !qrcode) {
-      const link = document.createElement('a')
-      link.target = '_blank'
-      link.href = payurl
-      link.click()
-      link.remove()
-    }
   }
 
   function onPayResult() {
@@ -264,10 +254,10 @@ function GoodsPay() {
                 />
               )}
 
-              {payModal.payurl && payModal.status === 'pay' && (
-                <Link to={payModal.payurl} target="_blank">
+              {payModal.pay_url && payModal.status === 'pay' && (
+                <Link to={payModal.pay_url} target="_blank">
                   <QRCode
-                    value={payModal.payurl}
+                    value={payModal.pay_url}
                     color="#1677ff"
                     style={{
                       margin: 16
@@ -281,8 +271,7 @@ function GoodsPay() {
                 <p>正在创建订单中...</p>
               ) : (
                 <p style={{ textAlign: 'center' }}>
-                  如未跳转可截图支付宝扫码支付
-                  <br /> 或点击二维码再次跳转
+                  使用支付宝扫码支付
                 </p>
               )}
               <Space>

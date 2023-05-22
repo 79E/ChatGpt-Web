@@ -65,13 +65,14 @@ export function getUserTurnover(params: { page: number; pageSize: number }) {
   return request.get<{ count: number; rows: Array<TurnoverInfo> }>('/api/turnover', params)
 }
 
-// (❌)提交订单
-export function postPrepay(params: RequesPrepay) {
+// 提交订单
+export function postPayPrecreate(params: RequesPrepay) {
   return request.post<{
-    order_sn: string
-    payurl: string
-    qrcode: string
-  }>('/prepay', params)
+    order_id: string
+    pay_url: string
+    pay_key: string
+    qrcode?: string
+  }>('/api/pay/precreate', params)
 }
 
 // 卡密充值

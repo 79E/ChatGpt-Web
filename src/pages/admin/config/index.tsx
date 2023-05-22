@@ -131,7 +131,7 @@ function ConfigPage() {
                         <ProFormDigit
                             name="history_message_count"
                             label="携带数量"
-                            tooltip="对话时携带历史聊天记录数量"
+                            tooltip="新用户注册赠送积分数量"
                             min={1}
                             max={100000}
                         />

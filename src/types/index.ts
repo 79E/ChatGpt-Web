@@ -116,7 +116,7 @@ export interface SubscriptionInfo {
 export interface RequesPrepay {
   pay_type: 'alipay' | 'wxpay'
   product_id: number
-  num: number
+  quantity: number
 }
 
 export interface ProductInfo {

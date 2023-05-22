@@ -5,14 +5,14 @@ import { userStore } from '@/store'
 
 function App() {
   const { user_info } = userStore()
-  
-  const routers: Array<any> = useMemo(()=>{
+
+  const routers: Array<any> = useMemo(() => {
     let routerList = [...webRouter]
-    if(user_info?.role === 'administrator'){
+    if (user_info?.role === 'administrator') {
       routerList = [...routerList, ...adminRouter]
     }
     return routerList
-  },[user_info])
+  }, [user_info])
 
   const routesElement = useRoutes([...routers])
   return routesElement

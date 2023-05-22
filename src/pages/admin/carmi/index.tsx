@@ -5,7 +5,7 @@ import {
 import { ProTable } from '@ant-design/pro-components'
 import { Tag, message, Button, Modal, Radio, DatePicker, InputNumber, Space, Spin, Input } from 'antd'
 import { useRef, useState } from 'react'
-import { delAdminCarmi, getAdminCarmi, addAdminCarmis } from '@/request/adminApi'
+import { delAdminCarmi, getAdminCarmi, addAdminCarmis, getAdminCarmiCheck } from '@/request/adminApi'
 import { CarmiInfo } from '@/types/admin'
 import { formatTime } from '@/utils'
 import styles from './index.module.less'
@@ -127,7 +127,19 @@ function CarmiPage() {
         toolbar={{
           actions: [
             <Button
-              key="primary"
+              key="check"
+              type="primary"
+              size="small"
+              onClick={() => {
+                getAdminCarmiCheck().then(()=>{
+                  message.success('提交成功,请稍后查看')
+                })
+              }}
+            >
+              异步检查卡密
+            </Button>,
+            <Button
+              key="produce"
               type="primary"
               size="small"
               onClick={() => {
@@ -182,7 +194,7 @@ function CarmiPage() {
                 min={1}
                 max={99999}
                 onChange={(e) => {
-                  if(e){
+                  if (e) {
                     setGenerateModal(g => ({ ...g, reward: e }))
                   }
                 }}
@@ -211,21 +223,21 @@ function CarmiPage() {
             </div>
           </Space>
           <div className={styles.formCard}>
-              <p className={styles.formCard_title}>生成数量</p>
-              <InputNumber
-                style={{
-                  width:'100%'
-                }}
-                size="large"
-                min={1}
-                max={50}
-                onChange={(e) => {
-                  if(e){
-                    setGenerateModal(g => ({ ...g, quantity: e }))
-                  }
-                }}
-                value={generateModal.quantity}
-              />
+            <p className={styles.formCard_title}>生成数量</p>
+            <InputNumber
+              style={{
+                width: '100%'
+              }}
+              size="large"
+              min={1}
+              max={50}
+              onChange={(e) => {
+                if (e) {
+                  setGenerateModal(g => ({ ...g, quantity: e }))
+                }
+              }}
+              value={generateModal.quantity}
+            />
           </div>
           <div className={styles.generate}
             style={{
@@ -257,13 +269,13 @@ function CarmiPage() {
                 end_time: generateModal.end_time,
                 quantity: generateModal.quantity,
                 reward: generateModal.reward
-              }).then((res)=>{
-                if(res.code) return;
+              }).then((res) => {
+                if (res.code) return;
                 const keys = res.data.map(info => `${info.key}`).join('\n')
                 setGenerateModal(g => ({ ...g, loading: false, result: keys }))
                 tableActionRef.current?.reloadAndRest?.()
-              }).finally(()=>{
-                setGenerateModal(g => ({ ...g, loading: false}))
+              }).finally(() => {
+                setGenerateModal(g => ({ ...g, loading: false }))
               })
             }}
             type="primary"
