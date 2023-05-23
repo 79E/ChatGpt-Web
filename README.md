@@ -34,7 +34,7 @@ If you need help, please submit [Issues](https://github.com/79E/ChatGPT-Web/issu
 ![cover](https://files.catbox.moe/k16jsz.png)
 ![cover](https://files.catbox.moe/8o5oja.png)
 
-![赞赏](https://files.catbox.moe/o0znrg.JPG)
+![赞赏](https://files.catbox.moe/wgi8v5.png)
 
 ## 🤖 Major Function
 
