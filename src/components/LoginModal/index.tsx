@@ -96,7 +96,7 @@ export function LoginCard(props: {
         ]}
         onGetCaptcha={async () => {
           const account = props.form.getFieldValue('account')
-		  if (!account || !/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(account)) {
+          if (!account || !/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(account)) {
             props.form.setFields([
               {
                 name: 'account',
