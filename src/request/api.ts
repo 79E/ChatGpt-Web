@@ -11,6 +11,7 @@ import {
 } from '@/types'
 import request from '.'
 import { formatTime } from '@/utils'
+import { TableData } from '@/types/admin'
 
 // 获取验证码
 export function getCode(params: { source: string }) {
@@ -54,9 +55,9 @@ export function postImagesGenerations(
 
 // 获取商品列表
 export function getProduct() {
-  return request.get<{
-    count: number
-    rows: Array<ProductInfo>
+  return request.get< {
+	products: Array<ProductInfo>,
+	pay_types: Array<string>
   }>('/api/product')
 }
 

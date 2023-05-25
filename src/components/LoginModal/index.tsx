@@ -4,7 +4,7 @@ import { RequestLoginParams } from '@/types'
 import {
   HeartFilled,
   LockOutlined,
-  MobileOutlined,
+  MailOutlined,
   RedditCircleFilled,
   SlackCircleFilled,
   TwitterCircleFilled
@@ -60,7 +60,7 @@ export function LoginCard(props: {
       <ProFormText
         fieldProps={{
           size: 'large',
-          prefix: <MobileOutlined />
+          prefix: <MailOutlined />
         }}
         name="account"
         placeholder="邮箱"
@@ -96,6 +96,15 @@ export function LoginCard(props: {
         ]}
         onGetCaptcha={async () => {
           const account = props.form.getFieldValue('account')
+		  if (!account || !/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(account)) {
+            props.form.setFields([
+              {
+                name: 'account',
+                errors: ['请输入有效的邮箱地址']
+              }
+            ])
+            return Promise.reject()
+          }
           return new Promise((resolve, reject) =>
             getCode({ source: account })
               .then(() => resolve())

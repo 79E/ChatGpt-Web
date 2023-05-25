@@ -114,7 +114,7 @@ export interface SubscriptionInfo {
 }
 
 export interface RequesPrepay {
-  pay_type: 'alipay' | 'wxpay'
+  pay_type: 'alipay' | 'wxpay' | 'qqpay' | string
   product_id: number
   quantity: number
 }
@@ -139,4 +139,11 @@ export interface TurnoverInfo {
   describe: string
   create_time: string
   update_time: string
+}
+
+
+export interface PayTypeInfo {
+	icon: string,
+	key: string,
+	title: string
 }

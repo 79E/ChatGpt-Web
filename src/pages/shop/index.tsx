@@ -3,7 +3,7 @@ import UserInfoCard from '@/components/UserInfoCard'
 import styles from './index.module.less'
 import Layout from '@/components/Layout'
 import { shopStore, userStore } from '@/store'
-import { Button, Input, Modal, Pagination, QRCode, Space, Table, message } from 'antd'
+import { Button, Input, Modal, Pagination, QRCode, Radio, Space, Table, message } from 'antd'
 import GoodsList from '@/components/GoodsList'
 import { CloseCircleFilled, SyncOutlined } from '@ant-design/icons'
 import { shopAsync, userAsync } from '@/store/async'
@@ -13,8 +13,35 @@ import OpenAiLogo from '@/components/OpenAiLogo'
 import { Link } from 'react-router-dom'
 
 function GoodsPay() {
-  const { goodsList } = shopStore()
+  const { goodsList, payTypes } = shopStore()
   const { token, user_info } = userStore()
+
+  const [goods, setGoods] = useState<ProductInfo>()
+  const [payType, setPayType] = useState('')
+
+  const payInfo: {
+    [key: string]: {
+      icon: string
+      message: string
+      color: string
+    }
+  } = {
+    wxpay: {
+      icon: 'https://files.catbox.moe/b1joiq.png',
+      message: '请使用微信扫码支付',
+      color: '#24aa39'
+    },
+    alipay: {
+      icon: 'https://files.catbox.moe/a8x6il.png',
+      message: '请使用支付宝扫码支付',
+      color: '#1678ff'
+    },
+    qqpay: {
+      icon: 'https://files.catbox.moe/rimuzz.png',
+      message: '请使用QQ扫码支付',
+      color: '#10b8f6'
+    }
+  }
 
   const [turnover, setTurnover] = useState<{
     page: number
@@ -38,9 +65,9 @@ function GoodsPay() {
     pay_key?: string
   }>({
     open: false,
-    status: 'loading',
+    status: 'pay',
     order_id: '',
-    pay_url: '',
+    pay_url: 'sdsgsdgsdg'
   })
 
   useEffect(() => {
@@ -63,10 +90,10 @@ function GoodsPay() {
       })
   }
 
-  async function onPay(item: ProductInfo) {
+  async function onPay(item: ProductInfo, pay_type: string) {
     setPayModal((p) => ({ ...p, open: true }))
     const payres = await postPayPrecreate({
-      pay_type: 'alipay',
+      pay_type,
       product_id: item.id,
       quantity: 1
     })
@@ -171,7 +198,54 @@ function GoodsPay() {
             {goodsList.length > 0 && (
               <div className={styles.goodsPay_card}>
                 <h4>在线充值</h4>
-                <GoodsList list={goodsList} onClick={onPay} />
+                <GoodsList
+                  list={goodsList}
+                  onChange={(item) => {
+                    setGoods(item)
+                  }}
+                />
+                <div className={styles.goodsPay_pay}>
+                  <Radio.Group
+                    onChange={(e) => {
+                      setPayType(e.target.value)
+                    }}
+                  >
+                    <Space size="middle" wrap>
+                      {payTypes.map((type) => {
+                        return (
+                          <div
+                            key={type.key}
+                            className={styles.goodsPay_pay_type}
+                            style={{
+                              borderColor: type.key === payType ? '#1677ff' : '#999'
+                            }}
+                          >
+                            <Radio value={type.key}>
+                              <img src={type.icon} alt={type.title} />
+                            </Radio>
+                          </div>
+                        )
+                      })}
+                    </Space>
+                  </Radio.Group>
+                  <Button
+                    size="large"
+                    style={{
+                      marginLeft: 'auto'
+                    }}
+                    type="primary"
+                    disabled={!(goods?.id && payType)}
+                    onClick={() => {
+                      if (goods && goods.id && payType) {
+                        onPay(goods, payType)
+                      } else {
+                        message.warning('请选择商品和支付方式')
+                      }
+                    }}
+                  >
+                    立即充值
+                  </Button>
+                </div>
               </div>
             )}
             <div className={styles.goodsPay_card}>
@@ -244,54 +318,63 @@ function GoodsPay() {
             <div className={styles.payModal}>
               {payModal.status === 'fail' && <CloseCircleFilled className={styles.payModal_icon} />}
               {payModal.status === 'loading' && <OpenAiLogo rotate width="3em" height="3em" />}
-
-              {payModal.status === 'pay' && (
+              {payModal.status === 'pay' && payType && (
                 <img
-                  width="50px"
-                  src="https://pic.616pic.com/ys_img/00/03/78/04RotuWM2Y.jpg"
+                  className={styles.payModal_paylogo}
+                  src={payInfo[payType].icon}
                   alt=""
                   srcSet=""
                 />
               )}
 
-              {payModal.pay_url && payModal.status === 'pay' && (
+              {payModal.status === 'pay' && payModal.pay_url && payType && (
                 <Link to={payModal.pay_url} target="_blank">
                   <QRCode
                     value={payModal.pay_url}
-                    color="#1677ff"
+                    color={payInfo[payType].color}
                     style={{
-                      margin: 16
+                      marginTop: 16
                     }}
                   />
                 </Link>
               )}
-              {payModal.status === 'fail' ? (
-                <p>支付失败，请重新尝试</p>
-              ) : payModal.status === 'loading' ? (
-                <p>正在创建订单中...</p>
-              ) : (
-                <p style={{ textAlign: 'center' }}>
-                  使用支付宝扫码支付
-                </p>
-              )}
-              <Space>
-                <Button
-                  danger
-                  onClick={() => {
-                    onPayResult()
-                  }}
-                >
-                  取消支付
-                </Button>
-                <Button
-                  type="primary"
-                  onClick={() => {
-                    onPayResult()
-                  }}
-                >
-                  支付完成了
-                </Button>
-              </Space>
+
+              <div className={styles.payModal_message}>
+                {payModal.status === 'fail' ? (
+                  <p>创建订单失败，请重新尝试</p>
+                ) : payModal.status === 'pay' && payInfo && goods ? (
+                  <p>
+                    <span>{(goods?.price / 100).toFixed(2)}元</span>
+                    <br />
+                    {payInfo[payType].message}
+                  </p>
+                ) : (
+                  <p>正在创建订单中...</p>
+                )}
+              </div>
+
+              <div className={styles.payModal_button}>
+                {payModal.status === 'pay' && (
+                  <Space>
+                    <Button
+                      danger
+                      onClick={() => {
+                        onPayResult()
+                      }}
+                    >
+                      取消支付
+                    </Button>
+                    <Button
+                      type="primary"
+                      onClick={() => {
+                        onPayResult()
+                      }}
+                    >
+                      支付完成了
+                    </Button>
+                  </Space>
+                )}
+              </div>
             </div>
           </Modal>
         </div>

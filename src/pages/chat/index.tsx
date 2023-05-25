@@ -334,6 +334,7 @@ function ChatPage() {
                     status={item.status}
                     content={item.text}
                     time={item.dateTime}
+					model={item.requestOptions.options?.model}
                     onDelChatMessage={() => {
                       delChatMessage(selectChatId, item.id)
                     }}

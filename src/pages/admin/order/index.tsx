@@ -68,7 +68,11 @@ function OrderPage() {
                     },
                     wxpay: {
                         color: 'green',
-                        text: '微信'
+                        text: '微信支付'
+                    },
+					qqpay: {
+                        color: 'geekblue',
+                        text: 'QQ支付'
                     }
                 }
                 return <Tag color={type[data.pay_type].color}>{type[data.pay_type].text}</Tag>

@@ -15,12 +15,14 @@ function ChatMessage({
   content,
   status,
   time,
+  model,
   onDelChatMessage
 }: {
   position: 'left' | 'right'
   content?: string
   status: 'pass' | 'loading' | 'error' | string
   time: string
+  model?: string
   onDelChatMessage?: () => void
 }) {
   const copyMessageKey = 'copyMessageKey'
@@ -131,7 +133,7 @@ function ChatMessage({
       {position === 'left' &&
         chatAvatar({
           style: { marginRight: 8 },
-          icon: 'https://u1.dl0.cn/icon/openailogo.svg'
+          icon: model && model.indexOf('gpt-4') !== -1 ? 'https://files.catbox.moe/x5v8wq.png' : 'https://files.catbox.moe/lnulfa.png'
         })}
       <div className={styles.chatMessage_content}>
         <span

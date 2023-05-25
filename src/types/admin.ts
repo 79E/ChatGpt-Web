@@ -93,6 +93,7 @@ export interface TokenInfo {
   key: string
   host: string
   remarks: string
+  models: string
   limit: number
   usage: number
   status: number

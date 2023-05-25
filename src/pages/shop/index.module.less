@@ -30,6 +30,33 @@
 		width: 100%;
 		margin-top: 12px;
 	}
+
+	&_pay{
+		display: flex;
+		align-items: center;
+		margin-top: 20px;
+		&_type{
+			background-color: #fff;
+			border: 1px solid #999;
+			border-radius: 8px;
+			display: flex;
+			padding-left: 12px;
+			img{
+				margin-top: 5px;
+				width: auto;
+				height: 28px;
+			}
+
+			&:hover{
+				border-color: #1677ff;
+			}
+
+			&_select {
+				border-color: #1677ff;
+			}
+		}
+
+	}
 }
 
 .payModal{
@@ -44,7 +71,21 @@
 		color: red;
 		font-size: 44px;
 	}
-	p{
-		margin: 20px 0 32px;
+	&_paylogo{
+		height: 40px;
+	}
+	&_message{
+		text-align: center;
+		p{
+			margin-top: 20px;
+			span {
+				font-size: 22px;
+				font-weight: 500;
+				color: red;
+			}
+		}
+	}
+	&_button{
+		margin-top: 20px;
 	}
 }
