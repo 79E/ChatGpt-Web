@@ -113,7 +113,11 @@ function ChatPage() {
         status: 'error'
       })
       setChatDataInfo(selectChatId, assistantMessageId, {
-        status: 'error'
+        status: 'error',
+		text: `\`\`\`json
+${JSON.stringify(response, null, 4)}
+\`\`\`
+`
       })
       fetchController?.abort()
       setFetchController(null)
