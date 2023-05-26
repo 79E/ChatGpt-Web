@@ -4,16 +4,19 @@ export interface RequestLoginParams {
 }
 
 export interface UserInfo {
-  account: string
-  nickname: string
-  avatar: string
-  role: string
-  status: number
-  ip: string
-  created_at: string
-  integral: number
-  subscribe: string
-  is_signin: number
+	id: string;
+	account: string;
+	nickname: string;
+	avatar: string;
+	role: string;
+	integral: number;
+	vip_expire_time: string;
+	svip_expire_time: string;
+	ip: string;
+	status: number;
+	create_time: string;
+	update_time: string;
+	is_signin: number;
 }
 
 export interface ResponseLoginData {
@@ -125,9 +128,10 @@ export interface ProductInfo {
   price: number
   original_price: number
   badge: string
-  day: number
-  integral: number
+  value: number
   status: number
+  type: string
+  level: number
   create_time: string
   update_time: string
 }

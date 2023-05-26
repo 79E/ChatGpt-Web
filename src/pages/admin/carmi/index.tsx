@@ -20,6 +20,7 @@ function CarmiPage() {
     quantity: 1,
     reward: 10,
     loading: false,
+    level: 1,
     result: ''
   })
 
@@ -55,6 +56,19 @@ function CarmiPage() {
             {data.status === 1 ? '已使用' : data.status === 2 ? '已过期' : '未使用'}
           </Tag>
         )
+      }
+    },
+    {
+      title: '级别',
+      dataIndex: 'level',
+      render: (_, data) => {
+        if (data.level === 1) {
+          return <Tag color="#f50">普通会员</Tag>
+        }
+        if (data.level === 2) {
+          return <Tag color="#ce9e4f">超级会员</Tag>
+        }
+        return <Tag>暂无级别</Tag>
       }
     },
     {
@@ -167,6 +181,7 @@ function CarmiPage() {
             quantity: 1,
             loading: false,
             reward: 10,
+            level: 1,
             result: ''
           })
         }}
@@ -222,23 +237,41 @@ function CarmiPage() {
               />
             </div>
           </Space>
-          <div className={styles.formCard}>
-            <p className={styles.formCard_title}>生成数量</p>
-            <InputNumber
-              style={{
-                width: '100%'
-              }}
-              size="large"
-              min={1}
-              max={50}
-              onChange={(e) => {
-                if (e) {
-                  setGenerateModal(g => ({ ...g, quantity: e }))
-                }
-              }}
-              value={generateModal.quantity}
-            />
-          </div>
+          <Space 
+            size="large"
+          >
+            <div className={styles.formCard}>
+              <p className={styles.formCard_title}>卡密会员等级</p>
+              <Radio.Group
+                size="large"
+                onChange={(e) => {
+                  setGenerateModal(g => ({ ...g, level: e.target.value }))
+                }}
+                defaultValue={generateModal.level}
+                value={generateModal.level}
+              >
+                <Radio.Button value={1}>普通会员</Radio.Button>
+                <Radio.Button value={2}>超级会员</Radio.Button>
+              </Radio.Group>
+            </div>
+            <div className={styles.formCard}>
+              <p className={styles.formCard_title}>
+                生成数量
+              </p>
+              <InputNumber
+                style={{width:'100%'}}
+                size="large"
+                min={1}
+                max={50}
+                onChange={(e) => {
+                  if (e) {
+                    setGenerateModal(g => ({ ...g, quantity: e }))
+                  }
+                }}
+                value={generateModal.quantity}
+              />
+            </div>
+          </Space>
           <div className={styles.generate}
             style={{
               height: generateModal.result || generateModal.loading ? 120 : 0
@@ -268,7 +301,8 @@ function CarmiPage() {
                 type: generateModal.type,
                 end_time: generateModal.end_time,
                 quantity: generateModal.quantity,
-                reward: generateModal.reward
+                reward: generateModal.reward,
+                level: generateModal.level
               }).then((res) => {
                 if (res.code) return;
                 const keys = res.data.map(info => `${info.key}`).join('\n')

@@ -52,6 +52,7 @@ function PaymentPage() {
     {
       title: '可用通道',
       dataIndex: 'types',
+      width: 250,
       render: (_, data) => {
         const typesDom = data.types.split(',').map((type) => {
           return <Tag key={type}>{type}</Tag>

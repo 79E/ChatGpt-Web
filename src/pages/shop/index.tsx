@@ -339,19 +339,21 @@ function GoodsPay() {
                 </Link>
               )}
 
-              <div className={styles.payModal_message}>
-                {payModal.status === 'fail' ? (
-                  <p>创建订单失败，请重新尝试</p>
-                ) : payModal.status === 'pay' && payInfo && goods ? (
-                  <p>
-                    <span>{(goods?.price / 100).toFixed(2)}元</span>
-                    <br />
-                    {payInfo[payType].message}
-                  </p>
-                ) : (
-                  <p>正在创建订单中...</p>
-                )}
-              </div>
+              {payType && (
+                <div className={styles.payModal_message}>
+                  {payModal.status === 'fail' ? (
+                    <p>创建订单失败，请重新尝试</p>
+                  ) : payModal.status === 'pay' && payInfo && goods ? (
+                    <p>
+                      <span>{(goods?.price / 100).toFixed(2)}元</span>
+                      <br />
+                      {payInfo[payType].message}
+                    </p>
+                  ) : (
+                    <p>正在创建订单中...</p>
+                  )}
+                </div>
+              )}
 
               <div className={styles.payModal_button}>
                 {payModal.status === 'pay' && (

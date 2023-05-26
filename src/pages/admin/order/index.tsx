@@ -68,7 +68,7 @@ function OrderPage() {
                     },
                     wxpay: {
                         color: 'green',
-                        text: '微信支付'
+                        text: '微信'
                     },
 					qqpay: {
                         color: 'geekblue',

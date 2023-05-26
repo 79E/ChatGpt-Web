@@ -26,13 +26,12 @@ function GoodsList(props: { list: Array<ProductInfo>; onChange: (item: ProductIn
               setSelectItem(item)
             }}
           >
-            {item.integral ? <h3>{item.integral}积分</h3> : <h3>会员{item.day}天</h3>}
-            <div className={styles.goodsList_item_button}>
-              <p>
-                {(item.price / 100).toFixed(2)}
-                <span>元</span>
-              </p>
-            </div>
+			<p className={styles.goodsList_item_level}>{ item.level === 1 ? '会员' : item.level === 2 ? '超级会员' : '超级特惠' }</p>
+            {item.type === 'integral' ? <h3>{item.value}积分</h3> : <h3>{item.value}天</h3>}
+			<div className={styles.goodsList_item_price}>
+				<p className={styles.sales_price}>{(item.price / 100).toFixed(2)}<span>元</span></p>
+				{item.original_price && <p className={styles.original_price}>¥{(item.original_price / 100).toFixed(2)}</p>}
+			</div>
             <span className={styles.goodsList_item_tag}>{item.badge}</span>
           </div>
         )

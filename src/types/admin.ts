@@ -16,6 +16,7 @@ export interface CarmiInfo {
   value: string
   type: string
   end_time?: string
+  level: number
   status: number
   create_time: string
   update_time: string
@@ -26,6 +27,7 @@ export interface RequestAddCarmi {
   end_time: string
   quantity: number
   reward: number
+  level: number
 }
 
 export interface UserInfo {
@@ -34,7 +36,8 @@ export interface UserInfo {
   nickname: string
   avatar: string
   integral: number
-  subscribe: string
+  vip_expire_time: string
+  svip_expire_time: string
   ip: string
   status: number
   create_time: string
@@ -80,10 +83,11 @@ export interface ProductInfo {
   title: string
   price: number
   original_price: number
-  integral?: number
+  value: number
   badge: string
-  day?: number
   status: number
+  type: string
+  level: number
   create_time: string
   update_time: string
 }
