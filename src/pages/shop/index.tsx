@@ -72,14 +72,14 @@ function GoodsPay() {
 
   useEffect(() => {
     shopAsync.fetchProduct()
-    onTurnoverLog(1)
+    onTurnoverLog(turnover.page, turnover.pageSize)
   }, [])
 
-  function onTurnoverLog(page: number) {
-    setTurnover((l) => ({ ...l, page, loading: true }))
+  function onTurnoverLog(page: number, pageSize: number) {
+    setTurnover((l) => ({ ...l, page, pageSize, loading: true }))
     getUserTurnover({
       page: page,
-      pageSize: turnover.pageSize
+      page_size: pageSize
     })
       .then((res) => {
         if (res.code) return
@@ -251,7 +251,7 @@ function GoodsPay() {
             <div className={styles.goodsPay_card}>
               <h4
                 onClick={() => {
-                  onTurnoverLog(1)
+                  onTurnoverLog(1, turnover.pageSize)
                 }}
               >
                 订单记录 <SyncOutlined spin={turnover.loading} />
@@ -263,10 +263,7 @@ function GoodsPay() {
                 bordered
                 loading={turnover.loading}
                 dataSource={turnover.rows}
-                pagination={{
-                  hideOnSinglePage: true,
-                  defaultPageSize: turnover.pageSize
-                }}
+                pagination={false}
                 rowKey="id"
                 columns={[
                   {
@@ -295,9 +292,10 @@ function GoodsPay() {
                   defaultCurrent={turnover.page}
                   defaultPageSize={turnover.pageSize}
                   total={turnover.count}
-                  onChange={(e) => {
-                    onTurnoverLog(e)
+                  onChange={(current, pageSize) => {
+                    onTurnoverLog(current, pageSize)
                   }}
+                  hideOnSinglePage
                 />
               </div>
             </div>

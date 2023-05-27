@@ -62,7 +62,7 @@ export function getProduct() {
 }
 
 // 获取用户消费记录
-export function getUserTurnover(params: { page: number; pageSize: number }) {
+export function getUserTurnover(params: { page: number; page_size: number }) {
   return request.get<{ count: number; rows: Array<TurnoverInfo> }>('/api/turnover', params)
 }
 
