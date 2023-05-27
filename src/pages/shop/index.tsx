@@ -106,7 +106,7 @@ function GoodsPay() {
 
   function onPayResult() {
     // 刷新记录
-    onTurnoverLog(1)
+    onTurnoverLog(1, turnover.pageSize)
     // 刷新用户信息
     // fetchUserInfo()
     setPayModal((p) => ({ ...p, status: 'loading', open: false }))
@@ -125,7 +125,7 @@ function GoodsPay() {
         if (res.code) return
         userAsync.fetchUserInfo()
         message.success(res.message)
-        onTurnoverLog(1)
+        onTurnoverLog(1, turnover.pageSize)
       })
       .finally(() => {
         setCarmiLoading(false)
@@ -172,7 +172,7 @@ function GoodsPay() {
                       if (res.code) return
                       userAsync.fetchUserInfo()
                       message.success(res.message)
-                      onTurnoverLog(1)
+                      onTurnoverLog(1, turnover.pageSize)
                     })
                     .finally(() => {
                       setSigninLoading(false)
