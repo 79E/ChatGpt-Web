@@ -76,8 +76,15 @@ function CarmiPage() {
       dataIndex: 'end_time'
     },
     {
-      title: '使用者',
-      dataIndex: 'user_id'
+      title: '使用者账号',
+      dataIndex: 'user_id',
+      width: 200,
+      render: (_, data) => {
+        if(!data.user_id) return '-'
+        return (
+          <p>{data.user?.account}</p>
+        )
+      }
     },
     {
       title: 'IP',
@@ -145,7 +152,7 @@ function CarmiPage() {
               type="primary"
               size="small"
               onClick={() => {
-                getAdminCarmiCheck().then(()=>{
+                getAdminCarmiCheck().then(() => {
                   message.success('提交成功,请稍后查看')
                 })
               }}
@@ -237,7 +244,7 @@ function CarmiPage() {
               />
             </div>
           </Space>
-          <Space 
+          <Space
             size="large"
           >
             <div className={styles.formCard}>
@@ -259,7 +266,7 @@ function CarmiPage() {
                 生成数量
               </p>
               <InputNumber
-                style={{width:'100%'}}
+                style={{ width: '100%' }}
                 size="large"
                 min={1}
                 max={50}

@@ -18,6 +18,7 @@ export interface CarmiInfo {
   end_time?: string
   level: number
   status: number
+  user?: UserInfo
   create_time: string
   update_time: string
 }
@@ -49,6 +50,7 @@ export interface TurnoverInfo {
   user_id: string
   value: string
   describe: string
+  user?: UserInfo
   create_time: string
   update_time: string
 }
@@ -58,6 +60,7 @@ export interface SigninInfo {
   user_id: string
   ip: string
   status: number
+  user?: UserInfo
   create_time: string
   update_time: string
 }
@@ -74,6 +77,7 @@ export interface MessageInfo {
   temperature: number
   parent_message_id: string
   status: number
+  user?: UserInfo
   create_time: string
   update_time: string
 }
@@ -155,6 +159,7 @@ export interface OrderInfo {
 	notify_info?: string;
 	pay_url?: string;
 	ip: string;
+  user?: UserInfo
 	create_time: string;
 	update_time: string;
 }

@@ -111,9 +111,15 @@ function OrderPage() {
             }
         },
         {
-            title: '用户ID',
-            width: 200,
+            title: '用户账号',
+            width: 180,
             dataIndex: 'user_id',
+            render: (_, data) => {
+                if (!data.user_id) return '-'
+                return (
+                    <p>{data.user?.account}</p>
+                )
+            }
         },
         {
             title: '支付渠道',
