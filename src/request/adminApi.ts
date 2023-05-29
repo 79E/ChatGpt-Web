@@ -2,6 +2,7 @@ import {
   CarmiInfo,
   ConfigInfo,
   MessageInfo,
+  NotificationInfo,
   OrderInfo,
   Paging,
   PaymentInfo,
@@ -144,4 +145,24 @@ export function putAdminPayment(params: PaymentInfo) {
 // 获取订单列表
 export function getAdminOrders(params: Paging) {
   return request.get<TableData<Array<OrderInfo>>>('/api/admin/orders', params)
+}
+
+// 获取 Notification
+export function getAdminNotification(params: Paging) {
+  return request.get<TableData<Array<NotificationInfo>>>('/api/admin/notification', params)
+}
+
+// 删除 Notification
+export function delAdminNotification(params: { id: string | number }) {
+  return request.del(`/api/admin/notification/${params.id}`)
+}
+
+// 新增 Notification
+export function postAdminNotification(params: NotificationInfo) {
+  return request.post('/api/admin/notification', params)
+}
+
+// 编辑 Notification
+export function putAdminNotification(params: NotificationInfo) {
+  return request.put('/api/admin/notification', params)
 }

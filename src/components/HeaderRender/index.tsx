@@ -87,11 +87,11 @@ function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
               menu={{
                 items: [
                   {
-                    key: 'lijiqiandao',
+                    key: 'yonghuzhongxin',
                     icon: <UserOutlined />,
-                    label: '立即签到',
+                    label: '用户中心',
                     onClick: () => {
-                      navigate('/shop')
+                      navigate('/user')
                     }
                   },
                   {
@@ -111,7 +111,7 @@ function HeaderRender(props: HeaderViewProps, defaultDom: React.ReactNode) {
                     }
                   },
                   {
-                    key: 'logout',
+                    key: 'tuichudenglu',
                     icon: <LogoutOutlined />,
                     label: '退出登录',
                     onClick: () => {

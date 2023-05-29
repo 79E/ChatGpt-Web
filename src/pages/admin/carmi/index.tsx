@@ -1,14 +1,28 @@
-import {
-  ActionType,
-  ProColumns,
-} from '@ant-design/pro-components'
+import { ActionType, ProColumns } from '@ant-design/pro-components'
 import { ProTable } from '@ant-design/pro-components'
-import { Tag, message, Button, Modal, Radio, DatePicker, InputNumber, Space, Spin, Input } from 'antd'
+import {
+  Tag,
+  message,
+  Button,
+  Modal,
+  Radio,
+  DatePicker,
+  InputNumber,
+  Space,
+  Spin,
+  Input
+} from 'antd'
 import { useRef, useState } from 'react'
-import { delAdminCarmi, getAdminCarmi, addAdminCarmis, getAdminCarmiCheck } from '@/request/adminApi'
+import {
+  delAdminCarmi,
+  getAdminCarmi,
+  addAdminCarmis,
+  getAdminCarmiCheck
+} from '@/request/adminApi'
 import { CarmiInfo } from '@/types/admin'
 import { formatTime } from '@/utils'
 import styles from './index.module.less'
+import FormCard from '../components/FormCard'
 
 function CarmiPage() {
   const tableActionRef = useRef<ActionType>()
@@ -80,10 +94,8 @@ function CarmiPage() {
       dataIndex: 'user_id',
       width: 200,
       render: (_, data) => {
-        if(!data.user_id) return '-'
-        return (
-          <p>{data.user?.account}</p>
-        )
+        if (!data.user_id) return '-'
+        return <p>{data.user?.account}</p>
       }
     },
     {
@@ -195,12 +207,11 @@ function CarmiPage() {
       >
         <Space direction="vertical" style={{ width: '100%' }}>
           <Space size="large" wrap>
-            <div className={styles.formCard}>
-              <p className={styles.formCard_title}>奖励类型</p>
+            <FormCard title="奖励类型">
               <Radio.Group
                 size="large"
                 onChange={(e) => {
-                  setGenerateModal(g => ({ ...g, type: e.target.value }))
+                  setGenerateModal((g) => ({ ...g, type: e.target.value }))
                 }}
                 defaultValue={generateModal.type}
                 value={generateModal.type}
@@ -208,51 +219,46 @@ function CarmiPage() {
                 <Radio.Button value="integral">积分</Radio.Button>
                 <Radio.Button value="day">时长（天）</Radio.Button>
               </Radio.Group>
-            </div>
-            <div className={styles.formCard}>
-              <p className={styles.formCard_title}>奖励数量</p>
+            </FormCard>
+            <FormCard title="奖励数量">
               <InputNumber
                 size="large"
                 min={1}
                 max={99999}
                 onChange={(e) => {
                   if (e) {
-                    setGenerateModal(g => ({ ...g, reward: e }))
+                    setGenerateModal((g) => ({ ...g, reward: e }))
                   }
                 }}
                 value={generateModal.reward}
               />
-            </div>
-            <div className={styles.formCard}>
-              <p className={styles.formCard_title}>有效期截止日期</p>
+            </FormCard>
+            <FormCard title="有效期截止日期">
               <DatePicker
                 size="large"
                 format="YYYY-MM-DD"
                 disabledDate={(current) => {
                   const date = new Date()
                   date.setHours(0, 0, 0, 0)
-                  return current && current.toDate().getTime() < date.getTime();
+                  return current && current.toDate().getTime() < date.getTime()
                 }}
                 onChange={(e) => {
                   if (e) {
                     const dateString = formatTime('yyyy-MM-dd', e?.toDate())
-                    setGenerateModal(g => ({ ...g, end_time: dateString }))
+                    setGenerateModal((g) => ({ ...g, end_time: dateString }))
                   } else {
-                    setGenerateModal(g => ({ ...g, end_time: '' }))
+                    setGenerateModal((g) => ({ ...g, end_time: '' }))
                   }
                 }}
               />
-            </div>
+            </FormCard>
           </Space>
-          <Space
-            size="large"
-          >
-            <div className={styles.formCard}>
-              <p className={styles.formCard_title}>卡密会员等级</p>
+          <Space size="large">
+            <FormCard title="卡密会员等级">
               <Radio.Group
                 size="large"
                 onChange={(e) => {
-                  setGenerateModal(g => ({ ...g, level: e.target.value }))
+                  setGenerateModal((g) => ({ ...g, level: e.target.value }))
                 }}
                 defaultValue={generateModal.level}
                 value={generateModal.level}
@@ -260,11 +266,8 @@ function CarmiPage() {
                 <Radio.Button value={1}>普通会员</Radio.Button>
                 <Radio.Button value={2}>超级会员</Radio.Button>
               </Radio.Group>
-            </div>
-            <div className={styles.formCard}>
-              <p className={styles.formCard_title}>
-                生成数量
-              </p>
+            </FormCard>
+            <FormCard title="生成数量">
               <InputNumber
                 style={{ width: '100%' }}
                 size="large"
@@ -272,52 +275,53 @@ function CarmiPage() {
                 max={50}
                 onChange={(e) => {
                   if (e) {
-                    setGenerateModal(g => ({ ...g, quantity: e }))
+                    setGenerateModal((g) => ({ ...g, quantity: e }))
                   }
                 }}
                 value={generateModal.quantity}
               />
-            </div>
+            </FormCard>
           </Space>
-          <div className={styles.generate}
+          <div
+            className={styles.generate}
             style={{
               height: generateModal.result || generateModal.loading ? 120 : 0
             }}
           >
-            {
-              (generateModal.result && !generateModal.loading) && (
-                <Input.TextArea
-                  value={generateModal.result}
-                  disabled
-                  placeholder="Controlled autosize"
-                  autoSize={{
-                    minRows: 5,
-                    maxRows: 5,
-                  }}
-                />
-              )
-            }
+            {generateModal.result && !generateModal.loading && (
+              <Input.TextArea
+                value={generateModal.result}
+                disabled
+                placeholder="Controlled autosize"
+                autoSize={{
+                  minRows: 5,
+                  maxRows: 5
+                }}
+              />
+            )}
             {generateModal.loading && <Spin />}
           </div>
 
           <Button
             loading={generateModal.loading}
             onClick={() => {
-              setGenerateModal(g => ({ ...g, loading: true }))
+              setGenerateModal((g) => ({ ...g, loading: true }))
               addAdminCarmis({
                 type: generateModal.type,
                 end_time: generateModal.end_time,
                 quantity: generateModal.quantity,
                 reward: generateModal.reward,
                 level: generateModal.level
-              }).then((res) => {
-                if (res.code) return;
-                const keys = res.data.map(info => `${info.key}`).join('\n')
-                setGenerateModal(g => ({ ...g, loading: false, result: keys }))
-                tableActionRef.current?.reloadAndRest?.()
-              }).finally(() => {
-                setGenerateModal(g => ({ ...g, loading: false }))
               })
+                .then((res) => {
+                  if (res.code) return
+                  const keys = res.data.map((info) => `${info.key}`).join('\n')
+                  setGenerateModal((g) => ({ ...g, loading: false, result: keys }))
+                  tableActionRef.current?.reloadAndRest?.()
+                })
+                .finally(() => {
+                  setGenerateModal((g) => ({ ...g, loading: false }))
+                })
             }}
             type="primary"
             block
@@ -327,7 +331,6 @@ function CarmiPage() {
           </Button>
         </Space>
       </Modal>
-
     </div>
   )
 }

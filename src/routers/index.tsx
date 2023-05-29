@@ -16,6 +16,7 @@ export interface RouteOptions extends Omit<Omit<RouteObject, 'children'>, 'index
 const ChatPage = React.lazy(() => import('@/pages/chat'))
 const DrawPage = React.lazy(() => import('@/pages/draw'))
 const ShopPage = React.lazy(() => import('@/pages/shop'))
+const UserPage = React.lazy(() => import('@/pages/user'))
 const LoginPage = React.lazy(() => import('@/pages/login'))
 const ResultPage = React.lazy(() => import('@/pages/result'))
 const Page404 = React.lazy(() => import('@/pages/404'))
@@ -31,6 +32,8 @@ import AdminTokenPage from '@/pages/admin/token'
 import AdminConfigPage from '@/pages/admin/config'
 import AdminPaymentPage from '@/pages/admin/payment'
 import AdminOrderPage from '@/pages/admin/order'
+import AdminNotificationPage from '@/pages/admin/notification'
+
 
 export const webRouter: RouteOptions[] = [
   {
@@ -57,6 +60,16 @@ export const webRouter: RouteOptions[] = [
     id: 'ShopPage',
     path: '/shop',
     element: <ShopPage />,
+    children: [],
+    configure: {
+      verifToken: true,
+      role: ['user', 'administrator']
+    }
+  },
+  {
+    id: 'UserPage',
+    path: '/user',
+    element: <UserPage />,
     children: [],
     configure: {
       verifToken: true,
@@ -217,6 +230,17 @@ export const adminRouter: RouteOptions[] = [
         index: false,
         configure: {
           title: '系统配置',
+          verifToken: true,
+          role: ['administrator']
+        }
+      },
+	  {
+        id: 'AdminNotificationPage',
+        path: '/admin/notification',
+        element: <AdminNotificationPage />,
+        index: false,
+        configure: {
+          title: '系统通知配置',
           verifToken: true,
           role: ['administrator']
         }

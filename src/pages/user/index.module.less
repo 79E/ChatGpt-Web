@@ -1,0 +1,49 @@
+.userPage{
+    &_container{
+		width: 100%;
+		max-width: 1000px;
+		margin:0 auto;
+		overflow: auto;
+		padding: 20px 0;
+		&::-webkit-scrollbar {
+			display: none; /* Chrome Safari */
+		}
+	}
+    &_card {
+		background-color: #f8f9fa;
+		padding: 12px 20px;
+		border-radius: 12px;
+		h4{
+			font-size: 16px;
+			margin-bottom: 12px;
+			color: #444;
+			cursor: pointer;
+		}
+	}
+	[class*='ant-pro-layout-content']{
+        padding-block: 0;
+    }
+
+    &_operate{
+        margin-top: 20px;
+        display: flex;
+        gap: 20px;
+    }
+
+    &_signin{
+        display: flex;
+        flex-wrap: wrap;    
+        gap:12px 20px;
+        &_item{
+            cursor: pointer;
+            display: inline-block;
+            width: 40px;
+            height: 20px;
+            border-radius: 4px;
+            background-color: #eee;
+        }
+        &_selectTtem{
+            background-color: #69b1ff;
+        }
+    }
+}

@@ -4,7 +4,9 @@ import {
   RequestChatOptions,
   RequestImagesGenerations,
   RequestLoginParams,
+  ResponseConfigData,
   ResponseLoginData,
+  SigninInfo,
   SubscriptionInfo,
   TurnoverInfo,
   UserInfo
@@ -85,3 +87,18 @@ export function postUseCarmi(params: { carmi: string }) {
 export function postSignin() {
   return request.post('/api/signin')
 }
+
+// 获取签到列表
+export function getSigninList() {
+  return request.get<Array<SigninInfo>>('/api/signin/list')
+}
+
+// 重置用户密码
+export function putUserPassword(params: RequestLoginParams) {
+  return request.put('/api/user/password', params)
+}
+
+// 获取配置数据
+export function getConfig() {
+	return request.get<ResponseConfigData>('/api/config')
+  }

@@ -1,13 +1,13 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import UserInfoCard from '@/components/UserInfoCard'
 import styles from './index.module.less'
 import Layout from '@/components/Layout'
-import { shopStore, userStore } from '@/store'
+import { configStore, shopStore, userStore } from '@/store'
 import { Button, Input, Modal, Pagination, QRCode, Radio, Space, Table, message } from 'antd'
 import GoodsList from '@/components/GoodsList'
 import { CloseCircleFilled, SyncOutlined } from '@ant-design/icons'
 import { shopAsync, userAsync } from '@/store/async'
-import { getUserTurnover, postPayPrecreate, postUseCarmi, postSignin } from '@/request/api'
+import { getUserTurnover, postPayPrecreate, postUseCarmi } from '@/request/api'
 import { ProductInfo, TurnoverInfo } from '@/types'
 import OpenAiLogo from '@/components/OpenAiLogo'
 import { Link } from 'react-router-dom'
@@ -15,6 +15,7 @@ import { Link } from 'react-router-dom'
 function GoodsPay() {
   const { goodsList, payTypes } = shopStore()
   const { token, user_info } = userStore()
+  const { shop_introduce } = configStore()
 
   const [goods, setGoods] = useState<ProductInfo>()
   const [payType, setPayType] = useState('')
@@ -132,8 +133,6 @@ function GoodsPay() {
       })
   }
 
-  const [signinLoading, setSigninLoading] = useState(false)
-
   if (!token) {
     return (
       <div
@@ -157,31 +156,6 @@ function GoodsPay() {
           <Space direction="vertical" style={{ width: '100%' }}>
             {/* 用户信息 */}
             <UserInfoCard info={user_info} />
-            {/* 签到区域 */}
-            <div className={styles.goodsPay_card}>
-              <h4>签到日历</h4>
-              <Button
-                loading={signinLoading}
-                type="primary"
-                block
-                disabled={!!user_info?.is_signin}
-                onClick={() => {
-                  setSigninLoading(true)
-                  postSignin()
-                    .then((res) => {
-                      if (res.code) return
-                      userAsync.fetchUserInfo()
-                      message.success(res.message)
-                      onTurnoverLog(1, turnover.pageSize)
-                    })
-                    .finally(() => {
-                      setSigninLoading(false)
-                    })
-                }}
-              >
-                {user_info?.is_signin ? '今日已签到' : '立即签到'}
-              </Button>
-            </div>
             {/* 卡密充值区 */}
             <div className={styles.goodsPay_card}>
               <h4>卡密充值</h4>
@@ -195,6 +169,16 @@ function GoodsPay() {
                 onSearch={useCarmi}
               />
             </div>
+            {shop_introduce && (
+              <div className={styles.goodsPay_card}>
+                <h4>商品说明</h4>
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: shop_introduce
+                  }}
+                />
+              </div>
+            )}
             {goodsList.length > 0 && (
               <div className={styles.goodsPay_card}>
                 <h4>在线充值</h4>

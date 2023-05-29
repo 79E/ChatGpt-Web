@@ -3,7 +3,7 @@ import styles from './index.module.less'
 import { Space, Statistic, Tooltip } from 'antd'
 import { useMemo } from 'react'
 
-function UserInfoCard(props: { info?: UserInfo }) {
+function UserInfoCard(props: { info?: UserInfo,  children?: React.ReactNode; }) {
 
   const vipIcon = {
     vip: 'https://s.ibaotu.com/next/img/new/ep.4814.png',
@@ -38,23 +38,26 @@ function UserInfoCard(props: { info?: UserInfo }) {
 
   return (
     <div className={styles.userInfo}>
-      <img className={styles.userInfo_avatar} src={info?.avatar} alt="" />
-      <div className={styles.userInfo_info}>
-        <div className={styles.userInfo_info_title}>
-          <span>{info?.nickname}</span>
-          {
-            isSvip ? <Tooltip title="超级会员"><img src={vipIcon.svip} alt="" /></Tooltip> : 
-            vipDay ? <Tooltip title="会员"><img src={vipIcon.vip} alt="" /></Tooltip>: ''
-          }
+      <div className={styles.userInfo_card}>
+        <img className={styles.userInfo_avatar} src={info?.avatar} alt="" />
+        <div className={styles.userInfo_info}>
+          <div className={styles.userInfo_info_title}>
+            <span>{info?.nickname}</span>
+            {
+              isSvip ? <Tooltip title="超级会员"><img src={vipIcon.svip} alt="" /></Tooltip> : 
+              vipDay ? <Tooltip title="会员"><img src={vipIcon.vip} alt="" /></Tooltip>: ''
+            }
+          </div>
+          <span className={styles.userInfo_info_account}>{info?.account}</span>
         </div>
-        <span className={styles.userInfo_info_account}>{info?.account}</span>
+        <div className={styles.userInfo_vip}>
+          <Space wrap size="large">
+            <Statistic title="积分" value={info?.integral} />
+            <Statistic title="会员(天)" value={vipDay} />
+          </Space>
+        </div>
       </div>
-      <div className={styles.userInfo_vip}>
-        <Space wrap size="large">
-          <Statistic title="积分" value={info?.integral} />
-          <Statistic title="会员(天)" value={vipDay} />
-        </Space>
-      </div>
+      {props.children}
     </div>
   )
 }

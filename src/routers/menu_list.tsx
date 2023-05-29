@@ -11,6 +11,7 @@ import {
   LockFilled,
   MessageFilled,
   MoneyCollectFilled,
+  NotificationFilled,
   PictureOutlined,
   ReconciliationFilled,
   ScheduleFilled,
@@ -137,6 +138,11 @@ const admin = {
       path: '/admin/config',
       name: '系统配置',
       icon: <SettingFilled />
+    },
+	{
+		name: '通知配置',
+        path: '/admin/notification',
+		icon: <NotificationFilled />
     },
     {
       path: 'https://github.com/79E/ChatGpt-Web',

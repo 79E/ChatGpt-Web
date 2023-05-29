@@ -1,27 +1,35 @@
+import { NotificationInfo } from './admin'
+
 export interface RequestLoginParams {
   account: string
-  code: string | number
+  code?: string | number
+  password?: string
 }
 
 export interface UserInfo {
-	id: string;
-	account: string;
-	nickname: string;
-	avatar: string;
-	role: string;
-	integral: number;
-	vip_expire_time: string;
-	svip_expire_time: string;
-	ip: string;
-	status: number;
-	create_time: string;
-	update_time: string;
-	is_signin: number;
+  id: string
+  account: string
+  nickname: string
+  avatar: string
+  role: string
+  integral: number
+  vip_expire_time: string
+  svip_expire_time: string
+  ip: string
+  status: number
+  create_time: string
+  update_time: string
+  is_signin: number
 }
 
 export interface ResponseLoginData {
   user_info: UserInfo
   token?: string
+}
+export interface ResponseConfigData {
+  shop_introduce: string
+  user_introduce: string
+  notifications: NotificationInfo[]
 }
 
 export interface ChatGptConfig {
@@ -145,9 +153,17 @@ export interface TurnoverInfo {
   update_time: string
 }
 
-
 export interface PayTypeInfo {
-	icon: string,
-	key: string,
-	title: string
+  icon: string
+  key: string
+  title: string
+}
+
+export interface SigninInfo {
+  id: number
+  user_id: string
+  ip: string
+  status: number
+  create_time: string
+  update_time: string
 }
