@@ -105,9 +105,9 @@ function TokenPage() {
             render: (_, data) => {
                 return (
                     <div>
-                        <p>总额度：{data.limit}</p>
-                        <p>已使用：{data.usage / 100}</p>
-                        <p>还剩余：{data.limit - (data.usage / 100)}</p>
+                        <p>总额度：{data.limit.toFixed(2)}</p>
+                        <p>已使用：{data.usage}</p>
+                        <p>还剩余：{(data.limit - data.usage).toFixed(2)}</p>
                     </div>
                 )
             }
