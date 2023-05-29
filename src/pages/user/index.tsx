@@ -13,6 +13,8 @@ import { LockOutlined, MailOutlined } from '@ant-design/icons'
 import { fetchUserPassword } from '@/store/user/async'
 import { useNavigate } from 'react-router-dom'
 
+const monthAbbreviations = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+
 function UserPage() {
   const navigate = useNavigate()
   const { token, user_info } = userStore()
@@ -110,7 +112,7 @@ function UserPage() {
             )}
             {/* 签到区域 */}
             <div className={styles.userPage_card}>
-              <h4>签到日历</h4>
+              <h4>签到日历（{formatTime('yyyy年MM月', new Date(monthDays[0]))}）</h4>
               <Space direction="vertical">
                 <div className={styles.userPage_signin}>
                   {monthDays.map((item) => {
@@ -118,9 +120,10 @@ function UserPage() {
                       ? `${styles.userPage_signin_item} ${styles.userPage_signin_selectTtem}`
                       : styles.userPage_signin_item
                     return (
-                      <Tooltip key={item} title={item}>
-                        <span className={itemClassName} />
-                      </Tooltip>
+                        <div key={item} className={itemClassName}>
+                          <p>{formatTime('dd', new Date(item)) === formatTime('dd') ? '今' : formatTime('dd', new Date(item))}</p>
+                          <p>{monthAbbreviations[Number(formatTime('MM', new Date(item))) - 1]}</p>
+                        </div>
                     )
                   })}
                 </div>

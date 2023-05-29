@@ -33,17 +33,42 @@
     &_signin{
         display: flex;
         flex-wrap: wrap;    
-        gap:12px 20px;
+        gap: 12px 12px;
         &_item{
             cursor: pointer;
             display: inline-block;
-            width: 40px;
-            height: 20px;
+            width: 44px;
+            height: 48px;
             border-radius: 4px;
             background-color: #eee;
+            border: 1px solid #c6c6c6;
+            position: relative;
+
+            p:first-child{
+                text-align: center;
+                font-size: 20px;
+                color: #c6c6c6;
+                line-height: 1.6;
+                font-weight: 500;
+            }
+            p:last-child{
+                font-size: 12px;
+                border-top: 1px solid #c6c6c6;
+                text-align: center;
+                color: #c6c6c6;
+            }
         }
         &_selectTtem{
-            background-color: #69b1ff;
+            background-color: #1677ffd9;
+            border-color: #1677ffd9;
+            p:first-child{
+                color: #FFF;
+            }
+            p:last-child{
+                border-top: 1px solid #f8f9fa;
+                text-align: center;
+                color: #f8f9fa;
+            }
         }
     }
 }
