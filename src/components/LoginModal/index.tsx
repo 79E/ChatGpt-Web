@@ -42,8 +42,9 @@ export function LoginCard(props: {
         </Space>
       )}
       contentStyle={{
-        width: 'auto',
-        minWidth: '341px'
+        width: '100%',
+        maxWidth: '340px',
+        minWidth: '100px'
       }}
       onFinish={async (e) => {
         return new Promise((resolve, reject) => {
