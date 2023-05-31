@@ -13,18 +13,26 @@
             max-width: 900px;
             align-self: center;
             overflow: auto;
+			padding-bottom: 100px;
             &::-webkit-scrollbar {
                 display: none;
             }
         }
         &_two{
+			max-width: 1000px;
+			margin: auto;
+			position: absolute;
+			left: 0;
+			right: 0;
+			bottom: 0;
             padding: 12px 12px 20px;
+			transition: bottom 0.4s ease-in-out;
         }
     }
 
 	&_config{
 		padding: 12px 20px 20px;
-		background-color: rgba(231,234,243,.5);
+		background-color: rgba(231,234,243,1);
 		position: relative;
 		top: 8px;
 		border-top-right-radius: 12px;

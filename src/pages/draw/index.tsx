@@ -11,7 +11,7 @@ import {
   notification,
   message
 } from 'antd'
-import { useState } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 import { drawStore, userStore } from '@/store'
 import OpenAiLogo from '@/components/OpenAiLogo'
 import { postImagesGenerations } from '@/request/api'
@@ -23,6 +23,10 @@ import Layout from '@/components/Layout'
 function DrawPage() {
   const { token, setLoginModal } = userStore()
   const { historyDrawImages, clearhistoryDrawImages, addDrawImage } = drawStore()
+
+  const containerOneRef = useRef<HTMLDivElement>(null)
+  const containerTwoRef = useRef<HTMLDivElement>(null)
+  const [bottom, setBottom] = useState(0);
 
   const [drawConfig, setDrawConfig] = useState({
     prompt: '',
@@ -75,11 +79,28 @@ function DrawPage() {
       })
   }
 
+  const handleScroll = () => {
+	const twoClientHeight = containerTwoRef.current?.clientHeight || 0;
+	const oneScrollTop = containerOneRef.current?.scrollTop || 0;
+	if(oneScrollTop > 100){
+		setBottom(-(twoClientHeight + 100));
+	}else{
+		setBottom(0);
+	}
+  }
+
+  useLayoutEffect(()=>{
+	containerOneRef.current?.addEventListener('scroll', handleScroll);
+    return () => {
+		containerOneRef.current?.removeEventListener('scroll', handleScroll);
+    };
+  },[])
+
   return (
     <div className={styles.drawPage}>
       <Layout>
         <div className={styles.drawPage_container}>
-          <div className={styles.drawPage_container_one}>
+          <div className={styles.drawPage_container_one} ref={containerOneRef}>
             <div className={styles.drawPage_header}>
               <img
                 src="https://www.imageoss.com/images/2023/05/05/Midjourneybf2f31b4a2ac2dc9.png"
@@ -143,7 +164,12 @@ function DrawPage() {
               </Image.PreviewGroup>
             </div>
           </div>
-          <div className={styles.drawPage_container_two}>
+          <div className={styles.drawPage_container_two}
+		  	style={{
+				bottom: bottom
+			}}
+			ref={containerTwoRef}
+          >
             <div className={styles.drawPage_config}>
               <Space direction="vertical">
                 <p>图片尺寸({drawConfig.size})</p>
