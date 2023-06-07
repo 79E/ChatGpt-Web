@@ -97,7 +97,7 @@ export interface ChatResultInfo {
 
 // 对话记录
 export interface ChatGpt {
-  id: string | number
+  id: string
   text: string
   dateTime: string
   status: 'pass' | 'loading' | 'error'
@@ -107,12 +107,19 @@ export interface ChatGpt {
 
 export interface RequestImagesGenerations {
   prompt: string
-  n?: number
-  size?: string
-  response_format?: string
+  quantity: number,
+  width: number,
+  height: number,
+  draw_type: string,
+  quality?: number,
+  steps?: number,
+  style?: string,
+  image?: File | string
+  [key: string]: any
 }
 
 export interface ImagesInfo extends RequestImagesGenerations {
+  prompt: string,
   id: string
   dateTime: string
   url: string
@@ -140,6 +147,7 @@ export interface ProductInfo {
   status: number
   type: string
   level: number
+  describe?: string
   create_time: string
   update_time: string
 }

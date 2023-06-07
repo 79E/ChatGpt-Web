@@ -1,54 +1,179 @@
 .drawPage {
-    &_container{
-        display: flex;
+	&_container {
+		display: flex;
 		width: 100%;
 		max-width: 1000px;
 		margin: 0 auto;
-        flex-direction: column;
-        height: calc(100vh - 56px);
+		flex-direction: column;
+		height: calc(100vh - 56px);
 
-        &_one{
-            flex: 1;
-            width: 100%;
-            max-width: 900px;
-            align-self: center;
-            overflow: auto;
-            &::-webkit-scrollbar {
-                display: none;
-            }
-        }
-        &_two{
-            padding: 12px 12px 20px;
-        }
-    }
+		&_one {
+			flex: 1;
+			width: 100%;
+			max-width: 900px;
+			align-self: center;
+			overflow: auto;
+			padding-bottom: 100px;
 
-	&_config{
+			&::-webkit-scrollbar {
+				display: none;
+			}
+		}
+
+		&_two {
+			max-width: 1000px;
+			margin: auto;
+			position: fixed;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			padding: 12px 12px 20px;
+			transition: bottom 0.4s ease-in-out;
+		}
+	}
+
+	&_config {
 		padding: 12px 20px 20px;
-		background-color: rgba(231,234,243,.5);
+		background-color: rgba(231, 234, 243, 1);
 		position: relative;
 		top: 8px;
 		border-top-right-radius: 12px;
 		border-top-left-radius: 12px;
-		p {
-			font-size: 12px;
-			color: #333;
+
+		&_group {
+			width: 100%;
+			display: flex;
+			align-items: center;
+			flex-wrap: wrap;
+			gap: 20px;
+			margin-top: 12px;
+		}
+
+		&_item {
+			display: flex;
+			flex: 1;
+			flex-direction: column;
+
+			p {
+				font-size: 14px;
+				color: #333;
+				white-space: nowrap;
+				margin-bottom: 8px;
+			}
+		}
+
+		&_stylePresets {
+			display: flex;
+			align-items: center;
+			flex-wrap: wrap;
+			// overflow-x: hidden;
+			gap: 8px;
+
+			&::-webkit-scrollbar {
+				display: none;
+			}
+
+			&_item {
+				user-select: none;
+				white-space: nowrap;
+				padding: 2px 0px 2px 4px;
+				border: 1px solid #555;
+				border-radius: 4px;
+
+				&:hover {
+					border-color: #1677ff;
+				}
+
+				&_text {
+					font-size: 12px;
+					color: #333;
+				}
+			}
+
+			&_select {
+				background-color: #fff;
+				border-color: #1677ff;
+
+				.drawPage_config_stylePresets_item_text {
+					color: #1677ff;
+				}
+			}
+		}
+
+		&_input {
+			margin-top: 20px;
+			display: flex;
+
+			&_image {
+				width: 80px;
+				height: 76px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				background-color: #52c41a;
+				// background-image: url('https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png');
+				background-size: 100% auto;
+				background-repeat: no-repeat;
+				font-weight: 500;
+				color: #fff;
+				cursor: pointer;
+				border-top-left-radius: 8px;
+				border-bottom-left-radius: 8px;
+				position: relative;
+				&_close{
+					color: red;
+					position: absolute;
+					top: -5px;
+					left: -5px;
+				}
+			}
+
+			&_buttons {
+				div {
+					text-align: center;
+					line-height: 38px;
+					width: 90px;
+					height: 38px;
+					font-weight: 500;
+					color: #fff;
+					cursor: pointer;
+					opacity: 1;
+					transition: opacity 0.4s ease-in-out;
+					&:hover {
+						opacity: 0.8;
+					}
+				}
+
+				div:first-child {
+					background-color: #fa8c16;
+					border-top-right-radius: 8px;
+				}
+				div:last-child {
+					background-color: #1677ff;
+					border-bottom-right-radius: 8px;
+				}
+			}
 		}
 	}
 
-	&_mydraw{
+	&_mydraw {
 		width: 100%;
-		&_header{
+
+		&_header {
 			h4 {
 				color: #333;
 			}
-			p{
+
+			p {
 				color: #999;
 				font-size: 12px;
 			}
+
 			margin-bottom: 20px;
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
+
 			&_icon {
 				cursor: pointer;
 				font-size: 20px;
@@ -57,49 +182,55 @@
 				background-color: transparent;
 				transition: background-color 0.3s ease-in-out;
 				border: 1px solid #d9d9d9;
-				&:hover{
+
+				&:hover {
 					background-color: #d9d9d9;
 				}
 			}
 		}
-		&_list{
+
+		&_list {
 			display: grid;
 			grid-template-columns: repeat(auto-fill, minmax(213px, 1fr));
 			grid-gap: 10px;
-			&_item{
-				p{
+
+			&_item {
+				p {
 					display: block;
 					font-size: 14px;
 					color: #333;
-					overflow:hidden;
-					text-overflow:ellipsis;
-					white-space:nowrap;
+					overflow: hidden;
+					text-overflow: ellipsis;
+					white-space: nowrap;
 				}
 			}
 		}
 	}
 
-	&_header{
+	&_header {
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		flex-direction: column;
 		padding: 50px 0 32px 0;
-		img{
+
+		img {
 			width: 80px;
 			margin-bottom: 12px;
 		}
+
 		h2 {
 			color: #333;
 			font-size: 36px;
 		}
-		h4{
+
+		h4 {
 			color: #666;
 			font-size: 14px;
 		}
 	}
 
-	&_create{
+	&_create {
 		height: auto;
 		overflow: hidden;
 		min-height: 220px;
@@ -116,16 +247,17 @@
 		border-radius: 4px;
 	}
 
-	[class*='ant-image-mask']{
+	[class*='ant-image-mask'] {
 		border-radius: 4px;
 	}
 
-	[class*='ant-pro-layout-content']{
-        padding-block: 0;
-    }
-    @media (max-width: 600px) {
-        [class*='ant-pro-layout-content']{
-            padding-inline: 4px;
-        }
-    }
+	[class*='ant-pro-layout-content'] {
+		padding-block: 0;
+	}
+
+	@media (max-width: 600px) {
+		[class*='ant-pro-layout-content'] {
+			padding-inline: 4px;
+		}
+	}
 }

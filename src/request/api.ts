@@ -47,10 +47,17 @@ export function postImagesGenerations(
   headers?: { [key: string]: any },
   options?: { [key: string]: any }
 ) {
+  const formData = new FormData();
+  Object.keys(params).forEach((key)=>{
+    formData.append(key, params[key]);
+  })
   return request.post<Array<{ url: string }>>(
     '/api/images/generations',
-    { ...params },
-    headers,
+    formData,
+    {
+      'Content-Type': 'multipart/form-data',
+      ...headers, 
+    },
     options
   )
 }

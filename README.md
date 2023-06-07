@@ -87,19 +87,11 @@ yarn build
 
 ## ⛺️ Environment Variable
 
-> Most configuration items in this project are set through environment variables.
+> If it is a front-end and back-end separation mode deployment project, the following configuration needs to be filled in
 
 #### `VITE_APP_REQUEST_HOST` 
 
 Request the `Host` address of the server.
-
-#### `VITE_APP_TITLE` 
-
-Chat Web title.
-
-#### `VITE_APP_LOGO` 
-
-Chat Web Logo.
 
 ## 🚧 Develop
 

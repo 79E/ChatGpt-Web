@@ -38,21 +38,6 @@ function NotificationPage() {
     content: ''
   })
 
-  function getConfigValue(key: string, data: Array<ConfigInfo>) {
-    const value = data.filter((c) => c.name === key)[0]
-    return value
-  }
-
-  function onGetConfigs (){
-	getAdminConfig().then((res)=>{
-		if(res.code) return
-		setConfigs(res.data)
-	})
-  }
-
-  useEffect(() => {
-    onGetConfigs()
-  }, [])
 
   const columns: ProColumns<NotificationInfo>[] = [
     {
@@ -81,7 +66,7 @@ function NotificationPage() {
       dataIndex: 'status',
       width: 100,
       render: (_, data) => (
-        <Tag color={data.status ? 'green' : 'red'}>{data.status ? '正常' : '异常'}</Tag>
+        <Tag color={data.status ? 'green' : 'red'}>{data.status ? '上线' : '下线'}</Tag>
       )
     },
     {
@@ -178,44 +163,11 @@ function NotificationPage() {
             </Button>
           ]
         }}
-        headerTitle={(
-          <Space key="space">
-            <Button
-              key="shop"
-              type="default"
-              onClick={() => {
-				const shopIntroduce = getConfigValue('shop_introduce',configs)
-                setEdidContentModal({
-                  open: true,
-                  key: 'shop_introduce',
-                  content: shopIntroduce.value,
-                  title: '商城说明'
-                })
-              }}
-            >
-              修改商城说明
-            </Button>
-            <Button
-              key="user"
-              type="default"
-              onClick={() => {
-				const userIntroduce = getConfigValue('user_introduce',configs)
-                setEdidContentModal({
-                  open: true,
-                  key: 'user_introduce',
-                  content: userIntroduce.value,
-                  title: '用户中心说明'
-                })
-              }}
-            >
-              修改用户中心说明
-            </Button>
-          </Space>
-        )}
         rowKey="id"
         search={false}
         bordered
       />
+
       <Modal
         title="通知信息"
         destroyOnClose
@@ -321,7 +273,7 @@ function NotificationPage() {
                 value={edidInfoModal.info?.status}
               >
                 <Radio.Button value={1}>上线</Radio.Button>
-                <Radio.Button value={2}>下线</Radio.Button>
+                <Radio.Button value={0}>下线</Radio.Button>
               </Radio.Group>
             </FormCard>
           </Space>
@@ -340,48 +292,6 @@ function NotificationPage() {
             />
           </FormCard>
         </Space>
-      </Modal>
-      <Modal
-        width={600}
-        open={edidContentModal.open}
-        onOk={() => {
-			putAdminConfig({
-				[edidContentModal.key]: edidContentModal.content
-			}).then((res) => {
-				if (res.code) {
-				  message.error('保存失败')
-				  return
-				}
-				setEdidContentModal({
-					open: false,
-					title: '',
-					content: '',
-					key: ''
-				})
-				message.success('保存成功')
-				onGetConfigs()
-			})
-        }}
-        onCancel={() => {
-          setEdidContentModal({
-            open: false,
-            content: '',
-            key: ''
-          })
-        }}
-        title={edidContentModal.title}
-      >
-        <RichEdit
-          value={edidContentModal?.content}
-          onChange={(value) => {
-            setEdidContentModal((editInfo) => {
-              return {
-                ...editInfo,
-                content: value
-              }
-            })
-          }}
-        />
       </Modal>
     </div>
   )

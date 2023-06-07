@@ -8,7 +8,7 @@ import RoleNetwork from './components/RoleNetwork'
 import RoleLocal from './components/RoleLocal'
 import AllInput from './components/AllInput'
 import ChatMessage from './components/ChatMessage'
-import { RequestChatOptions } from '@/types'
+import { ChatGpt, RequestChatOptions } from '@/types'
 import { postChatCompletions } from '@/request/api'
 import Reminder from '@/components/Reminder'
 import { filterObjectNull, formatTime, generateUUID, handleChatData } from '@/utils'
@@ -36,7 +36,7 @@ function ChatPage() {
 
   const bodyResize = useDocumentResize()
 
-  // 角色预设
+  // 提示指令预设
   const [roleConfigModal, setRoleConfigModal] = useState({
     open: false
   })
@@ -89,7 +89,7 @@ function ChatPage() {
     userMessageId,
     assistantMessageId
   }: {
-    userMessageId: string
+    userMessageId?: string
     signal: AbortSignal
     requestOptions: RequestChatOptions
     assistantMessageId: string
@@ -109,15 +109,15 @@ function ChatPage() {
 
     if (!(response instanceof Response)) {
       // 这里返回是错误 ...
-      setChatDataInfo(selectChatId, userMessageId, {
-        status: 'error'
-      })
+      if(userMessageId){
+        setChatDataInfo(selectChatId, userMessageId, {
+          status: 'error'
+        })
+      }
+      
       setChatDataInfo(selectChatId, assistantMessageId, {
         status: 'error',
-		text: `\`\`\`json
-${JSON.stringify(response, null, 4)}
-\`\`\`
-`
+        text: response?.message || '❌ 请求异常，请稍后在尝试。'
       })
       fetchController?.abort()
       setFetchController(null)
@@ -141,9 +141,11 @@ ${JSON.stringify(response, null, 4)}
         allContent += content ? content : ''
         if (segment === 'stop') {
           setFetchController(null)
-          setChatDataInfo(selectChatId, userMessageId, {
-            status: 'pass'
-          })
+          if(userMessageId){
+            setChatDataInfo(selectChatId, userMessageId, {
+              status: 'pass'
+            })
+          }
           setChatDataInfo(selectChatId, assistantMessageId, {
             text: allContent,
             dateTime,
@@ -153,9 +155,11 @@ ${JSON.stringify(response, null, 4)}
         }
 
         if (segment === 'start') {
-          setChatDataInfo(selectChatId, userMessageId, {
-            status: 'pass'
-          })
+          if(userMessageId){
+            setChatDataInfo(selectChatId, userMessageId, {
+              status: 'pass'
+            })
+          }
           setChatDataInfo(selectChatId, assistantMessageId, {
             text: allContent,
             dateTime,
@@ -179,37 +183,50 @@ ${JSON.stringify(response, null, 4)}
   const [fetchController, setFetchController] = useState<AbortController | null>(null)
 
   // 对话
-  async function sendChatCompletions(vaule: string) {
+  async function sendChatCompletions(vaule: string, refurbishOptions?: ChatGpt) {
     if (!token) {
       setLoginModal(true)
       return
     }
-    const parentMessageId = chats.filter((c) => c.id === selectChatId)[0].id
-    const userMessageId = generateUUID()
+    const parentMessageId = refurbishOptions?.requestOptions.parentMessageId || chats.filter((c) => c.id === selectChatId)[0].id
+    let userMessageId = generateUUID()
     const requestOptions = {
       prompt: vaule,
       parentMessageId,
       options: filterObjectNull({
-        ...config
+        ...config,
+        ...refurbishOptions?.requestOptions.options
       })
     }
-    setChatInfo(selectChatId, {
-      id: userMessageId,
-      text: vaule,
-      dateTime: formatTime(),
-      status: 'pass',
-      role: 'user',
-      requestOptions
-    })
-    const assistantMessageId = generateUUID()
-    setChatInfo(selectChatId, {
-      id: assistantMessageId,
-      text: '',
-      dateTime: formatTime(),
-      status: 'loading',
-      role: 'assistant',
-      requestOptions
-    })
+    const assistantMessageId = refurbishOptions?.id || generateUUID()
+    if(refurbishOptions?.requestOptions.parentMessageId && refurbishOptions?.id){
+      userMessageId = ''
+      setChatDataInfo(selectChatId, assistantMessageId, {
+        status: 'loading',
+        role: 'assistant',
+        text: '',
+        dateTime: formatTime(),
+        requestOptions
+      })
+    } else {
+      setChatInfo(selectChatId, {
+        id: userMessageId,
+        text: vaule,
+        dateTime: formatTime(),
+        status: 'pass',
+        role: 'user',
+        requestOptions
+      })
+      setChatInfo(selectChatId, {
+        id: assistantMessageId,
+        text: '',
+        dateTime: formatTime(),
+        status: 'loading',
+        role: 'assistant',
+        requestOptions
+      })
+    }
+    
     const controller = new AbortController()
     const signal = controller.signal
     setFetchController(controller)
@@ -285,7 +302,7 @@ ${JSON.stringify(response, null, 4)}
                   setRoleConfigModal({ open: true })
                 }}
               >
-                角色预设
+                AI提示指令
               </Button>
               <Button
                 block
@@ -338,9 +355,13 @@ ${JSON.stringify(response, null, 4)}
                     status={item.status}
                     content={item.text}
                     time={item.dateTime}
-					model={item.requestOptions.options?.model}
+                    model={item.requestOptions.options?.model}
                     onDelChatMessage={() => {
                       delChatMessage(selectChatId, item.id)
+                    }}
+                    onRefurbishChatMessage={()=>{
+                      console.log(item)
+                      sendChatCompletions(item.requestOptions.prompt, item);
                     }}
                   />
                 )
@@ -371,9 +392,9 @@ ${JSON.stringify(response, null, 4)}
         </div>
       </Layout>
 
-      {/* AI角色预设 */}
+      {/* AI提示指令预设 */}
       <Modal
-        title="AI角色预设"
+        title="AI提示指令预设"
         open={roleConfigModal.open}
         footer={null}
         destroyOnClose

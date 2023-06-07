@@ -42,7 +42,7 @@ function correctHeaders(
 
 // 判断是否为Object
 const isPlainObject = (obj: any) => {
-  if (!obj || Object.prototype.toString.call(obj) !== '[object Object]') {
+  if (!obj || Object.prototype.toString.call(obj) !== '[object Object]' || obj instanceof FormData) {
     return false
   }
   const proto = Object.getPrototypeOf(obj)

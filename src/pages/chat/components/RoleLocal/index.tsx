@@ -166,7 +166,7 @@ function RoleLocal() {
       </Space>
 
       <ModalForm<PromptInfo>
-        title="角色信息"
+        title="AI提示指令信息"
         open={promptInfoModal.open}
         form={promptInfoform}
         onOpenChange={(visible) => {
@@ -219,7 +219,7 @@ function RoleLocal() {
 
       {/* 导入数据 */}
       <ModalForm
-        title="批量新增角色信息"
+        title="批量新增AI提示指令"
         open={addPromptJson}
         onOpenChange={(visible) => {
           setAddPromptJson(visible)
@@ -262,7 +262,7 @@ function RoleLocal() {
         <ProFormTextArea
           width="lg"
           name="value"
-          label="角色数据"
+          label="AI提示指令"
           rules={[{ required: true, message: '请输入内容!' }]}
           placeholder="请输入要导入的JSON 格式为: [{key:'标题',value:'内容'}]"
           fieldProps={{

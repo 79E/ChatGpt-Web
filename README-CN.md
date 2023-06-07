@@ -80,19 +80,11 @@ yarn build
 
 ## ⛺️ 环境变量
 
-> 本项目大多数配置项都通过环境变量来设置。
+> 如果是前后端分离模式部署项目则需要填以下配置
 
 #### `VITE_APP_REQUEST_HOST` 
 
 请求服务端的`Host`地址。
-
-#### `VITE_APP_TITLE` 
-
-Chat Web 标题名称。
-
-#### `VITE_APP_LOGO` 
-
-Chat Web Logo。
 
 ## 🚧 开发
 

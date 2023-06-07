@@ -21,6 +21,11 @@ export interface ConfigState {
   shop_introduce: string
   user_introduce: string
   replaceData: (config: { [key: string]: any }) => void
+  website_title: string
+  website_description: string
+  website_keywords: string
+  website_logo: string
+  website_footer: string
 }
 
 const configStore = create<ConfigState>()(
@@ -30,6 +35,11 @@ const configStore = create<ConfigState>()(
       notifications: [],
       shop_introduce: '',
       user_introduce: '',
+      website_title: '',
+      website_description: '',
+      website_keywords: '',
+      website_logo: '',
+      website_footer: '',
       models: [
         {
           label: 'GPT-3.5',
@@ -62,7 +72,7 @@ const configStore = create<ConfigState>()(
       ],
       config: {
         model: 'gpt-3.5-turbo',
-        temperature: 0,
+        temperature: 0.8,
         presence_penalty: 0,
         frequency_penalty: 0,
         max_tokens: 1888

@@ -15,7 +15,7 @@ import {
   ProFormText
 } from '@ant-design/pro-components'
 import { ProTable } from '@ant-design/pro-components'
-import { Button, Form, Tag, message } from 'antd'
+import { Button, Form, Tag, Tooltip, message } from 'antd'
 import { useRef, useState } from 'react'
 
 function ProductPage() {
@@ -71,6 +71,18 @@ function ProductPage() {
         }
         return <Tag>暂无级别</Tag>
       }
+    },
+    {
+      title: '商品描述',
+      dataIndex: 'describe',
+	  ellipsis: {
+		showTitle: false,
+	  },
+	  render: (_, data) => (
+		<Tooltip title={data.describe}>
+		  {data.describe}
+		</Tooltip>
+	  ),
     },
     {
       title: '状态值',
@@ -237,7 +249,7 @@ function ProductPage() {
             rules={[{ required: true, message: '请输入角标' }]}
           />
         </ProFormGroup>
-
+        <ProFormText name="describe" label="描述" placeholder="商品描述" />
         <ProFormGroup>
           <ProFormDigit
             label="价格(分)"
@@ -300,7 +312,7 @@ function ProductPage() {
               {
                 label: '超级会员',
                 value: 2
-              },
+              }
             ]}
           />
         </ProFormGroup>
