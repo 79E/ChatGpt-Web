@@ -12,13 +12,20 @@ function UserInfoCard(props: { info?: UserInfo,  children?: React.ReactNode; }) 
 
   const vipDay = useMemo(() => {
     if (!props.info?.vip_expire_time) return 0
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-    const todayTime = today.getTime()
+    const todayTime = new Date().getTime()
     const vipExpireTime = new Date(props.info?.vip_expire_time || 0).getTime()
     if (vipExpireTime < todayTime) return 0
-    const time = Math.ceil((vipExpireTime - todayTime) / 86400000)
-    return time
+    const second = vipExpireTime - todayTime
+    const day = second / 86400000
+    if(day < 1){
+      const s = Math.floor(second / 1000);
+      const h = Math.floor(s / 3600);
+      const m = Math.floor((s % 3600) / 60);
+      // const rs = s % 60;
+      return `${h}小时${m}分`
+    }
+
+    return Math.ceil(day) + '天'
   }, [props])
 
   const isSvip = useMemo(()=>{
@@ -53,7 +60,7 @@ function UserInfoCard(props: { info?: UserInfo,  children?: React.ReactNode; }) 
         <div className={styles.userInfo_vip}>
           <Space wrap size="large">
             <Statistic title="积分" value={info?.integral} />
-            <Statistic title="会员(天)" value={vipDay} />
+            <Statistic title="会员" value={vipDay} />
           </Space>
         </div>
       </div>

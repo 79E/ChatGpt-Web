@@ -5,7 +5,7 @@ export interface Paging {
 
 export interface TableData<T> {
   count: number
-  rows: T
+  rows: Array<T>
 }
 
 export interface CarmiInfo {
@@ -97,7 +97,7 @@ export interface ProductInfo {
   update_time: string
 }
 
-export interface TokenInfo {
+export interface AikeyInfo {
   id: number
   key: string
   host: string
@@ -105,6 +105,7 @@ export interface TokenInfo {
   models: string
   limit: number
   usage: number
+  type: string
   status: number
   create_time: string
   update_time: string
@@ -173,4 +174,71 @@ export interface NotificationInfo {
   status: number
   create_time: string
   update_time: string
+}
+
+export interface InviteRecordInfo {
+  id: string
+  user_id: string
+  invite_code: string
+  superior_id: string
+  reward: string
+  reward_type: string
+  user_agent: string
+  remarks: string
+  user: UserInfo
+  superior: UserInfo
+  ip: string
+  status: number
+  create_time: string
+  update_time: string
+}
+
+export interface CashbackInfo {
+  id: string
+  user_id: string
+  benefit_id: string
+  pay_amount: string
+  commission_rate: string
+  commission_amount: string
+  remarks: string
+  order_id: number
+  status: number
+  create_time: string
+  update_time: string
+  user: UserInfo
+  benefit: UserInfo
+}
+
+export interface AmountDetailInfo {
+  id: string
+  user_id: string
+  correlation_id: number
+  original_amount: string
+  operate_amount: string
+  type: string
+  current_amount: string
+  remarks: string
+  status: number
+  create_time: string
+  update_time: string
+  user: UserInfo
+}
+
+export interface WithdrawalRecordInfo {
+	new_status?: number
+	id: number;
+	user_id: string;
+	amount: string;
+	type: string;
+	name: string;
+	contact: string;
+	account: string;
+	remarks: string;
+	message: string;
+	ip: string;
+	user_agent: string;
+	status: number;
+	create_time: string;
+	update_time: string;
+	user: UserInfo;
 }

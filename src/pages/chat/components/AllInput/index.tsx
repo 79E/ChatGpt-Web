@@ -84,7 +84,11 @@ function AllInput(props: Props) {
       <div
         className={styles.allInput_icon}
         onClick={() => {
-          props?.clearMessage?.()
+          if (!props.disabled) {
+            props?.clearMessage?.()
+          } else {
+            message.warning('请结束回答后在操作')
+          }
         }}
       >
         <ClearOutlined />

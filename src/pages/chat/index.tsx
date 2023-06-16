@@ -109,12 +109,13 @@ function ChatPage() {
 
     if (!(response instanceof Response)) {
       // 这里返回是错误 ...
-      if(userMessageId){
+      console.log('这里是：', userMessageId)
+      if (userMessageId) {
         setChatDataInfo(selectChatId, userMessageId, {
           status: 'error'
         })
       }
-      
+
       setChatDataInfo(selectChatId, assistantMessageId, {
         status: 'error',
         text: response?.message || '❌ 请求异常，请稍后在尝试。'
@@ -141,7 +142,7 @@ function ChatPage() {
         allContent += content ? content : ''
         if (segment === 'stop') {
           setFetchController(null)
-          if(userMessageId){
+          if (userMessageId) {
             setChatDataInfo(selectChatId, userMessageId, {
               status: 'pass'
             })
@@ -155,7 +156,7 @@ function ChatPage() {
         }
 
         if (segment === 'start') {
-          if(userMessageId){
+          if (userMessageId) {
             setChatDataInfo(selectChatId, userMessageId, {
               status: 'pass'
             })
@@ -188,7 +189,9 @@ function ChatPage() {
       setLoginModal(true)
       return
     }
-    const parentMessageId = refurbishOptions?.requestOptions.parentMessageId || chats.filter((c) => c.id === selectChatId)[0].id
+    const parentMessageId =
+      refurbishOptions?.requestOptions.parentMessageId ||
+      chats.filter((c) => c.id === selectChatId)[0].id
     let userMessageId = generateUUID()
     const requestOptions = {
       prompt: vaule,
@@ -199,7 +202,7 @@ function ChatPage() {
       })
     }
     const assistantMessageId = refurbishOptions?.id || generateUUID()
-    if(refurbishOptions?.requestOptions.parentMessageId && refurbishOptions?.id){
+    if (refurbishOptions?.requestOptions.parentMessageId && refurbishOptions?.id) {
       userMessageId = ''
       setChatDataInfo(selectChatId, assistantMessageId, {
         status: 'loading',
@@ -226,7 +229,7 @@ function ChatPage() {
         requestOptions
       })
     }
-    
+
     const controller = new AbortController()
     const signal = controller.signal
     setFetchController(controller)
@@ -359,9 +362,9 @@ function ChatPage() {
                     onDelChatMessage={() => {
                       delChatMessage(selectChatId, item.id)
                     }}
-                    onRefurbishChatMessage={()=>{
+                    onRefurbishChatMessage={() => {
                       console.log(item)
-                      sendChatCompletions(item.requestOptions.prompt, item);
+                      sendChatCompletions(item.requestOptions.prompt, item)
                     }}
                   />
                 )

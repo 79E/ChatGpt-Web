@@ -21,7 +21,7 @@ import { useRef, useState } from 'react'
 function ProductPage() {
   const tableActionRef = useRef<ActionType>()
   const [form] = Form.useForm<ProductInfo>()
-  const [edidInfoModal, setEdidInfoModal] = useState<{
+  const [edidInfoModal, setEditInfoModal] = useState<{
     open: boolean
     info: ProductInfo | undefined
   }>({
@@ -109,7 +109,7 @@ function ProductPage() {
           key="edit"
           type="link"
           onClick={() => {
-            setEdidInfoModal(() => {
+            setEditInfoModal(() => {
               form?.setFieldsValue({
                 ...data
               })
@@ -169,7 +169,7 @@ function ProductPage() {
               type="primary"
               size="small"
               onClick={() => {
-                setEdidInfoModal(() => {
+                setEditInfoModal(() => {
                   return {
                     open: true,
                     info: undefined
@@ -197,7 +197,7 @@ function ProductPage() {
           if (!visible) {
             form.resetFields()
           }
-          setEdidInfoModal((info) => {
+          setEditInfoModal((info) => {
             return {
               ...info,
               open: visible

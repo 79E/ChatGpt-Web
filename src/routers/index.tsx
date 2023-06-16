@@ -28,12 +28,15 @@ import AdminTurnoverPage from '@/pages/admin/turnover'
 import AdminSigninPage from '@/pages/admin/signin'
 import AdminMessagePage from '@/pages/admin/message'
 import AdminProductPage from '@/pages/admin/product'
-import AdminTokenPage from '@/pages/admin/token'
+import AdminAikeyPage from '@/pages/admin/aikey'
 import AdminConfigPage from '@/pages/admin/config'
 import AdminPaymentPage from '@/pages/admin/payment'
 import AdminOrderPage from '@/pages/admin/order'
 import AdminNotificationPage from '@/pages/admin/notification'
-
+import AdminCashbackPage from '@/pages/admin/cashback'
+import AdminInvitePage from '@/pages/admin/invite'
+import AdminWithdrawalPage from '@/pages/admin/withdrawal'
+import AdminAmountsPage from '@/pages/admin/amounts'
 
 export const webRouter: RouteOptions[] = [
   {
@@ -202,12 +205,12 @@ export const adminRouter: RouteOptions[] = [
         }
       },
       {
-        id: 'AdminTokenPage',
-        path: '/admin/token',
-        element: <AdminTokenPage />,
+        id: 'AdminAikeyPage',
+        path: '/admin/aikey',
+        element: <AdminAikeyPage />,
         index: false,
         configure: {
-          title: 'Toekn管理',
+          title: 'AI Key管理',
           verifToken: true,
           role: ['administrator']
         }
@@ -234,13 +237,57 @@ export const adminRouter: RouteOptions[] = [
           role: ['administrator']
         }
       },
-	  {
+	    {
         id: 'AdminNotificationPage',
         path: '/admin/notification',
         element: <AdminNotificationPage />,
         index: false,
         configure: {
           title: '系统通知配置',
+          verifToken: true,
+          role: ['administrator']
+        }
+      },
+	    {
+        id: 'AdminCashbackPage',
+        path: '/admin/cashback',
+        element: <AdminCashbackPage />,
+        index: false,
+        configure: {
+          title: '消费提成记录',
+          verifToken: true,
+          role: ['administrator']
+        }
+      },
+	    {
+        id: 'AdminInvitePage',
+        path: '/admin/invite',
+        element: <AdminInvitePage />,
+        index: false,
+        configure: {
+          title: '邀请记录',
+          verifToken: true,
+          role: ['administrator']
+        }
+      },
+	    {
+        id: 'AdminWithdrawalPage',
+        path: '/admin/withdrawal',
+        element: <AdminWithdrawalPage />,
+        index: false,
+        configure: {
+          title: '提现记录',
+          verifToken: true,
+          role: ['administrator']
+        }
+      },
+      {
+        id: 'AdminAmountsPage',
+        path: '/admin/amounts',
+        element: <AdminAmountsPage />,
+        index: false,
+        configure: {
+          title: '金额明细',
           verifToken: true,
           role: ['administrator']
         }

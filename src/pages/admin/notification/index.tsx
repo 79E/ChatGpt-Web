@@ -18,7 +18,7 @@ function NotificationPage() {
   const [configs, setConfigs] = useState<Array<ConfigInfo>>([])
   const tableActionRef = useRef<ActionType>()
 
-  const [edidInfoModal, setEdidInfoModal] = useState<{
+  const [edidInfoModal, setEditInfoModal] = useState<{
     open: boolean
     info: NotificationInfo | undefined
   }>({
@@ -89,7 +89,7 @@ function NotificationPage() {
           key="edit"
           type="link"
           onClick={() => {
-            setEdidInfoModal(() => {
+            setEditInfoModal(() => {
               return {
                 open: true,
                 info: data
@@ -146,7 +146,7 @@ function NotificationPage() {
               type="primary"
               size="small"
               onClick={() => {
-                setEdidInfoModal(() => {
+                setEditInfoModal(() => {
                   return {
                     open: true,
                     info: {
@@ -183,7 +183,7 @@ function NotificationPage() {
             // 编辑
             putAdminNotification(edidInfoModal.info).then((res) => {
               if (res.code) return
-              setEdidInfoModal(() => {
+              setEditInfoModal(() => {
                 return {
                   open: false,
                   info: {
@@ -204,7 +204,7 @@ function NotificationPage() {
               sort
             } as any).then((res) => {
               if (res.code) return
-              setEdidInfoModal(() => {
+              setEditInfoModal(() => {
                 return {
                   open: false,
                   info: {
@@ -220,7 +220,7 @@ function NotificationPage() {
           }
         }}
         onCancel={() => {
-          setEdidInfoModal({ open: false, info: undefined })
+          setEditInfoModal({ open: false, info: undefined })
         }}
       >
         <Space direction="vertical" style={{ width: '100%' }}>
@@ -230,7 +230,7 @@ function NotificationPage() {
                 value={edidInfoModal.info?.title}
                 placeholder="通知标题"
                 onChange={(e) => {
-                  setEdidInfoModal((editInfo) => {
+                  setEditInfoModal((editInfo) => {
                     const info = { ...editInfo.info, title: e.target.value }
                     return {
                       ...editInfo,
@@ -248,7 +248,7 @@ function NotificationPage() {
                 value={edidInfoModal.info?.sort}
                 placeholder="排序"
                 onChange={(value) => {
-                  setEdidInfoModal((editInfo) => {
+                  setEditInfoModal((editInfo) => {
                     const info = { ...editInfo.info, sort: value }
                     return {
                       ...editInfo,
@@ -261,7 +261,7 @@ function NotificationPage() {
             <FormCard title="状态">
               <Radio.Group
                 onChange={(e) => {
-                  setEdidInfoModal((editInfo) => {
+                  setEditInfoModal((editInfo) => {
                     const info = { ...editInfo.info, status: e.target.value }
                     return {
                       ...editInfo,
@@ -281,7 +281,7 @@ function NotificationPage() {
             <RichEdit
               value={edidInfoModal.info?.content}
               onChange={(value) => {
-                setEdidInfoModal((editInfo) => {
+                setEditInfoModal((editInfo) => {
                   const info = { ...editInfo.info, content: value }
                   return {
                     ...editInfo,

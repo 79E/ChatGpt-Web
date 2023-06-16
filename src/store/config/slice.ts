@@ -26,6 +26,7 @@ export interface ConfigState {
   website_keywords: string
   website_logo: string
   website_footer: string
+  invite_introduce: string
 }
 
 const configStore = create<ConfigState>()(
@@ -40,11 +41,16 @@ const configStore = create<ConfigState>()(
       website_keywords: '',
       website_logo: '',
       website_footer: '',
+      invite_introduce: '',
       models: [
         {
           label: 'GPT-3.5',
           value: 'gpt-3.5-turbo'
         },
+		{
+			label: 'GPT-3.5-16k',
+			value: 'gpt-3.5-turbo-16k'
+		},
         {
           label: 'GPT-4',
           value: 'gpt-4'
@@ -71,7 +77,7 @@ const configStore = create<ConfigState>()(
         // }
       ],
       config: {
-        model: 'gpt-3.5-turbo',
+        model: 'gpt-3.5-turbo-16k',
         temperature: 0.8,
         presence_penalty: 0,
         frequency_penalty: 0,

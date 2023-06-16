@@ -71,4 +71,50 @@
             }
         }
     }
+
+
+    // 邀请
+    &_invite {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        &_info {
+            min-width: 200px;
+            padding: 0 20px;
+            max-height: 160px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            // background-color: red;
+            &_link{
+                border: 1px solid #1877ff;
+                border-radius: 4px;
+                padding: 4px;
+            }
+        }
+        &_data{
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            div {
+                flex: 1;
+                text-align: center;
+                min-width: 100px;
+                p {
+                    font-size: 14px;
+                    color: rgba(0, 0, 0, 0.45);
+                }
+                span{
+                    font-weight: 500;
+                    font-size: 24px;
+                    color: #333;
+                }
+            }
+        }
+    }
 }

@@ -33,7 +33,8 @@ function screenDropdownItems(status: string, position: 'left' | 'right') {
     if (status !== 'error' && item.key === 'delete') {
       return false
     }
-    if (position !== 'left' && (item.key === 'redoOut' || item.key === 'delete')) {
+
+    if (position !== 'left' && item.key === 'refurbish') {
       return false
     }
     return true;
@@ -80,7 +81,6 @@ function ChatMessage({
       })
   }
 
-
   function addCopyEvents() {
     if (markdownBodyRef.current) {
       const copyBtn = markdownBodyRef.current.querySelectorAll('.code-block-header__copy')
@@ -126,10 +126,29 @@ function ChatMessage({
   mdi.use(mila, { attrs: { target: '_blank', rel: 'noopener' } })
   mdi.use(mdKatex, { blockClass: 'katex-block', errorColor: ' #cc0000', output: 'mathml' })
 
-  const text = useMemo(() => {
+  const renderText = useMemo(() => {
     const value = content || ''
-    return mdi.render(value)
-  }, [content])
+    if (position === 'right') {
+      return (
+        <div
+          ref={markdownBodyRef}
+          className="markdown-body"
+        >
+          {value}
+        </div>
+      );
+    }
+    const renderMdHtml = mdi.render(value);
+    return (
+      <div
+        ref={markdownBodyRef}
+        className="markdown-body"
+        dangerouslySetInnerHTML={{
+          __html: renderMdHtml
+        }}
+      />
+    )
+  }, [content, position])
 
   useEffect(() => {
     addCopyEvents()
@@ -182,15 +201,8 @@ function ChatMessage({
           {status === 'loading' ? (
             <OpenAiLogo rotate />
           ) : (
-            <div
-              ref={markdownBodyRef}
-              className={'markdown-body'}
-              dangerouslySetInnerHTML={{
-                __html: text
-              }}
-            />
+            renderText
           )}
-
           <div className={styles.chatMessage_content_operate}
             style={{
               left: position === 'right' ? -20 : 'none',
@@ -212,7 +224,7 @@ function ChatMessage({
                     onDelChatMessage?.()
                   }
 
-                  if(key === 'refurbish'){
+                  if (key === 'refurbish') {
                     onRefurbishChatMessage?.()
                   }
 

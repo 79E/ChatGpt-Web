@@ -1,4 +1,6 @@
 import {
+  ConsumeRecordInfo,
+  InvitationRecordInfo,
   ProductInfo,
   RequesPrepay,
   RequestChatOptions,
@@ -9,7 +11,8 @@ import {
   SigninInfo,
   SubscriptionInfo,
   TurnoverInfo,
-  UserInfo
+  UserInfo,
+  WithdrawalRecordInfo
 } from '@/types'
 import request from '.'
 import { formatTime } from '@/utils'
@@ -47,16 +50,16 @@ export function postImagesGenerations(
   headers?: { [key: string]: any },
   options?: { [key: string]: any }
 ) {
-  const formData = new FormData();
-  Object.keys(params).forEach((key)=>{
-    formData.append(key, params[key]);
+  const formData = new FormData()
+  Object.keys(params).forEach((key) => {
+    formData.append(key, params[key])
   })
   return request.post<Array<{ url: string }>>(
     '/api/images/generations',
     formData,
     {
       'Content-Type': 'multipart/form-data',
-      ...headers, 
+      ...headers
     },
     options
   )
@@ -64,9 +67,9 @@ export function postImagesGenerations(
 
 // 获取商品列表
 export function getProduct() {
-  return request.get< {
-	products: Array<ProductInfo>,
-	pay_types: Array<string>
+  return request.get<{
+    products: Array<ProductInfo>
+    pay_types: Array<string>
   }>('/api/product')
 }
 
@@ -107,5 +110,18 @@ export function putUserPassword(params: RequestLoginParams) {
 
 // 获取配置数据
 export function getConfig() {
-	return request.get<ResponseConfigData>('/api/config')
-  }
+  return request.get<ResponseConfigData>('/api/config')
+}
+
+// 获取用户记录
+export function getUserRecords(params: { page: number; page_size: number; type: string | number }) {
+  return request.get<TableData<InvitationRecordInfo | ConsumeRecordInfo | WithdrawalRecordInfo>>(
+    '/api/user/records',
+    params
+  )
+}
+
+// 申请提现
+export function postUserWithdrawal(params: WithdrawalRecordInfo) {
+  return request.post('/api/user/withdrawal', params)
+}

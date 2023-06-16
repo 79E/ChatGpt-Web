@@ -20,6 +20,8 @@ function ConfigPage() {
   const [rewardForm] = Form.useForm<{
     register_reward: number | string
     signin_reward: number | string
+    invite_reward: number | string
+    cashback_ratio: number | string
   }>()
 
   const [historyMessageForm] = Form.useForm<{
@@ -43,8 +45,18 @@ function ConfigPage() {
     website_footer: string
   }>()
 
+  const [prohibitedWordsForm] = Form.useForm<{
+    prohibited_words: string
+  }>()
+
+  const [tuputechKeyForm] = Form.useForm<{
+    tuputech_key: string
+  }>()
+
+
   const shopIntroduce = useRef<string>()
   const userIntroduce = useRef<string>()
+  const inviteIntroduce = useRef<string>()
 
   function getConfigValue(key: string, data: Array<ConfigInfo>) {
     const value = data.filter((c) => c.name === key)[0]
@@ -58,9 +70,14 @@ function ConfigPage() {
     const ai3Ratio = getConfigValue('ai3_ratio', data)
     const ai4Ratio = getConfigValue('ai4_ratio', data)
     const drawPrice = getConfigValue('draw_price', data)
+
+    const cashback_ratio = getConfigValue('cashback_ratio', data)
+    const invite_reward = getConfigValue('invite_reward', data)
     rewardForm.setFieldsValue({
       register_reward: registerRewardInfo.value,
-      signin_reward: signinRewardInfo.value
+      signin_reward: signinRewardInfo.value,
+      invite_reward: invite_reward.value,
+      cashback_ratio: cashback_ratio.value
     })
     historyMessageForm.setFieldsValue({
       history_message_count: Number(historyMessageCountInfo.value)
@@ -97,6 +114,27 @@ function ConfigPage() {
     if (user_introduce && user_introduce.value) {
       userIntroduce.current = user_introduce.value
     }
+
+    const invite_introduce = getConfigValue('invite_introduce', data)
+    if (invite_introduce && invite_introduce.value) {
+      inviteIntroduce.current = invite_introduce.value
+    }
+
+    const prohibited_words = getConfigValue('prohibited_words', data)
+    if (prohibited_words && prohibited_words.value) {
+      prohibitedWordsForm.setFieldsValue({
+        prohibited_words: prohibited_words.value
+      })
+    }
+
+	const tuputech_key = getConfigValue('tuputech_key', data)
+    if (tuputech_key && tuputech_key.value) {
+	tuputechKeyForm.setFieldsValue({
+        tuputech_key: tuputech_key.value
+      })
+    }
+
+
   }
 
   function onGetConfig() {
@@ -173,6 +211,29 @@ function ConfigPage() {
             onClick={() => {
               onSave({
                 user_introduce: userIntroduce.current
+              })
+            }}
+          >
+            保 存
+          </Button>
+        </div>
+        <div className={styles.config_form}>
+          <h3>邀请说明设置</h3>
+          <div style={{ marginTop: 20, marginBottom: 20 }}>
+            <RichEdit
+              defaultValue={inviteIntroduce.current}
+              value={inviteIntroduce.current}
+              onChange={(value) => {
+                inviteIntroduce.current = value
+              }}
+            />
+          </div>
+          <Button
+            size="large"
+            type="primary"
+            onClick={() => {
+              onSave({
+                invite_introduce: inviteIntroduce.current
               })
             }}
           >
@@ -278,8 +339,8 @@ function ConfigPage() {
         <div className={styles.config_form}>
           <h3>奖励激励</h3>
           <QueryFilter
-			autoFocus={false}
-			autoFocusFirstInput={false}
+            autoFocus={false}
+            autoFocusFirstInput={false}
             form={rewardForm}
             onFinish={async (values: any) => {
               putAdminConfig(values).then((res) => {
@@ -316,13 +377,27 @@ function ConfigPage() {
               min={0}
               max={100000}
             />
+            <ProFormDigit
+              name="invite_reward"
+              label="邀请奖励"
+              tooltip="每邀请一位新用户注册奖励积分数"
+              min={0}
+              max={100000}
+            />
+            <ProFormDigit
+              name="cashback_ratio"
+              label="消费提成"
+              tooltip="下级消费给提成百分比"
+              min={0}
+              max={100000}
+            />
           </QueryFilter>
         </div>
         <div className={styles.config_form}>
           <h3>历史记录</h3>
           <QueryFilter
-		  	autoFocus={false}
-			autoFocusFirstInput={false}
+            autoFocus={false}
+            autoFocusFirstInput={false}
             form={historyMessageForm}
             onFinish={onSave}
             onReset={() => {
@@ -351,8 +426,8 @@ function ConfigPage() {
             设置1积分等于多少Token，比如：1积分=50Token，那么单次会话消耗100Token就需要扣除2积分。
           </p>
           <QueryFilter
-		  	autoFocus={false}
-			autoFocusFirstInput={false}
+            autoFocus={false}
+            autoFocusFirstInput={false}
             form={aiRatioForm}
             onFinish={onSave}
             onReset={() => {
@@ -388,8 +463,8 @@ function ConfigPage() {
             绘画计费规则为每秒消耗多少积分，比如设置10则生成一张512x512图片耗时为2秒则扣除20积分！
           </p>
           <QueryFilter
-		  	autoFocus={false}
-			autoFocusFirstInput={false}
+            autoFocus={false}
+            autoFocusFirstInput={false}
             form={drawPriceForm}
             onFinish={onSave}
             onReset={() => {
@@ -416,12 +491,95 @@ function ConfigPage() {
     )
   }
 
+  function ReviewProhibitedWordsSettings() {
+    return (
+      <Space
+        direction="vertical"
+        style={{
+          width: '100%'
+        }}
+      >
+        <div className={styles.config_form}>
+          <h3>文本审核</h3>
+          <p>
+            开通文本审核网址：
+            <a href="https://www.kaifain.com/s/6d23ad5feb78" target="_blank" rel="noreferrer">
+              https://www.kaifain.com/s/6d23ad5feb78
+            </a>
+          </p>
+          <p>如果配置了KEY则会优先使用当前进行审核文本内容</p>
+          <QueryFilter
+            autoFocus={false}
+            autoFocusFirstInput={false}
+            form={tuputechKeyForm}
+            onFinish={async (values: any) => {
+              putAdminConfig(values).then((res) => {
+                if (res.code) {
+                  message.error('保存失败')
+                  return
+                }
+                message.success('保存成功')
+                onGetConfig()
+              })
+            }}
+            onReset={() => {
+              onRewardFormSet(configs)
+            }}
+            labelWidth="auto"
+            span={12}
+            size="large"
+            collapsed={false}
+            defaultCollapsed={false}
+            requiredMark={false}
+            defaultColsNumber={79}
+            searchText="保存"
+            resetText="恢复"
+          >
+            <ProFormText width="xl" name="tuputech_key" />
+          </QueryFilter>
+        </div>
+        <div className={styles.config_form}>
+          <h3>本地违禁词</h3>
+          <p style={{ marginBottom: 12 }}>请以英文状态下的逗号(,)分隔违禁词</p>
+          <ProForm
+            autoFocus={false}
+            autoFocusFirstInput={false}
+            form={prohibitedWordsForm}
+            size="large"
+            initialValues={{}}
+            isKeyPressSubmit={false}
+            submitter={{
+              searchConfig: {
+                submitText: '保存',
+                resetText: '恢复'
+              }
+            }}
+            onFinish={onSave}
+            onReset={() => {
+              onRewardFormSet(configs)
+            }}
+          >
+            <ProFormTextArea
+              name="prohibited_words"
+              fieldProps={{
+                autoSize: {
+                  minRows: 2,
+                  maxRows: 12
+                }
+              }}
+            />
+          </ProForm>
+        </div>
+      </Space>
+    )
+  }
+
   return (
     <div className={styles.config}>
       <Tabs
         defaultActiveKey="WebSiteSettings"
-        centered
-        type="card"
+        // centered
+        // type="card"
         items={[
           {
             label: '网站设置',
@@ -433,11 +591,16 @@ function ConfigPage() {
             key: 'RewardSettings',
             children: <RewardSettings />
           },
-		  {
+          {
             label: '页面说明设置',
             key: 'IntroduceSettings',
             children: <IntroduceSettings />
           },
+          {
+            label: '违禁词审核设置',
+            key: 'ReviewProhibitedWordsSettings',
+            children: <ReviewProhibitedWordsSettings />
+          }
         ]}
       />
     </div>

@@ -18,13 +18,14 @@ A commercially-viable ChatGpt web application built with React.
 ## 🐶 Demo
 ### Link
 
-[Web Demo: https://www.aizj.top/](https://www.aizj.top/)
+[demo:  https://www.aizj.top/](https://www.aizj.top/)
 
-[Web 演示: https://www.aizj.top/](https://www.aizj.top/)
-
-[Admin Demo: https://www.aizj.top/admin](https://www.aizj.top/admin)
-
-[Admin 演示: https://www.aizj.top/admin](https://www.aizj.top/admin)
+```
+演示地址：https://www.aizj.top
+后台地址：https://www.aizj.top/admin
+管理账号：admin@c.om
+管理密码：admin123
+```
 
 If you need help, please submit [Issues](https://github.com/79E/ChatGPT-Web/issues) Or leave contact information when appreciating.
 ### Snapshot

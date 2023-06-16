@@ -6,6 +6,7 @@ import {
   ModalForm,
   ProColumns,
   ProFormDatePicker,
+  ProFormDateTimePicker,
   ProFormDigit,
   ProFormGroup,
   ProFormRadio,
@@ -18,7 +19,7 @@ import { useRef, useState } from 'react'
 function UserPage() {
   const tableActionRef = useRef<ActionType>()
   const [form] = Form.useForm<UserInfo>()
-  const [edidInfoModal, setEdidInfoModal] = useState<{
+  const [edidInfoModal, setEditInfoModal] = useState<{
     open: boolean
     info: UserInfo | undefined
   }>({
@@ -47,7 +48,6 @@ function UserPage() {
       dataIndex: 'vip_expire_time',
       render: (_, data) => {
         const today = new Date()
-        today.setHours(0, 0, 0, 0)
         const todayTime = today.getTime()
         const userSubscribeTime = new Date(data.vip_expire_time).getTime()
         return (
@@ -97,10 +97,10 @@ function UserPage() {
       fixed: 'right',
       render: (_, data) => [
         <Button
-          key="del"
+          key="edit"
           type="link"
           onClick={() => {
-            setEdidInfoModal(() => {
+            setEditInfoModal(() => {
               form?.setFieldsValue({
                 ...data
               })
@@ -173,7 +173,7 @@ function UserPage() {
           if (!visible) {
             form.resetFields()
           }
-          setEdidInfoModal((info) => {
+          setEditInfoModal((info) => {
             return {
               ...info,
               open: visible
@@ -261,12 +261,12 @@ function UserPage() {
             max={1000000}
             rules={[{ required: true, message: '请输入剩余积分' }]}
           />
-          <ProFormDatePicker
+          <ProFormDateTimePicker
             name="vip_expire_time"
             label="会员截止日期"
             rules={[{ required: true, message: '请输入剩余积分' }]}
           />
-          <ProFormDatePicker
+          <ProFormDateTimePicker
             name="svip_expire_time"
             label="超级会员截止日期"
             rules={[{ required: true, message: '请输入剩余积分' }]}

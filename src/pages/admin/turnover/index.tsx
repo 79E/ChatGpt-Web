@@ -9,7 +9,7 @@ function TurnoverPage() {
 
     const tableActionRef = useRef<ActionType>();
     const [form] = Form.useForm<TurnoverInfo>();
-    const [edidInfoModal, setEdidInfoModal] = useState<{
+    const [edidInfoModal, setEditInfoModal] = useState<{
         open: boolean,
         info: TurnoverInfo | undefined
     }>({
@@ -58,7 +58,7 @@ function TurnoverPage() {
             width: 160,
             render: (_, data) => [
                 <Button key="edit" type="link" onClick={() => {
-                    setEdidInfoModal({
+                    setEditInfoModal({
                         open: true,
                         info: data
                     })
@@ -124,7 +124,7 @@ function TurnoverPage() {
                     if (!visible) {
                         form.resetFields();
                     }
-                    setEdidInfoModal((info) => {
+                    setEditInfoModal((info) => {
                         return {
                             ...info,
                             open: visible

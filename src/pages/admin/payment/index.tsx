@@ -26,7 +26,7 @@ type MIXInfo = PaymentInfo & AlipayInfo & YipayInfo
 function PaymentPage() {
   const tableActionRef = useRef<ActionType>()
   const [form] = Form.useForm<MIXInfo>()
-  const [edidInfoModal, setEdidInfoModal] = useState<{
+  const [edidInfoModal, setEditInfoModal] = useState<{
     open: boolean
     info: PaymentInfo | undefined
   }>({
@@ -85,7 +85,7 @@ function PaymentPage() {
           key="edit"
           type="link"
           onClick={() => {
-            setEdidInfoModal(() => {
+            setEditInfoModal(() => {
               const json = JSON.parse(data.params)
               const types = data.types.split(',')
               form?.setFieldsValue({
@@ -323,7 +323,7 @@ function PaymentPage() {
               type="primary"
               size="small"
               onClick={() => {
-                setEdidInfoModal(() => {
+                setEditInfoModal(() => {
                   return {
                     open: true,
                     info: undefined
@@ -352,7 +352,7 @@ function PaymentPage() {
           if (!visible) {
             form.resetFields()
           }
-          setEdidInfoModal((info) => {
+          setEditInfoModal((info) => {
             return {
               ...info,
               open: visible

@@ -12,12 +12,15 @@ function AuthRouter(props: AuthRouterProps) {
   const location = useLocation()
   const { token, user_info } = userStore()
   const { pathname } = location
-
   const routerDetail = searchRouteDetail(pathname, [...webRouter, ...adminRouter])
   const title = routerDetail?.configure?.title
   useEffect(() => {
     if (title) {
       document.title = title
+    }
+    if(token && user_info && location.pathname.includes('/login')){
+      navigate('/')
+      return 
     }
     const userRole = user_info?.role || 'user'
     if (routerDetail?.configure?.verifToken && !token) {

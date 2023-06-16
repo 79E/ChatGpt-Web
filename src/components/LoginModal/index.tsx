@@ -12,25 +12,37 @@ import {
 import { LoginForm, ProFormCaptcha, ProFormText } from '@ant-design/pro-form'
 import { Form, FormInstance, Modal, Space, Tabs } from 'antd'
 import { useState } from 'react'
+import { useNavigation, useLocation } from 'react-router-dom'
 
 type Props = {
   open: boolean
   onCancel: () => void
 }
 
-type LoginType = 'code' | 'password' | string;
+type LoginType = 'code' | 'password' | 'register' | string;
 
 export function LoginCard(props: {
   form: FormInstance<RequestLoginParams>
-  onSuccess: () => void
+  onSuccess: () => void,
+  type?: LoginType
 }) {
 
-  const [loginType, setLoginType] = useState<LoginType>('code');
+  const location = useLocation();
+
+  function getQueryParam(key: string) {
+    const queryString = location.search || window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    return urlParams.get(key) || '';
+  }
+
+  const { type = 'password' } = props;
+
+  const [loginType, setLoginType] = useState<LoginType>(type);
 
   return (
     <LoginForm<RequestLoginParams>
       form={props.form}
-      logo={import.meta.env.VITE_APP_LOGO}
+      logo="https://u1.dl0.cn/icon/openailogo.svg"
       title=""
       subTitle="全网最便宜的人工智能对话"
       actions={(
@@ -46,10 +58,15 @@ export function LoginCard(props: {
         maxWidth: '340px',
         minWidth: '100px'
       }}
+      submitter={{
+        searchConfig: {
+          submitText: loginType === 'register' ? '注册&登录' : '登录',
+        }
+      }}
       onFinish={async (e) => {
         return new Promise((resolve, reject) => {
           userAsync
-            .fetchLogin({ ...e })
+            .fetchLogin({ ...e, invite_code: getQueryParam('invite_code') })
             .then((res) => {
               if (res.code) {
                 reject(false)
@@ -70,10 +87,21 @@ export function LoginCard(props: {
         onChange={(activeKey) => {
           setLoginType(activeKey)
         }}
-      >
-        <Tabs.TabPane key="code" tab="登录/注册" />
-        <Tabs.TabPane key="password" tab="密码登录" />
-      </Tabs>
+        items={[
+          {
+            key: 'password',
+            label: '密码登录',
+          },
+          {
+            key: 'code',
+            label: '邮箱登录',
+          },
+          {
+            key: 'register',
+            label: '注册账号',
+          },
+        ]}
+      />
       <ProFormText
         fieldProps={{
           size: 'large',
@@ -90,7 +118,7 @@ export function LoginCard(props: {
         ]}
       />
       {
-        loginType === 'code' && (
+        loginType !== 'password' && (
           <ProFormCaptcha
             fieldProps={{
               size: 'large',
@@ -134,7 +162,7 @@ export function LoginCard(props: {
         )
       }
       {
-        loginType === 'password' && (
+        loginType !== 'code' && (
           <ProFormText.Password
             name="password"
             fieldProps={{
@@ -152,6 +180,21 @@ export function LoginCard(props: {
           />
         )
       }
+      {/* <ProFormText
+        name="invite_code"
+        fieldProps={{
+          size: 'large',
+          prefix: <LockOutlined className={'prefixIcon'} />,
+        }}
+        placeholder="请输入密码"
+        rules={[
+          {
+            required: true,
+            message: '8位及以上至少包含一个字母和一个数字',
+            pattern: /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{8,}$/
+          },
+        ]}
+      /> */}
       <div
         style={{
           marginBlockEnd: 24

@@ -1,5 +1,7 @@
 import {
+  CalculatorFilled,
   CommentOutlined,
+  ContactsFilled,
   CrownFilled,
   ExperimentFilled,
   FileTextFilled,
@@ -9,16 +11,19 @@ import {
   IdcardFilled,
   InsuranceFilled,
   LockFilled,
+  MediumSquareFilled,
   MessageFilled,
   MoneyCollectFilled,
   NotificationFilled,
   PictureOutlined,
   ReconciliationFilled,
+  RedEnvelopeFilled,
   ScheduleFilled,
   SettingFilled,
   ShopFilled,
   ShopOutlined,
   SmileFilled,
+  UsergroupAddOutlined,
   WalletFilled
 } from '@ant-design/icons'
 
@@ -42,6 +47,12 @@ const web = [
     message: '账户余额和充值套餐记录'
   },
   {
+    path: '/user',
+    name: '邀请',
+    icon: <UsergroupAddOutlined />,
+    message: '账户余额和充值套餐记录'
+  },
+  {
     path: 'https://github.com/79E/ChatGpt-Web',
     name: '项目地址',
     icon: <GithubOutlined />,
@@ -54,7 +65,7 @@ const admin = {
   routes: [
     {
       path: '/admin',
-      name: '欢迎观临',
+      name: '欢迎光临',
       icon: <SmileFilled />
     },
     {
@@ -70,8 +81,8 @@ const admin = {
           icon: <LockFilled />
         },
         {
-          path: '/admin/token',
-          name: 'Token管理',
+          path: '/admin/aikey',
+          name: 'AI Key管理',
           icon: <InsuranceFilled />
         }
       ]
@@ -97,7 +108,27 @@ const admin = {
           path: '/admin/signin',
           name: '签到记录',
           icon: <ScheduleFilled />
-        }
+        },
+        {
+          path: '/admin/invite',
+          name: '邀请记录',
+          icon: <ContactsFilled />
+        },
+        {
+          path: '/admin/cashback',
+          name: '佣金提成',
+          icon: <CalculatorFilled />
+        },
+        {
+          path: '/admin/withdrawal',
+          name: '提现申请',
+          icon: <RedEnvelopeFilled />
+        },
+        {
+          path: '/admin/amounts',
+          name: '余额明细',
+          icon: <MediumSquareFilled />
+        },
       ]
     },
     {
@@ -135,14 +166,14 @@ const admin = {
       ]
     },
     {
+      name: '通知配置',
+      path: '/admin/notification',
+      icon: <NotificationFilled />
+    },
+    {
       path: '/admin/config',
       name: '系统配置',
       icon: <SettingFilled />
-    },
-	{
-		name: '通知配置',
-        path: '/admin/notification',
-		icon: <NotificationFilled />
     },
     {
       path: 'https://github.com/79E/ChatGpt-Web',
