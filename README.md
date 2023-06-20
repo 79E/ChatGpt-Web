@@ -15,6 +15,15 @@ A commercially-viable ChatGpt web application built with React.
 
 </div>
 
+## 交流&赞助
+<a href='https://t.me/+zMADkTgyzWMyYTk1' target='_blank'>
+<img width='46%' style="border-radius: 12px;" src='https://files.catbox.moe/vkkst9.png' />
+</a>
+<a href='https://t.me/+zMADkTgyzWMyYTk1' target='_blank'>
+<img width='46%' style="border-radius: 12px;" src='https://www.helloimg.com/images/2023/06/20/otDPwM.png' />
+</a>
+
+
 ## 🐶 演示
 ### 页面链接
 
@@ -36,7 +45,6 @@ A commercially-viable ChatGpt web application built with React.
 ![cover](https://files.catbox.moe/k16jsz.png)
 ![cover](https://files.catbox.moe/8o5oja.png)
 
-![赞赏](https://files.catbox.moe/wgi8v5.png)
 ## 🤖 主要功能
 
 - 后台管理系统,可对用户,Token,商品,卡密等进行管理
@@ -122,7 +130,7 @@ yarn build
 
 ## 💰 赞助方
 <a href='https://www.asiayun.com/aff/BMLOQGTD' target='_blank'>
-<img width='50%' src='https://imgcache.yyyisp.com/img/asiaxcimg.png' />
+<img width='50%' style="border-radius: 12px;"  src='https://imgcache.yyyisp.com/img/asiaxcimg.png' />
 </a>
 
 
