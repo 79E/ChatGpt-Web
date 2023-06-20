@@ -3,8 +3,6 @@
 
 <h1 align="center">ChatGPT Web</h1>
 
-English / [简体中文](https://github.com/79E/ChatGpt-Web/blob/master/README-CN.md)
-
 A commercially-viable ChatGpt web application built with React.
 
 可部署商业化的 ChatGpt 网页应用。
