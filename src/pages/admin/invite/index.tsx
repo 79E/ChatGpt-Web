@@ -52,7 +52,7 @@ function InviteRecordPage() {
       dataIndex: 'superior_id',
       width: 200,
       render: (_, data) => {
-        return <Tag>{data.superior.account}</Tag>
+        return <Tag>{data?.superior?.account || data?.superior_id}</Tag>
       }
     },
     {
@@ -60,7 +60,7 @@ function InviteRecordPage() {
       dataIndex: 'user_id',
       width: 200,
       render: (_, data) => {
-        return <Tag>{data.user.account}</Tag>
+        return <Tag>{data?.user?.account || data?.user_id }</Tag>
       }
     },
     {
@@ -132,7 +132,7 @@ function InviteRecordPage() {
             <Popconfirm
               placement="topRight"
               title="邀请真实性判断"
-              description="清判断是否为正常邀请,一旦通过奖励不可以收回！"
+              description="请判断是否为正常邀请,一旦通过奖励不可以收回！"
               onConfirm={() => {
                 putAdminInviteRecordPass({ id: data.id }).then((res) => {
                   if (res.code) return

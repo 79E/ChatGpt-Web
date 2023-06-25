@@ -31,7 +31,9 @@ export interface ChatState {
   // 清理当前会话
   clearChatMessage: (id: string | number) => void
   // 删除某条消息
-  delChatMessage: (id: string | number, messageId: string | number) => void
+  delChatMessage: (id: string | number, messageId: string | number) => void,
+  // 重置
+  changeChatMessage: (data: Array<ChatsInfo>) => void
 }
 
 const chatStore = create<ChatState>()(
@@ -76,6 +78,7 @@ const chatStore = create<ChatState>()(
         set(() => ({
           selectChatId: id
         })),
+		changeChatMessage: (data) => set({chats: data}),
       delChatMessage: (id, messageId) =>
         set((state: ChatState) => {
           const newChats = state.chats.map((c) => {

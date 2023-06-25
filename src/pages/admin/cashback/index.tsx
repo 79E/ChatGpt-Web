@@ -55,7 +55,7 @@ function UserPage() {
       dataIndex: 'user_id',
       width: 160,
       render: (_, data) => {
-        return <Tag>{data.user.account}</Tag>
+        return <Tag>{data?.user?.account || data?.user_id}</Tag>
       }
     },
     {
@@ -63,7 +63,7 @@ function UserPage() {
       dataIndex: 'user_id',
       width: 160,
       render: (_, data) => {
-        return <Tag>{data.benefit.account}</Tag>
+        return <Tag>{data?.benefit?.account || data?.benefit_id}</Tag>
       }
     },
     {
@@ -138,7 +138,7 @@ function UserPage() {
               key="pass"
               placement="topRight"
               title="充值真实性判断"
-              description="清判断是否为正常充值！"
+              description="请判断是否为正常充值！"
               onConfirm={() => {
                 putAdminCashbackPass({ id: data.id }).then((res) => {
                   if (res.code) return

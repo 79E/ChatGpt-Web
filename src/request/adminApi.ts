@@ -254,4 +254,14 @@ export function postAdminWithdrawalRecord(params: WithdrawalRecordInfo) {
 // 操作提现状态
 export function putAdminWithdrawalRecordOperate(params: WithdrawalRecordInfo) {
 	return request.put('/api/admin/withdrawal_record/operate', params)
-  }
+}
+
+// 删除消息
+export function delAdminMessage(params: { id: string | number }) {
+	return request.del(`/api/admin/messages/${params.id}`)
+}
+
+// 修改消息
+export function putAdminMessage(params: MessageInfo) {
+	return request.put('/api/admin/messages', params)
+}

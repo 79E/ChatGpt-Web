@@ -92,6 +92,7 @@ export interface ProductInfo {
   status: number
   type: string
   level: number
+  sort: number
   describe?: string
   create_time: string
   update_time: string

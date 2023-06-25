@@ -18,7 +18,14 @@ import { useLayoutEffect, useRef, useState } from 'react'
 import { drawStore, userStore } from '@/store'
 import OpenAiLogo from '@/components/OpenAiLogo'
 import { postChatCompletions, postImagesGenerations } from '@/request/api'
-import { ClearOutlined, CloseCircleOutlined, CloseOutlined, LoadingOutlined } from '@ant-design/icons'
+import {
+  CaretDownOutlined,
+  CaretUpOutlined,
+  ClearOutlined,
+  CloseCircleOutlined,
+  CloseOutlined,
+  LoadingOutlined
+} from '@ant-design/icons'
 import { formatTime, generateUUID, handleChatData } from '@/utils'
 import { ResponseData } from '@/request'
 import Layout from '@/components/Layout'
@@ -26,51 +33,51 @@ import Layout from '@/components/Layout'
 const drawSize = [
   {
     label: '256px',
-    value: 256,
+    value: 256
   },
   {
     label: '320px',
-    value: 320,
+    value: 320
   },
   {
     label: '356px',
-    value: 356,
+    value: 356
   },
   {
     label: '468px',
-    value: 468,
+    value: 468
   },
   {
     label: '512px',
-    value: 512,
+    value: 512
   },
   {
     label: '640px',
-    value: 640,
+    value: 640
   },
   {
     label: '704px',
-    value: 704,
+    value: 704
   },
   {
     label: '768px',
-    value: 768,
+    value: 768
   },
   {
     label: '832px',
-    value: 832,
+    value: 832
   },
   {
     label: '896px',
-    value: 896,
+    value: 896
   },
   {
     label: '960px',
-    value: 960,
+    value: 960
   },
   {
     label: '1024px',
-    value: 1024,
+    value: 1024
   }
 ]
 
@@ -101,16 +108,18 @@ function DrawPage() {
 
   const containerOneRef = useRef<HTMLDivElement>(null)
   const containerTwoRef = useRef<HTMLDivElement>(null)
-  const [bottom, setBottom] = useState(0);
+  const [bottom, setBottom] = useState(0)
+
+  const [collapse, setCollapse] = useState(true)
 
   const [drawConfig, setDrawConfig] = useState<{
-    prompt: string,
-    quantity: number,
-    width: number,
-    height: number,
-    quality?: number,
-    steps?: number,
-    style?: string,
+    prompt: string
+    quantity: number
+    width: number
+    height: number
+    quality?: number
+    steps?: number
+    style?: string
     image?: File | string
   }>({
     prompt: '',
@@ -123,9 +132,9 @@ function DrawPage() {
     image: ''
   })
 
-  const [showImage, setShowImage] = useState<string | ArrayBuffer | null>('');
-  const [drawType, setDrawType] = useState('openai');
-  const [gptLoading, setGptLoading] = useState(false);
+  const [showImage, setShowImage] = useState<string | ArrayBuffer | null>('')
+  const [drawType, setDrawType] = useState('openai')
+  const [gptLoading, setGptLoading] = useState(false)
   const [drawResultData, setDrawResultData] = useState<{
     loading: boolean
     list: Array<{ url: string }>
@@ -156,11 +165,11 @@ function DrawPage() {
 
   const onStartDraw = async () => {
     console.log(drawConfig)
-    if(gptLoading){
+    if (gptLoading) {
       message.warning('请等待提示词优化完毕')
       return
     }
-    if(!drawConfig.prompt){
+    if (!drawConfig.prompt) {
       message.warning('请输入提示词')
       return
     }
@@ -173,10 +182,14 @@ function DrawPage() {
       list: []
     })
 
-    await postImagesGenerations({
-      ...drawConfig,
-      draw_type: drawType
-    }, {}, { timeout: 0 })
+    await postImagesGenerations(
+      {
+        ...drawConfig,
+        draw_type: drawType
+      },
+      {},
+      { timeout: 0 }
+    )
       .then(handleDraw)
       .finally(() => {
         setDrawResultData((dr) => ({ ...dr, loading: false }))
@@ -197,17 +210,20 @@ function DrawPage() {
     问题：
     参考以上midjoruney prompt formula写1个midjourney prompt内容，用英文回复，不要括号，内容：宫崎骏风格的春天小镇
     回答：
-    英文：Miyazaki Hayao-style town,Green willow and red flowers, breeze coming, dreamy colors, fantastic elements, fairy-tale situation, warm breath, shooting in the evening, 4K ultra HD 
+    英文：Miyazaki Hayao-style town,Green willow and red flowers, breeze coming, dreamy colors, fantastic elements, fairy-tale situation, warm breath, shooting in the evening, 4K ultra HD
     现在严格参考以上的示例回答形式和风格（这很重要），根据以下的内容生成提示词(直接以英文输出，需要补全):${drawConfig.prompt}`
     const uuid = generateUUID()
-    const response = await postChatCompletions({
-      prompt: p,
-      parentMessageId: uuid
-    }, {
-      options: {
-        signal
+    const response = await postChatCompletions(
+      {
+        prompt: p,
+        parentMessageId: uuid
+      },
+      {
+        options: {
+          signal
+        }
       }
-    })
+    )
 
     if (!(response instanceof Response)) {
       controller.abort()
@@ -227,51 +243,49 @@ function DrawPage() {
       const text = new TextDecoder('utf-8').decode(value)
       const texts = handleChatData(text)
       for (let i = 0; i < texts.length; i++) {
-        const {content, segment } = texts[i]
+        const { content, segment } = texts[i]
         allContent += content ? content : ''
         if (segment === 'stop') {
-          setDrawConfig((config)=>({...config, prompt: allContent}))
+          setDrawConfig((config) => ({ ...config, prompt: allContent }))
           controller.abort()
           setGptLoading(false)
           break
         }
         if (segment === 'start') {
-          setDrawConfig((config)=>({...config, prompt: allContent}))
+          setDrawConfig((config) => ({ ...config, prompt: allContent }))
         }
         if (segment === 'text') {
-          setDrawConfig((config)=>({...config, prompt: allContent}))
+          setDrawConfig((config) => ({ ...config, prompt: allContent }))
         }
       }
     }
   }
 
   const handleScroll = () => {
-    const twoClientHeight = containerTwoRef.current?.clientHeight || 0;
-    const oneScrollTop = containerOneRef.current?.scrollTop || 0;
+    const twoClientHeight = containerTwoRef.current?.clientHeight || 0
+    const oneScrollTop = containerOneRef.current?.scrollTop || 0
     if (oneScrollTop > 100) {
-      setBottom(-(twoClientHeight + 100));
+      setBottom(-(twoClientHeight + 100))
     } else {
-      setBottom(0);
+      setBottom(0)
     }
   }
 
   useLayoutEffect(() => {
-    containerOneRef.current?.addEventListener('scroll', handleScroll);
+    containerOneRef.current?.addEventListener('scroll', handleScroll)
     return () => {
-      containerOneRef.current?.removeEventListener('scroll', handleScroll);
-    };
+      containerOneRef.current?.removeEventListener('scroll', handleScroll)
+    }
   }, [])
 
-  function SegmentedLabel({ icon, title }: {
-    icon: string,
-    title: string
-  }) {
+  function SegmentedLabel({ icon, title }: { icon: string; title: string }) {
     return (
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
-      }}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}
       >
         <img style={{ width: 24, marginRight: 4 }} src={icon} alt={title} />
         <span style={{ fontWeight: 500 }}>{title}</span>
@@ -279,14 +293,13 @@ function DrawPage() {
     )
   }
 
-
   const showFile = async (file: any) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
     reader.onload = () => {
       setShowImage(reader.result)
-    };
-  };
+    }
+  }
 
   return (
     <div className={styles.drawPage}>
@@ -294,10 +307,7 @@ function DrawPage() {
         <div className={styles.drawPage_container}>
           <div className={styles.drawPage_container_one} ref={containerOneRef}>
             <div className={styles.drawPage_header}>
-              <img
-                src="https://u1.dl0.cn/icon/Midjourneybf2f31b4a2ac2dc9.png"
-                alt="Midjourney"
-              />
+              <img src="https://u1.dl0.cn/icon/Midjourneybf2f31b4a2ac2dc9.png" alt="Midjourney" />
               <h2>AI 一下，妙笔生画</h2>
               <h4>只需一句话，让你的文字变成画作</h4>
             </div>
@@ -364,101 +374,140 @@ function DrawPage() {
             ref={containerTwoRef}
           >
             <div className={styles.drawPage_config}>
-              <Segmented
-                block
-                value={drawType}
-                style={{
-                  backgroundImage: 'linear-gradient(120deg, #a6c0fe 0%, #f68084 100%)',
-                }}
-                onChange={(e) => {
-                  setDrawType(e.toString())
-                }}
-                options={[
-                  {
-                    label: <SegmentedLabel icon="https://u1.dl0.cn/icon/openai_draw_icon.png" title="OpenAI" />,
-                    value: 'openai'
-                  },
-                  {
-                    label: <SegmentedLabel icon="https://u1.dl0.cn/icon/sd_draw_icon.png" title="StableDiffusion" />,
-                    value: 'stablediffusion'
-                  },
-                ]}
-              />
-              <div className={styles.drawPage_config_group}>
-                <div className={styles.drawPage_config_item}>
-                  <p>图片宽度：</p>
-                  <Select
-                    defaultValue={drawConfig.width}
-                    value={drawConfig.width}
-                    options={drawSize}
-                    onChange={(e) => {
-                      setDrawConfig((c) => ({ ...c, width: e }))
-                    }}
-                  />
+              <div style={{
+				paddingLeft: 20,
+				paddingRight: 20
+			  }}
+              >
+                <div
+                  className={styles.drawPage_config_collapse}
+                  onClick={() => {
+                    setCollapse((c) => {
+                      return !c
+                    })
+                  }}
+                >
+                  {' '}
+                  {collapse ? (
+                    <p>
+                      <CaretUpOutlined /> <span style={{ fontSize: 12 }}>展开配置</span>
+                    </p>
+                  ) : (
+                    <p>
+                      <CaretDownOutlined /> <span style={{ fontSize: 12 }}>收缩配置</span>
+                    </p>
+                  )}{' '}
                 </div>
-                <div className={styles.drawPage_config_item}>
-                  <p>图片高度：</p>
-                  <Select
-                    defaultValue={drawConfig.height}
-                    value={drawConfig.height}
-                    options={drawSize}
-                    onChange={(e) => {
-                      setDrawConfig((c) => ({ ...c, height: e }))
-                    }}
-                  />
-                </div>
-                <div className={styles.drawPage_config_item}>
-                  <p>生成数量({drawConfig.quantity}张)：</p>
-                  <Slider
-                    defaultValue={drawConfig.quantity}
-                    value={drawConfig.quantity}
-                    min={1}
-                    max={10}
-                    onChange={(e) => {
-                      setDrawConfig((c) => ({ ...c, quantity: e }))
-                    }}
-                  />
-                </div>
-              </div>
-              {
-                drawType === 'stablediffusion' && (
+                <Segmented
+                  block
+                  value={drawType}
+                  style={{
+                    backgroundImage: 'linear-gradient(120deg, #a6c0fe 0%, #f68084 100%)'
+                  }}
+                  onChange={(e) => {
+                    setDrawType(e.toString())
+                  }}
+                  options={[
+                    {
+                      label: (
+                        <SegmentedLabel
+                          icon="https://u1.dl0.cn/icon/openai_draw_icon.png"
+                          title="OpenAI"
+                        />
+                      ),
+                      value: 'openai'
+                    },
+                    {
+                      label: (
+                        <SegmentedLabel
+                          icon="https://u1.dl0.cn/icon/sd_draw_icon.png"
+                          title="StableDiffusion"
+                        />
+                      ),
+                      value: 'stablediffusion'
+                    }
+                  ]}
+                />
+                <div
+                  className={styles.drawPage_config_options}
+                  style={{
+                    maxHeight: collapse ? 0 : '300px'
+                  }}
+                >
                   <div className={styles.drawPage_config_group}>
                     <div className={styles.drawPage_config_item}>
-                      <p>优化次数({drawConfig.steps})：</p>
-                      <Slider
-                        defaultValue={drawConfig.steps}
-                        value={drawConfig.steps}
-                        min={10}
-                        max={150}
-                        onChange={(e) => {
-                          setDrawConfig((c) => ({ ...c, steps: e }))
-                        }}
-                      />
-                    </div>
-                    <div className={styles.drawPage_config_item}>
-                      <p>图像质量({drawConfig.quality})：</p>
-                      <Slider
-                        defaultValue={drawConfig.quality}
-                        value={drawConfig.quality}
-                        min={1}
-                        max={37}
-                        onChange={(e) => {
-                          setDrawConfig((c) => ({ ...c, quality: e }))
-                        }}
-                      />
-                    </div>
-                    <div className={styles.drawPage_config_item}>
-                      <p>图像风格：</p>
+                      <p>图片宽度：</p>
                       <Select
-                        defaultValue={drawConfig.style}
-                        value={drawConfig.style}
-                        options={stylePresets}
-                        clearIcon
+                        defaultValue={drawConfig.width}
+                        value={drawConfig.width}
+                        options={drawSize}
                         onChange={(e) => {
-                          setDrawConfig((c) => ({ ...c, style: e }))
+                          setDrawConfig((c) => ({ ...c, width: e }))
                         }}
                       />
-                      {/* <Radio.Group onChange={(e) => {
+                    </div>
+                    <div className={styles.drawPage_config_item}>
+                      <p>图片高度：</p>
+                      <Select
+                        defaultValue={drawConfig.height}
+                        value={drawConfig.height}
+                        options={drawSize}
+                        onChange={(e) => {
+                          setDrawConfig((c) => ({ ...c, height: e }))
+                        }}
+                      />
+                    </div>
+                    <div className={styles.drawPage_config_item}>
+                      <p>生成数量({drawConfig.quantity}张)：</p>
+                      <Slider
+                        defaultValue={drawConfig.quantity}
+                        value={drawConfig.quantity}
+                        min={1}
+                        max={10}
+                        onChange={(e) => {
+                          setDrawConfig((c) => ({ ...c, quantity: e }))
+                        }}
+                      />
+                    </div>
+                  </div>
+                  {drawType === 'stablediffusion' && (
+                    <div className={styles.drawPage_config_group}>
+                      <div className={styles.drawPage_config_item}>
+                        <p>优化次数({drawConfig.steps})：</p>
+                        <Slider
+                          defaultValue={drawConfig.steps}
+                          value={drawConfig.steps}
+                          min={10}
+                          max={150}
+                          onChange={(e) => {
+                            setDrawConfig((c) => ({ ...c, steps: e }))
+                          }}
+                        />
+                      </div>
+                      <div className={styles.drawPage_config_item}>
+                        <p>图像质量({drawConfig.quality})：</p>
+                        <Slider
+                          defaultValue={drawConfig.quality}
+                          value={drawConfig.quality}
+                          min={1}
+                          max={37}
+                          onChange={(e) => {
+                            setDrawConfig((c) => ({ ...c, quality: e }))
+                          }}
+                        />
+                      </div>
+                      <div className={styles.drawPage_config_item}>
+                        <p>图像风格：</p>
+                        <Select
+                          defaultValue={drawConfig.style}
+                          value={drawConfig.style}
+                          options={stylePresets}
+                          clearIcon
+                          onChange={(e) => {
+                            setDrawConfig((c) => ({ ...c, style: e }))
+                          }}
+                        />
+                        {/* <Radio.Group onChange={(e) => {
                       const { value } = e.target;
                       if (value === drawConfig.style) {
                         setDrawConfig((c) => ({ ...c, style: '' }))
@@ -479,37 +528,43 @@ function DrawPage() {
                         })}
                       </div>
                     </Radio.Group> */}
+                      </div>
                     </div>
-                  </div>
-                )
-              }
+                  )}
+                </div>
+              </div>
               <div className={styles.drawPage_config_input}>
-                <Upload maxCount={1} accept="image/*" disabled={drawType === 'openai'} 
-                showUploadList={false}
-                customRequest={(options)=>{
-                  showFile(options.file)
-                  setDrawConfig((config)=>({...config, image: options.file as File}))
-                }}
-                >
-                  <div className={styles.drawPage_config_input_image} style={{
-                    opacity: drawType === 'stablediffusion' ? 1 : 0.6,
-                    cursor: drawType === 'stablediffusion' ? 'pointer' : 'not-allowed',
-                    backgroundImage: (drawConfig.image && showImage) ? `url(${showImage})` : ''
+                <Upload
+                  maxCount={1}
+                  accept="image/*"
+                  disabled={drawType === 'openai'}
+                  showUploadList={false}
+                  customRequest={(options) => {
+                    showFile(options.file)
+                    setDrawConfig((config) => ({ ...config, image: options.file as File }))
                   }}
+                >
+                  <div
+                    className={styles.drawPage_config_input_image}
+                    style={{
+                      opacity: drawType === 'stablediffusion' ? 1 : 0.6,
+                      cursor: drawType === 'stablediffusion' ? 'pointer' : 'not-allowed',
+                      backgroundImage: drawConfig.image && showImage ? `url(${showImage})` : ''
+                    }}
                   >
                     上传图片
-                    {
-                      drawConfig.image && (
-                        <div className={styles.drawPage_config_input_image_close} onClick={(e) => {
+                    {drawConfig.image && (
+                      <div
+                        className={styles.drawPage_config_input_image_close}
+                        onClick={(e) => {
                           setDrawConfig((config) => ({ ...config, image: '' }))
                           setShowImage('')
                           e.stopPropagation()
                         }}
-                        >
-                          <CloseCircleOutlined />
-                        </div>
-                      )
-                    }
+                      >
+                        <CloseCircleOutlined />
+                      </div>
+                    )}
                   </div>
                 </Upload>
                 <Input.TextArea
@@ -529,9 +584,7 @@ function DrawPage() {
                   placeholder="请输入绘画提示次，可以使用优化功能对提示词进行优化效果会更好哦！"
                 />
                 <div className={styles.drawPage_config_input_buttons}>
-                  <div onClick={optimizePrompt}>
-                    {gptLoading && <LoadingOutlined />} 优化文案
-                  </div>
+                  <div onClick={optimizePrompt}>{gptLoading && <LoadingOutlined />} 优化文案</div>
                   <div onClick={onStartDraw}>
                     {drawResultData.loading && <LoadingOutlined />} 生成图像
                   </div>

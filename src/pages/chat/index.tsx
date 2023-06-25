@@ -1,9 +1,10 @@
 import { CommentOutlined, DeleteOutlined } from '@ant-design/icons'
 import { Button, Modal, Popconfirm, Space, Tabs, Select, message } from 'antd'
-import { useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 
 import styles from './index.module.less'
 import { chatStore, configStore, userStore } from '@/store'
+import { chatAsync } from '@/store/async'
 import RoleNetwork from './components/RoleNetwork'
 import RoleLocal from './components/RoleLocal'
 import AllInput from './components/AllInput'
@@ -46,6 +47,10 @@ function ChatPage() {
       scrollToBottom()
     }
   }, [scrollRef.current, selectChatId, chats])
+
+  useEffect(()=>{
+	chatAsync.fetchChatMessages()
+  }, [])
 
   // 当前聊天记录
   const chatMessages = useMemo(() => {
@@ -268,7 +273,7 @@ function ChatPage() {
                   title="删除会话"
                   description="是否确定删除会话？"
                   onConfirm={() => {
-                    delChat(item.id)
+					chatAsync.fetchDelUserMessages({ id: item.id,  type: 'del' })
                   }}
                   onCancel={() => {
                     // ==== 无操作 ====
@@ -323,7 +328,7 @@ function ChatPage() {
                 title="删除全部对话"
                 description="您确定删除全部会话对吗? "
                 onConfirm={() => {
-                  clearChats()
+					chatAsync.fetchDelUserMessages({ type: 'delAll' })
                 }}
                 onCancel={() => {
                   // ==== 无操作 ====
@@ -381,7 +386,7 @@ function ChatPage() {
                 scrollToBottomIfAtBottom()
               }}
               clearMessage={() => {
-                clearChatMessage(selectChatId)
+				chatAsync.fetchDelUserMessages({ id: selectChatId,  type: 'clear' })
               }}
               onStopFetch={() => {
                 // 结束

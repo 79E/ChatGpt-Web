@@ -4,7 +4,7 @@ import { RequestLoginParams } from '@/types'
 import {
   HeartFilled,
   LockOutlined,
-  MailOutlined,
+  UserOutlined,
   RedditCircleFilled,
   SlackCircleFilled,
   TwitterCircleFilled
@@ -44,7 +44,7 @@ export function LoginCard(props: {
       form={props.form}
       logo="https://u1.dl0.cn/icon/openailogo.svg"
       title=""
-      subTitle="全网最便宜的人工智能对话"
+      subTitle="基于大语言模型的AI对话产品"
       actions={(
         <Space>
           <HeartFilled />
@@ -94,7 +94,7 @@ export function LoginCard(props: {
           },
           {
             key: 'code',
-            label: '邮箱登录',
+            label: '验证码登录',
           },
           {
             key: 'register',
@@ -105,15 +105,13 @@ export function LoginCard(props: {
       <ProFormText
         fieldProps={{
           size: 'large',
-          prefix: <MailOutlined />
+          prefix: <UserOutlined />
         }}
         name="account"
-        placeholder="邮箱"
+        placeholder="电子邮箱/手机号码"
         rules={[
           {
             required: true,
-            message: '请输入电子邮箱',
-            pattern: /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/
           }
         ]}
       />
@@ -143,15 +141,6 @@ export function LoginCard(props: {
             ]}
             onGetCaptcha={async () => {
               const account = props.form.getFieldValue('account')
-              if (!account || !/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(account)) {
-                props.form.setFields([
-                  {
-                    name: 'account',
-                    errors: ['请输入有效的邮箱地址']
-                  }
-                ])
-                return Promise.reject()
-              }
               return new Promise((resolve, reject) =>
                 getCode({ source: account })
                   .then(() => resolve())
@@ -174,7 +163,7 @@ export function LoginCard(props: {
               {
                 required: true,
                 message: '8位及以上至少包含一个字母和一个数字',
-                pattern: /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{8,}$/
+                pattern: /^(?=[a-zA-Z])(?=.*[a-zA-Z\d])[a-zA-Z\d.]{8,}$/
               },
             ]}
           />

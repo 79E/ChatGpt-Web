@@ -24,8 +24,9 @@ function ConfigPage() {
     cashback_ratio: number | string
   }>()
 
-  const [historyMessageForm] = Form.useForm<{
-    history_message_count: number | string
+  const [aiCarryCountForm] = Form.useForm<{
+    ai3_carry_count: number | string
+    ai4_carry_count: number | string
   }>()
 
   const [aiRatioForm] = Form.useForm<{
@@ -53,6 +54,21 @@ function ConfigPage() {
     tuputech_key: string
   }>()
 
+  const [smsForm] = Form.useForm<{
+    user: string
+    password: string
+    sign: string
+    template: string
+  }>()
+
+  const [emailForm] = Form.useForm<{
+    host: string
+    port: string | number
+    user: string
+    pass: string
+    from_title: string
+    subject: string
+  }>()
 
   const shopIntroduce = useRef<string>()
   const userIntroduce = useRef<string>()
@@ -66,7 +82,6 @@ function ConfigPage() {
   function onRewardFormSet(data: Array<ConfigInfo>) {
     const registerRewardInfo = getConfigValue('register_reward', data)
     const signinRewardInfo = getConfigValue('signin_reward', data)
-    const historyMessageCountInfo = getConfigValue('history_message_count', data)
     const ai3Ratio = getConfigValue('ai3_ratio', data)
     const ai4Ratio = getConfigValue('ai4_ratio', data)
     const drawPrice = getConfigValue('draw_price', data)
@@ -79,9 +94,14 @@ function ConfigPage() {
       invite_reward: invite_reward.value,
       cashback_ratio: cashback_ratio.value
     })
-    historyMessageForm.setFieldsValue({
-      history_message_count: Number(historyMessageCountInfo.value)
+
+    const ai3CarryCountInfo = getConfigValue('ai3_carry_count', data)
+    const ai4CarryCountInfo = getConfigValue('ai4_carry_count', data)
+    aiCarryCountForm.setFieldsValue({
+      ai3_carry_count: Number(ai3CarryCountInfo.value) || 0,
+      ai4_carry_count: Number(ai4CarryCountInfo.value) || 0
     })
+
     aiRatioForm.setFieldsValue({
       ai3_ratio: Number(ai3Ratio.value),
       ai4_ratio: Number(ai4Ratio.value)
@@ -127,14 +147,28 @@ function ConfigPage() {
       })
     }
 
-	const tuputech_key = getConfigValue('tuputech_key', data)
+    const tuputech_key = getConfigValue('tuputech_key', data)
     if (tuputech_key && tuputech_key.value) {
-	tuputechKeyForm.setFieldsValue({
+      tuputechKeyForm.setFieldsValue({
         tuputech_key: tuputech_key.value
       })
     }
 
+    const sms = getConfigValue('sms', data)
+    if (sms && sms.value) {
+      const smsData = JSON.parse(sms.value)
+      smsForm.setFieldsValue({
+        ...smsData
+      })
+    }
 
+    const email = getConfigValue('email', data)
+    if (email && email.value) {
+      const emailData = JSON.parse(email.value)
+      emailForm.setFieldsValue({
+        ...emailData
+      })
+    }
   }
 
   function onGetConfig() {
@@ -394,11 +428,11 @@ function ConfigPage() {
           </QueryFilter>
         </div>
         <div className={styles.config_form}>
-          <h3>历史记录</h3>
+          <h3>历史记录携带数量</h3>
           <QueryFilter
             autoFocus={false}
             autoFocusFirstInput={false}
-            form={historyMessageForm}
+            form={aiCarryCountForm}
             onFinish={onSave}
             onReset={() => {
               onRewardFormSet(configs)
@@ -412,8 +446,15 @@ function ConfigPage() {
             resetText="恢复"
           >
             <ProFormDigit
-              name="history_message_count"
-              label="携带数量"
+              name="ai3_carry_count"
+              label="GPT3"
+              tooltip="会话上下文携带对话数量"
+              min={1}
+              max={100000}
+            />
+            <ProFormDigit
+              name="ai4_carry_count"
+              label="GPT4"
               tooltip="会话上下文携带对话数量"
               min={1}
               max={100000}
@@ -574,6 +615,165 @@ function ConfigPage() {
     )
   }
 
+  function SmsSettings() {
+    return (
+      <Space
+        direction="vertical"
+        style={{
+          width: '100%'
+        }}
+      >
+        <div className={styles.config_form}>
+          <h3>短信设置</h3>
+          <ProForm
+            autoFocus={false}
+            autoFocusFirstInput={false}
+            form={smsForm}
+            size="large"
+            initialValues={{}}
+            isKeyPressSubmit={false}
+            submitter={{
+              searchConfig: {
+                submitText: '保存',
+                resetText: '恢复'
+              }
+            }}
+            onFinish={(vales) => {
+              return onSave({
+                sms: JSON.stringify(vales)
+              })
+            }}
+            onReset={() => {
+              onRewardFormSet(configs)
+            }}
+          >
+            <ProForm.Group>
+              <ProFormText
+                width="xl"
+                name="user"
+                label="用户名"
+                rules={[{ required: true, message: '请输入短信服务商的用户名!' }]}
+              />
+              <ProFormText
+                width="xl"
+                name="password"
+                label="API Key"
+                rules={[{ required: true, message: '请输入API Key!' }]}
+              />
+              <ProFormText
+                width="xl"
+                name="sign"
+                label="短信签名"
+                rules={[{ required: true, message: '请输入短信签名!' }]}
+              />
+              <ProFormTextArea
+                width="xl"
+                name="template"
+                fieldProps={{
+                  autoSize: {
+                    minRows: 2,
+                    maxRows: 2
+                  }
+                }}
+                label="短信模版"
+                rules={[{ required: true, message: '请输入短信模版!' }]}
+              />
+              <Space direction="vertical" size="small">
+                <p>
+                  1. 案例模版：
+                  {
+                    '您的验证码为：{code}，有效期{time}分钟，请勿泄露。如非本人操作，请忽略此短信。谢谢！'
+                  }
+                </p>
+                <p>2. 会自动替换 code，time，如您自己定制模版请遵守这个规则。</p>
+                <p>
+                  3.
+                  最终：【Ai之家】您的验证码为：123456，有效期10分钟，请勿泄露。如非本人操作，请忽略此短信。谢谢！
+                </p>
+                <p
+                  style={{
+                    marginBottom: 20
+                  }}
+                >
+                  4. 短信服务商为:{' '}
+                  <a href="https://www.smsbao.com" target="_blank" rel="noreferrer">
+                    【短信宝】
+                  </a>
+                </p>
+              </Space>
+            </ProForm.Group>
+          </ProForm>
+        </div>
+      </Space>
+    )
+  }
+
+  function EmailSettings() {
+    return (
+      <Space
+        direction="vertical"
+        style={{
+          width: '100%'
+        }}
+      >
+        <div className={styles.config_form}>
+          <h3>邮件设置</h3>
+          <ProForm
+            autoFocus={false}
+            autoFocusFirstInput={false}
+            form={emailForm}
+            size="large"
+            initialValues={{}}
+            isKeyPressSubmit={false}
+            submitter={{
+              searchConfig: {
+                submitText: '保存',
+                resetText: '恢复'
+              }
+            }}
+            onFinish={(vales) => {
+              return onSave({
+                email: JSON.stringify(vales)
+              })
+            }}
+            onReset={() => {
+              onRewardFormSet(configs)
+            }}
+          >
+            <ProForm.Group>
+              <ProFormText
+                width="xl"
+                name="host"
+                label="SMTP服务器"
+                rules={[{ required: true, message: '请输入SMTP服务器!' }]}
+              />
+              <ProFormText
+                width="xl"
+                name="port"
+                label="SMTP端口"
+                rules={[{ required: true, message: '请输入SMTP端口!' }]}
+              />
+              <ProFormText
+                width="xl"
+                name="user"
+                label="邮箱账号"
+                rules={[{ required: true, message: '请输入短信签名!' }]}
+              />
+              <ProFormText
+                width="xl"
+                name="pass"
+                label="邮箱密码"
+                rules={[{ required: true, message: '请输入短信签名!' }]}
+              />
+              <ProFormText width="xl" name="from_title" label="发件用户名称" />
+              <ProFormText width="xl" name="subject" label="邮件标题" />
+            </ProForm.Group>
+          </ProForm>
+        </div>
+      </Space>
+    )
+  }
+
   return (
     <div className={styles.config}>
       <Tabs
@@ -600,6 +800,16 @@ function ConfigPage() {
             label: '违禁词审核设置',
             key: 'ReviewProhibitedWordsSettings',
             children: <ReviewProhibitedWordsSettings />
+          },
+          {
+            label: '短信配置',
+            key: 'SmsSettings',
+            children: <SmsSettings />
+          },
+          {
+            label: '邮件配置',
+            key: 'EmailSettings',
+            children: <EmailSettings />
           }
         ]}
       />

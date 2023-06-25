@@ -45,11 +45,11 @@ function UserPage() {
       render: (_, data) => {
         return (
           <Popover
-            content={<Typography.Paragraph copyable>{data.user_id}</Typography.Paragraph>}
+            content={<Typography.Paragraph copyable>{data?.user_id}</Typography.Paragraph>}
             title="用户ID"
           >
             <Tag>
-              <SecurityScanFilled /> {data.user.account}
+              <SecurityScanFilled /> {data?.user?.account || data?.user_id}
             </Tag>
           </Popover>
         )

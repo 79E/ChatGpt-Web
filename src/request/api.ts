@@ -1,4 +1,5 @@
 import {
+	ChatsInfo,
   ConsumeRecordInfo,
   InvitationRecordInfo,
   ProductInfo,
@@ -124,4 +125,13 @@ export function getUserRecords(params: { page: number; page_size: number; type: 
 // 申请提现
 export function postUserWithdrawal(params: WithdrawalRecordInfo) {
   return request.post('/api/user/withdrawal', params)
+}
+
+// 消息列表
+export function getUserMessages(){
+	return request.get<Array<ChatsInfo>>('/api/user/messages')
+}
+
+export function delUserMessages(params: { parent_message_id?: string | number }){
+	return request.del('/api/user/messages', params)
 }
