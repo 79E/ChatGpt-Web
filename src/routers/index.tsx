@@ -37,6 +37,7 @@ import AdminCashbackPage from '@/pages/admin/cashback'
 import AdminInvitePage from '@/pages/admin/invite'
 import AdminWithdrawalPage from '@/pages/admin/withdrawal'
 import AdminAmountsPage from '@/pages/admin/amounts'
+import AdminDialogPage from '@/pages/admin/dialog'
 
 export const webRouter: RouteOptions[] = [
   {
@@ -178,6 +179,17 @@ export const adminRouter: RouteOptions[] = [
         index: false,
         configure: {
           title: '对话记录',
+          verifToken: true,
+          role: ['administrator']
+        }
+      },
+	  {
+        id: 'AdminDialogPage',
+        path: '/admin/dialog',
+        element: <AdminDialogPage />,
+        index: false,
+        configure: {
+          title: '内置对话',
           verifToken: true,
           role: ['administrator']
         }

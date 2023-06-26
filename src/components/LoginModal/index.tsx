@@ -162,8 +162,8 @@ export function LoginCard(props: {
             rules={[
               {
                 required: true,
-                message: '8位及以上至少包含一个字母和一个数字',
-                pattern: /^(?=[a-zA-Z])(?=.*[a-zA-Z\d])[a-zA-Z\d.]{8,}$/
+                message: '8位及以上字母数字',
+                pattern: /^(?:[a-zA-Z]{8,}|\d{8,}|(?=.*\d)(?=.*[a-zA-Z])[a-zA-Z\d]{8,})$/
               },
             ]}
           />

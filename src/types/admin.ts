@@ -226,20 +226,31 @@ export interface AmountDetailInfo {
 }
 
 export interface WithdrawalRecordInfo {
-	new_status?: number
-	id: number;
-	user_id: string;
-	amount: string;
-	type: string;
-	name: string;
-	contact: string;
-	account: string;
-	remarks: string;
-	message: string;
-	ip: string;
-	user_agent: string;
-	status: number;
-	create_time: string;
-	update_time: string;
-	user: UserInfo;
+  new_status?: number
+  id: number
+  user_id: string
+  amount: string
+  type: string
+  name: string
+  contact: string
+  account: string
+  remarks: string
+  message: string
+  ip: string
+  user_agent: string
+  status: number
+  create_time: string
+  update_time: string
+  user: UserInfo
+}
+
+export interface DialogInfo {
+  id: number | string
+  issue: string
+  answer: string
+  models: string
+  delay: number
+  status: number
+  create_time: string
+  update_time: string
 }

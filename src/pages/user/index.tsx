@@ -30,7 +30,7 @@ import {
   ProFormText,
   ProFormTextArea
 } from '@ant-design/pro-components'
-import { LockOutlined, MailOutlined } from '@ant-design/icons'
+import { LockOutlined, MailOutlined, UserOutlined } from '@ant-design/icons'
 import { fetchUserPassword, fetchUserRecords, fetchUserWithdrawal } from '@/store/user/async'
 import { useNavigate } from 'react-router-dom'
 import { ColumnsType } from 'antd/es/table'
@@ -591,16 +591,13 @@ function UserPage() {
         <ProFormText
           fieldProps={{
             size: 'large',
-            prefix: <MailOutlined />
+            prefix: <UserOutlined />
           }}
           name="account"
-          placeholder="邮箱"
           disabled
           rules={[
             {
               required: true,
-              message: '请输入电子邮箱',
-              pattern: /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/
             }
           ]}
         />
@@ -628,15 +625,6 @@ function UserPage() {
           ]}
           onGetCaptcha={async () => {
             const account = userAccountForm.getFieldValue('account')
-            if (!account || !/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(account)) {
-              userAccountForm.setFields([
-                {
-                  name: 'account',
-                  errors: ['请输入有效的邮箱地址']
-                }
-              ])
-              return Promise.reject()
-            }
             return new Promise((resolve, reject) =>
               getCode({ source: account })
                 .then(() => resolve())
@@ -655,8 +643,8 @@ function UserPage() {
             rules={[
               {
                 required: true,
-                message: '8位及以上至少包含一个字母和一个数字',
-                pattern: /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{8,}$/
+                message: '8位及以上字母数字',
+                pattern: /^(?:[a-zA-Z]{8,}|\d{8,}|(?=.*\d)(?=.*[a-zA-Z])[a-zA-Z\d]{8,})$/
               }
             ]}
           />

@@ -14,6 +14,7 @@ A commercially-viable ChatGpt web application built with React.
 </div>
 
 ## 交流&赞助
+<h2 align="center"><a href='https://github.com/79E/ChatGpt-Web/issues/71' target='_blank'>服务端代码下载（点我）</a></h2>
 <a href='https://t.me/+zMADkTgyzWMyYTk1' target='_blank'>
 <img width='46%' style="border-radius: 12px;" src='https://files.catbox.moe/vkkst9.png' />
 </a>

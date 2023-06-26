@@ -49,8 +49,10 @@ function ChatPage() {
   }, [scrollRef.current, selectChatId, chats])
 
   useEffect(()=>{
-	chatAsync.fetchChatMessages()
-  }, [])
+    if(token){
+      chatAsync.fetchChatMessages()
+    }
+  }, [token])
 
   // 当前聊天记录
   const chatMessages = useMemo(() => {

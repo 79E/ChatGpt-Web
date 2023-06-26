@@ -1,5 +1,5 @@
 import UserHead from '@/components/UserHead'
-import { delAdminUsers, getAdminUsers, putAdminUsers } from '@/request/adminApi'
+import { delAdminUsers, getAdminUsers, postAdminUser, putAdminUsers } from '@/request/adminApi'
 import { UserInfo } from '@/types/admin'
 import {
   ActionType,
@@ -156,7 +156,23 @@ function UserPage() {
           })
         }}
         toolbar={{
-          actions: []
+          actions: [
+            <Button
+              key="primary"
+              type="primary"
+              size="small"
+              onClick={() => {
+                setEditInfoModal(() => {
+                  return {
+                    open: true,
+                    info: undefined
+                  }
+                })
+              }}
+            >
+              新增用户
+            </Button>
+          ]
         }}
         rowKey="id"
         search={false}
@@ -167,7 +183,9 @@ function UserPage() {
         open={edidInfoModal.open}
         form={form}
         initialValues={{
-          status: 1
+          status: 1,
+          role: 'user',
+          integral: 0
         }}
         onOpenChange={(visible) => {
           if (!visible) {
@@ -181,14 +199,23 @@ function UserPage() {
           })
         }}
         onFinish={async (values) => {
-          if (!edidInfoModal.info?.id) return false
-          const res = await putAdminUsers({
-            ...values,
-            id: edidInfoModal.info?.id
-          })
-          if (res.code) {
-            message.error('编辑失败')
-            return false
+          if (!edidInfoModal.info?.id) {
+            const res = await postAdminUser({
+				...values,
+			})
+			if (res.code) {
+				message.error('新增失败')
+				return false
+			}
+          } else {
+            const res = await putAdminUsers({
+              ...values,
+              id: edidInfoModal.info?.id
+            })
+            if (res.code) {
+              message.error('编辑失败')
+              return false
+            }
           }
           tableActionRef.current?.reload?.()
           return true
@@ -246,18 +273,18 @@ function UserPage() {
             rules={[{ required: true, message: '请输入用户名称' }]}
           />
           <ProFormText
-            width="lg"
             name="avatar"
             label="用户头像"
             rules={[{ required: true, message: '请输入用户头像' }]}
           />
+          <ProFormText name="superior_id" label="上级ID" />
         </ProFormGroup>
 
         <ProFormGroup>
           <ProFormDigit
             label="剩余积分"
             name="integral"
-            min={0}
+            min={-1000000}
             max={1000000}
             rules={[{ required: true, message: '请输入剩余积分' }]}
           />
@@ -272,6 +299,13 @@ function UserPage() {
             rules={[{ required: true, message: '请输入剩余积分' }]}
           />
         </ProFormGroup>
+        {!edidInfoModal?.info?.id && (
+          <ProFormText
+            name="password"
+            label="默认密码"
+            rules={[{ required: true, message: '请输入默认密码' }]}
+          />
+        )}
       </ModalForm>
     </div>
   )

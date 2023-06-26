@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react'
+import React, { useEffect, useLayoutEffect, useMemo, useRef } from 'react'
 import { copyToClipboard, joinTrim } from '@/utils'
 import styles from './index.module.less'
 import OpenAiLogo from '@/components/OpenAiLogo'
@@ -150,12 +150,12 @@ function ChatMessage({
     )
   }, [content, position])
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     addCopyEvents()
     return () => {
       removeCopyEvents()
     }
-  }, [markdownBodyRef.current])
+  }, [markdownBodyRef.current, content])
 
   function chatAvatar({ icon, style }: { icon: string; style?: React.CSSProperties }) {
     return (

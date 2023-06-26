@@ -16,7 +16,8 @@ import {
   InviteRecordInfo,
   CashbackInfo,
   AmountDetailInfo,
-  WithdrawalRecordInfo
+  WithdrawalRecordInfo,
+  DialogInfo
 } from '@/types/admin'
 import request from '.'
 
@@ -51,6 +52,10 @@ export function delAdminUsers(params: { id: string | number }) {
 // 修改用户
 export function putAdminUsers(params: UserInfo) {
   return request.put('/api/admin/user', params)
+}
+// 新增用户
+export function postAdminUser(params: UserInfo) {
+	return request.post('/api/admin/user', params)
 }
 
 // 用户消费列表
@@ -264,4 +269,24 @@ export function delAdminMessage(params: { id: string | number }) {
 // 修改消息
 export function putAdminMessage(params: MessageInfo) {
 	return request.put('/api/admin/messages', params)
+}
+
+// 获取内置对话
+export function getAdminDialogs(params?: Paging) {
+	return request.get<TableData<DialogInfo>>('/api/admin/dialog', params)
+}
+
+// 修改内置对话
+export function putAdminDialog(params: DialogInfo) {
+	return request.put('/api/admin/dialog', params)
+}
+
+// 新增内置对话
+export function postAdminDialog(params: DialogInfo) {
+	return request.post('/api/admin/dialog', params)
+}
+
+// 删除内置对话
+export function delAdminDialog(params: { id: string | number }) {
+	return request.del(`/api/admin/dialog/${params.id}`)
 }
