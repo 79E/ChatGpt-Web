@@ -134,6 +134,23 @@ export interface YipayInfo {
   return_url?: string
 }
 
+export interface JsPayInfo {
+	api: string
+	mchid: string | number
+	key: string
+	return_url?: string
+}
+
+
+export interface HpjPayInfo {
+	api: string
+	appid: string | number
+	key: string
+	return_url?: string
+}
+
+
+
 export interface PaymentInfo {
   id: number
   name: string

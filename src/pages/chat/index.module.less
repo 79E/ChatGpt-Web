@@ -1,5 +1,5 @@
 .chatPage{
-
+	overflow: hidden;
     .menuItem{
         color: #333;
         padding: 12px;
@@ -44,21 +44,36 @@
     &_container{
         display: flex;
         flex-direction: column;
-        height: calc(100vh - 56px);
+		box-sizing: content-box;
+		overflow: hidden;
+		height: calc(100vh - 56px);
+		position: relative;
 
         &_one{
-            flex: 1;
+			flex: 1 1;
             width: 100%;
             max-width: 900px;
             align-self: center;
             overflow: auto;
+
             &::-webkit-scrollbar {
                 display: none;
             }
         }
+
         &_two{
+			box-sizing: border-box;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: 100%;
+			background-color: #ffffff;
+			position: absolute;
+			left: 50%;
+			transform: translateX(-50%);
+			bottom: 0;
+			box-sizing: border-box;
             padding: 12px 12px 20px;
-            // height: 80px;
         }
     }
 }
@@ -105,4 +120,8 @@
             padding-inline: 4px;
         }
     }
+
+	[class*='ant-layout-header']{
+		// height: 0px !important;
+	}
 }

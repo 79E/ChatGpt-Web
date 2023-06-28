@@ -120,7 +120,7 @@ function AllInput(props: Props) {
           onPressEnter={(e) => {
             if (e.key === 'Enter' && e.keyCode === 13 && e.shiftKey) {
               // === 无操作 ===
-            } else if (e.key === 'Enter' && e.keyCode === 13) {
+            } else if (e.key === 'Enter' && e.keyCode === 13 && bodyResize.width > 800) {
               if (!props.disabled) {
                 props?.onSend?.(prompt)
                 setPrompt('')

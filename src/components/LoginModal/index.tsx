@@ -46,12 +46,14 @@ export function LoginCard(props: {
       title=""
       subTitle="基于大语言模型的AI对话产品"
       actions={(
-        <Space>
-          <HeartFilled />
-          <RedditCircleFilled />
-          <SlackCircleFilled />
-          <TwitterCircleFilled />
-        </Space>
+        <div
+          style={{
+            textAlign: 'center',
+            fontSize: 14
+          }}
+        >
+          <p>登录即代表你同意 <a href="https://www.baidu.com/">《平台协议》</a>和<a href="https://www.baidu.com/">《隐私政策》</a> </p>
+        </div>
       )}
       contentStyle={{
         width: '100%',

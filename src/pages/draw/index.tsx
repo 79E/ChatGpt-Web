@@ -14,14 +14,17 @@ import {
   Select,
   Upload
 } from 'antd'
-import { useLayoutEffect, useRef, useState } from 'react'
+import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { drawStore, userStore } from '@/store'
 import OpenAiLogo from '@/components/OpenAiLogo'
 import { postChatCompletions, postImagesGenerations } from '@/request/api'
 import {
   CaretDownOutlined,
   CaretUpOutlined,
+  CheckCircleFilled,
+  CheckCircleOutlined,
   ClearOutlined,
+  CloseCircleFilled,
   CloseCircleOutlined,
   CloseOutlined,
   LoadingOutlined
@@ -134,7 +137,7 @@ function DrawPage() {
 
   const [showImage, setShowImage] = useState<string | ArrayBuffer | null>('')
   const [drawType, setDrawType] = useState('openai')
-  const [gptLoading, setGptLoading] = useState(false)
+  const [optimize, setOptimize] = useState(true)
   const [drawResultData, setDrawResultData] = useState<{
     loading: boolean
     list: Array<{ url: string }>
@@ -164,11 +167,6 @@ function DrawPage() {
   }
 
   const onStartDraw = async () => {
-    console.log(drawConfig)
-    if (gptLoading) {
-      message.warning('请等待提示词优化完毕')
-      return
-    }
     if (!drawConfig.prompt) {
       message.warning('请输入提示词')
       return
@@ -185,7 +183,8 @@ function DrawPage() {
     await postImagesGenerations(
       {
         ...drawConfig,
-        draw_type: drawType
+        draw_type: drawType,
+        optimize
       },
       {},
       { timeout: 0 }
@@ -196,69 +195,8 @@ function DrawPage() {
       })
   }
 
-  async function optimizePrompt() {
-    if (!drawConfig.prompt) {
-      message.warning('请输入提示词！')
-      return
-    }
-    const controller = new AbortController()
-    const signal = controller.signal
-    setGptLoading(true)
-    const p = `你需要为我生成AI绘画提示词，回答的形式是：
-    (image we're prompting), (7 descriptivekeywords), (time of day), (Hd degree).
-    这是一段段按照上述形式的示例问答：
-    问题：
-    参考以上midjoruney prompt formula写1个midjourney prompt内容，用英文回复，不要括号，内容：宫崎骏风格的春天小镇
-    回答：
-    英文：Miyazaki Hayao-style town,Green willow and red flowers, breeze coming, dreamy colors, fantastic elements, fairy-tale situation, warm breath, shooting in the evening, 4K ultra HD
-    现在严格参考以上的示例回答形式和风格（这很重要），根据以下的内容生成提示词(直接以英文输出，需要补全):${drawConfig.prompt}`
-    const uuid = generateUUID()
-    const response = await postChatCompletions(
-      {
-        prompt: p,
-        parentMessageId: uuid
-      },
-      {
-        options: {
-          signal
-        }
-      }
-    )
-
-    if (!(response instanceof Response)) {
-      controller.abort()
-      setGptLoading(false)
-      return
-    }
-
-    const reader = response.body?.getReader?.()
-    let allContent = ''
-    while (true) {
-      const { done, value } = (await reader?.read()) || {}
-      if (done) {
-        controller?.abort()
-        break
-      }
-      // 将获取到的数据片段显示在屏幕上
-      const text = new TextDecoder('utf-8').decode(value)
-      const texts = handleChatData(text)
-      for (let i = 0; i < texts.length; i++) {
-        const { content, segment } = texts[i]
-        allContent += content ? content : ''
-        if (segment === 'stop') {
-          setDrawConfig((config) => ({ ...config, prompt: allContent }))
-          controller.abort()
-          setGptLoading(false)
-          break
-        }
-        if (segment === 'start') {
-          setDrawConfig((config) => ({ ...config, prompt: allContent }))
-        }
-        if (segment === 'text') {
-          setDrawConfig((config) => ({ ...config, prompt: allContent }))
-        }
-      }
-    }
+  async function changeOptimize() {
+    setOptimize((o) => !o)
   }
 
   const handleScroll = () => {
@@ -374,10 +312,11 @@ function DrawPage() {
             ref={containerTwoRef}
           >
             <div className={styles.drawPage_config}>
-              <div style={{
-				paddingLeft: 20,
-				paddingRight: 20
-			  }}
+              <div
+                style={{
+                  paddingLeft: 20,
+                  paddingRight: 20
+                }}
               >
                 <div
                   className={styles.drawPage_config_collapse}
@@ -409,20 +348,26 @@ function DrawPage() {
                   }}
                   options={[
                     {
-                      label: (
-                        <SegmentedLabel
-                          icon="https://u1.dl0.cn/icon/openai_draw_icon.png"
-                          title="OpenAI"
-                        />
+                      label: useMemo(
+                        () => (
+                          <SegmentedLabel
+                            icon="https://u1.dl0.cn/icon/openai_draw_icon.png"
+                            title="OpenAI"
+                          />
+                        ),
+                        []
                       ),
                       value: 'openai'
                     },
                     {
-                      label: (
-                        <SegmentedLabel
-                          icon="https://u1.dl0.cn/icon/sd_draw_icon.png"
-                          title="StableDiffusion"
-                        />
+                      label: useMemo(
+                        () => (
+                          <SegmentedLabel
+                            icon="https://u1.dl0.cn/icon/sd_draw_icon.png"
+                            title="StableDiffusion"
+                          />
+                        ),
+                        []
                       ),
                       value: 'stablediffusion'
                     }
@@ -581,10 +526,18 @@ function DrawPage() {
                   style={{
                     borderRadius: 0
                   }}
-                  placeholder="请输入绘画提示次，可以使用优化功能对提示词进行优化效果会更好哦！"
+                  placeholder="请输入绘画提示次，可勾选优化文案功能对提示词进行优化效果会更好哦！"
                 />
                 <div className={styles.drawPage_config_input_buttons}>
-                  <div onClick={optimizePrompt}>{gptLoading && <LoadingOutlined />} 优化文案</div>
+                  <div
+                    onClick={changeOptimize}
+                    style={{
+                      opacity: optimize ? 1 : 0.6,
+					  backgroundColor: optimize ? '#ff8400' : '#d46e00'
+                    }}
+                  >
+                    {optimize ? <CheckCircleOutlined /> : <CloseCircleOutlined />} 优化文案
+                  </div>
                   <div onClick={onStartDraw}>
                     {drawResultData.loading && <LoadingOutlined />} 生成图像
                   </div>

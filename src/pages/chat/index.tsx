@@ -16,6 +16,7 @@ import { filterObjectNull, formatTime, generateUUID, handleChatData } from '@/ut
 import { useScroll } from '@/hooks/useScroll'
 import useDocumentResize from '@/hooks/useDocumentResize'
 import Layout from '@/components/Layout'
+import useMobile from '@/hooks/useMobile'
 
 function ChatPage() {
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -36,6 +37,8 @@ function ChatPage() {
   } = chatStore()
 
   const bodyResize = useDocumentResize()
+
+  const isMobile = useMobile();
 
   // 提示指令预设
   const [roleConfigModal, setRoleConfigModal] = useState({
@@ -360,7 +363,7 @@ function ChatPage() {
               {chatMessages.map((item) => {
                 return (
                   <ChatMessage
-                    key={item.id}
+                    key={item.dateTime + item.role + item.text}
                     position={item.role === 'user' ? 'right' : 'left'}
                     status={item.status}
                     content={item.text}
@@ -377,9 +380,14 @@ function ChatPage() {
                 )
               })}
               {chatMessages.length <= 0 && <Reminder />}
+			  <div style={{ height: 80 }} />
             </div>
           </div>
-          <div className={styles.chatPage_container_two}>
+          <div className={styles.chatPage_container_two}
+		  	style={{
+				position: isMobile ? 'fixed' : 'absolute'
+			}}
+          >
             <AllInput
               disabled={!!fetchController}
               onSend={(value) => {
