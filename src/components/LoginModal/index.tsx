@@ -10,7 +10,7 @@ import {
   TwitterCircleFilled
 } from '@ant-design/icons'
 import { LoginForm, ProFormCaptcha, ProFormText } from '@ant-design/pro-form'
-import { Form, FormInstance, Modal, Space, Tabs } from 'antd'
+import { Button, Form, FormInstance, Modal, Space, Tabs } from 'antd'
 import { useState } from 'react'
 import { useNavigation, useLocation } from 'react-router-dom'
 
@@ -37,6 +37,7 @@ export function LoginCard(props: {
 
   const { type = 'password' } = props;
 
+  const [loginTabsValue, setLoginTabsValue] = useState<LoginType>('login');
   const [loginType, setLoginType] = useState<LoginType>(type);
 
   return (
@@ -85,22 +86,21 @@ export function LoginCard(props: {
     >
       <Tabs
         centered
-        activeKey={loginType}
+        activeKey={loginTabsValue}
         onChange={(activeKey) => {
-          setLoginType(activeKey)
+          props.form.resetFields()
+          const type = activeKey === 'login' ? 'password' : activeKey
+          setLoginType(type)
+          setLoginTabsValue(activeKey)
         }}
         items={[
           {
-            key: 'password',
-            label: '密码登录',
-          },
-          {
-            key: 'code',
-            label: '验证码登录',
+            key: 'login',
+            label: '账户登录',
           },
           {
             key: 'register',
-            label: '注册账号',
+            label: '注册账户',
           },
         ]}
       />
@@ -171,21 +171,30 @@ export function LoginCard(props: {
           />
         )
       }
-      {/* <ProFormText
-        name="invite_code"
-        fieldProps={{
-          size: 'large',
-          prefix: <LockOutlined className={'prefixIcon'} />,
-        }}
-        placeholder="请输入密码"
-        rules={[
-          {
-            required: true,
-            message: '8位及以上至少包含一个字母和一个数字',
-            pattern: /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{8,}$/
-          },
-        ]}
-      /> */}
+      <div style={{ textAlign: 'right' }}>
+        {
+          (loginTabsValue === 'login' && loginType === 'code') && (
+            <Button type="link" onClick={() => {
+              props.form.resetFields()
+              setLoginType('password')
+            }}
+            >
+              密码登录
+            </Button>
+          )
+        }
+        {
+          (loginTabsValue === 'login' && loginType === 'password') && (
+            <Button type="link" onClick={() => {
+              props.form.resetFields()
+              setLoginType('code')
+            }}
+            >
+              验证码登录
+            </Button>
+          )
+        }
+      </div>
       <div
         style={{
           marginBlockEnd: 24

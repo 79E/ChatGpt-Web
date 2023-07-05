@@ -3,8 +3,8 @@ import styles from './index.module.less'
 import { ClearOutlined, CloudDownloadOutlined, SyncOutlined } from '@ant-design/icons'
 import { useMemo, useState } from 'react'
 import { promptStore } from '@/store'
-import html2canvas from 'html2canvas'
 import useDocumentResize from '@/hooks/useDocumentResize'
+import { htmlToImage } from '@/utils'
 
 type Props = {
   onSend: (value: string) => void
@@ -43,30 +43,15 @@ function AllInput(props: Props) {
 
   // 保存聊天记录到图片
   async function downloadChatRecords() {
-    try {
-      setDownloadModal((d) => ({ ...d, loading: true }))
-      const ele = document.getElementById('image-wrapper')
-      const canvas = await html2canvas(ele as HTMLDivElement, {
-        useCORS: true
+    setDownloadModal((d) => ({ ...d, loading: true }))
+    htmlToImage('image-wrapper')
+      .then(() => {
+		message.success('下载聊天记录成功')
+        setDownloadModal((d) => ({ ...d, loading: false }))
       })
-      const imgUrl = canvas.toDataURL('image/png')
-      const tempLink = document.createElement('a')
-      tempLink.style.display = 'none'
-      tempLink.href = imgUrl
-      tempLink.setAttribute('download', 'chat-shot.png')
-      if (typeof tempLink.download === 'undefined') tempLink.setAttribute('target', '_blank')
-      document.body.appendChild(tempLink)
-      tempLink.click()
-      document.body.removeChild(tempLink)
-      window.URL.revokeObjectURL(imgUrl)
-      setDownloadModal(() => ({ open: false, loading: false }))
-      Promise.resolve()
-    } catch (error: any) {
-      message.error('下载聊天记录失败')
-      Promise.reject()
-    } finally {
-      setDownloadModal((d) => ({ ...d, loading: false }))
-    }
+      .catch(() => {
+        message.error('下载聊天记录失败')
+      })
   }
 
   return (

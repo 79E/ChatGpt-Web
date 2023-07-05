@@ -17,7 +17,7 @@ import {
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { drawStore, userStore } from '@/store'
 import OpenAiLogo from '@/components/OpenAiLogo'
-import { postChatCompletions, postImagesGenerations } from '@/request/api'
+import { postChatCompletion, postImagesGenerations } from '@/request/api'
 import {
   CaretDownOutlined,
   CaretUpOutlined,
@@ -114,6 +114,7 @@ function DrawPage() {
   const [bottom, setBottom] = useState(0)
 
   const [collapse, setCollapse] = useState(true)
+  const [gptLoading, setGptLoading] = useState(false)
 
   const [drawConfig, setDrawConfig] = useState<{
     prompt: string
@@ -137,7 +138,6 @@ function DrawPage() {
 
   const [showImage, setShowImage] = useState<string | ArrayBuffer | null>('')
   const [drawType, setDrawType] = useState('openai')
-  const [optimize, setOptimize] = useState(true)
   const [drawResultData, setDrawResultData] = useState<{
     loading: boolean
     list: Array<{ url: string }>
@@ -167,6 +167,10 @@ function DrawPage() {
   }
 
   const onStartDraw = async () => {
+    if (gptLoading) {
+      message.warning('请等待提示词优化完毕')
+      return
+    }
     if (!drawConfig.prompt) {
       message.warning('请输入提示词')
       return
@@ -184,7 +188,6 @@ function DrawPage() {
       {
         ...drawConfig,
         draw_type: drawType,
-        optimize
       },
       {},
       { timeout: 0 }
@@ -195,8 +198,45 @@ function DrawPage() {
       })
   }
 
-  async function changeOptimize() {
-    setOptimize((o) => !o)
+  async function optimizePrompt() {
+    setGptLoading(true)
+    const response = await postChatCompletion({
+      prompt: drawConfig.prompt,
+      type: 'draw'
+    }).then((res) => {
+      return res
+    }).catch((error) => {
+      setGptLoading(false)
+      return error
+    })
+
+    const reader = response.body?.getReader?.()
+    let allContent = ''
+    while (true) {
+      const { done = true, value } = (await reader?.read()) || {}
+      if (done) {
+        setGptLoading(false)
+        break
+      }
+      // 将获取到的数据片段显示在屏幕上
+      const text = new TextDecoder('utf-8').decode(value)
+      const texts = handleChatData(text)
+      for (let i = 0; i < texts.length; i++) {
+        const { content, segment } = texts[i]
+        allContent += content ? content : ''
+        if (segment === 'stop') {
+          setGptLoading(false)
+          break
+        }
+
+        if (segment === 'start') {
+          setDrawConfig((config) => ({ ...config, prompt: allContent }))
+        }
+        if (segment === 'text') {
+          setDrawConfig((config) => ({ ...config, prompt: allContent }))
+        }
+      }
+    }
   }
 
   const handleScroll = () => {
@@ -529,15 +569,7 @@ function DrawPage() {
                   placeholder="请输入绘画提示次，可勾选优化文案功能对提示词进行优化效果会更好哦！"
                 />
                 <div className={styles.drawPage_config_input_buttons}>
-                  <div
-                    onClick={changeOptimize}
-                    style={{
-                      opacity: optimize ? 1 : 0.6,
-					  backgroundColor: optimize ? '#ff8400' : '#d46e00'
-                    }}
-                  >
-                    {optimize ? <CheckCircleOutlined /> : <CloseCircleOutlined />} 优化文案
-                  </div>
+                  <div onClick={optimizePrompt}>{gptLoading && <LoadingOutlined />} 优化文案</div>
                   <div onClick={onStartDraw}>
                     {drawResultData.loading && <LoadingOutlined />} 生成图像
                   </div>

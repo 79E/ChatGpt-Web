@@ -1,0 +1,53 @@
+.mapping {
+	&_content {
+		width: 100vw;
+		min-height: calc(100vh - 56px);
+		background-color: #fff;
+		position: relative;
+	}
+
+	&_svg {
+		width: 100%;
+		height: calc(74vh - 56px);
+	}
+
+	&_input {
+		position: absolute;
+		width: 100%;
+		max-width: 800px;
+		background-color: #ffffff;
+		bottom: 40px;
+		left: 50%;
+		padding:0 12px;
+		box-sizing: border-box;
+		transform: translateX(-50%);
+	}
+
+	&_exports{
+		display: flex;
+		align-items: center;
+		div {
+			height: 38px;
+			box-sizing: border-box;
+			padding: 0 8px;
+			background-color: #f0a020;
+			border-radius: 6px;
+			margin-right: 4px;
+			white-space:nowrap;
+			line-height: 40px;
+			font-size: 14px;
+			color: #fff;
+			font-weight: 500;
+			cursor: pointer;
+			&:nth-last-child(2){
+				background-color: #18a058;
+			}
+		}
+
+
+	}
+
+	[class*='ant-pro-layout-content'] {
+		padding: 0 !important;
+	}
+}

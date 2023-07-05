@@ -17,7 +17,8 @@ import {
   CashbackInfo,
   AmountDetailInfo,
   WithdrawalRecordInfo,
-  DialogInfo
+  DialogInfo,
+  PersonaInfo
 } from '@/types/admin'
 import request from '.'
 
@@ -289,4 +290,21 @@ export function postAdminDialog(params: DialogInfo) {
 // 删除内置对话
 export function delAdminDialog(params: { id: string | number }) {
 	return request.del(`/api/admin/dialog/${params.id}`)
+}
+
+// 获取角色数据
+export function getAdminPersonas(params?: Paging) {
+	return request.get<TableData<PersonaInfo>>('/api/admin/persona', params)
+}
+// 编辑角色数据
+export function putAdminPersona(params: PersonaInfo) {
+	return request.put('/api/admin/persona', params)
+}
+// 新增角色数据
+export function postAdminPersona(params: PersonaInfo) {
+	return request.post('/api/admin/persona', params)
+}
+// 删除角色数据
+export function delAdminPersona(params: { id: string | number }) {
+	return request.del(`/api/admin/persona/${params.id}`)
 }

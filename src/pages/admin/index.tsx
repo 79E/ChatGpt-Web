@@ -5,12 +5,13 @@ import { Dropdown } from 'antd'
 import { LogoutOutlined } from '@ant-design/icons'
 import React, { useState } from 'react'
 import menuList from '@/routers/menu_list'
-import { userStore } from '@/store'
+import { chatStore, userStore } from '@/store'
 import OpenAiLogo from '@/components/OpenAiLogo'
 
 function AdminPage() {
   const navigate = useNavigate()
   const { token, user_info, logout } = userStore()
+  const { clearChats } = chatStore()
   const [selectedKeys, setSelectedKeys] = useState<Array<string>>([])
   if (!token || user_info?.role !== 'administrator') {
     return (
@@ -79,6 +80,7 @@ function AdminPage() {
                       label: '退出登录',
                       onClick: () => {
                         logout()
+						clearChats()
                         navigate('/login')
                       }
                     }

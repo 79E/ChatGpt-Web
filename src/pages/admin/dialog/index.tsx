@@ -20,7 +20,7 @@ import {
 } from '@ant-design/pro-components'
 import { ProTable } from '@ant-design/pro-components'
 
-function MessagePage() {
+function DialogPage() {
   const tableActionRef = useRef<ActionType>()
   const [form] = Form.useForm<
     DialogInfo & {
@@ -311,4 +311,4 @@ function MessagePage() {
   )
 }
 
-export default MessagePage
+export default DialogPage

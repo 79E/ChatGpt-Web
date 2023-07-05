@@ -2,6 +2,7 @@ import {
 	ChatsInfo,
   ConsumeRecordInfo,
   InvitationRecordInfo,
+  PersonaInfo,
   ProductInfo,
   RequesPrepay,
   RequestChatOptions,
@@ -24,7 +25,7 @@ export function getCode(params: { source: string }) {
   return request.get('/api/send_sms', params)
 }
 
-// 登陆
+// 登录
 export function postLogin(params: RequestLoginParams) {
   return request.post<ResponseLoginData>('/api/login', params)
 }
@@ -43,6 +44,19 @@ export function postChatCompletions(
   }
 ) {
   return request.postStreams<Response>('/api/chat/completions', params, config)
+}
+
+export function postChatCompletion(
+  params: {
+    prompt: string,
+    type?: string
+  },
+  config?: {
+    headers?: { [key: string]: any }
+    options?: { [key: string]: any }
+  }
+) {
+  return request.postStreams<Response>('/api/chat/completion', params, config)
 }
 
 // 请求绘画
@@ -102,6 +116,16 @@ export function postSignin() {
 // 获取签到列表
 export function getSigninList() {
   return request.get<Array<SigninInfo>>('/api/signin/list')
+}
+
+// 获取角色数据
+export function getPersonas(){
+	return request.get<Array<PersonaInfo>>('/api/persona')
+}
+
+// 新增角色数据
+export function postPersona(params: PersonaInfo){
+	return request.post('/api/persona', params)
 }
 
 // 重置用户密码

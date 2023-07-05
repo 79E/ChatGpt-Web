@@ -1,5 +1,11 @@
-import { CommentOutlined, DeleteOutlined } from '@ant-design/icons'
-import { Button, Modal, Popconfirm, Space, Tabs, Select, message } from 'antd'
+import {
+  CommentOutlined,
+  DeleteOutlined,
+  GitlabFilled,
+  RedditCircleFilled,
+  RedditSquareFilled
+} from '@ant-design/icons'
+import { Button, Modal, Popconfirm, Space, Tabs, Select, message, Badge } from 'antd'
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 
 import styles from './index.module.less'
@@ -17,6 +23,7 @@ import { useScroll } from '@/hooks/useScroll'
 import useDocumentResize from '@/hooks/useDocumentResize'
 import Layout from '@/components/Layout'
 import useMobile from '@/hooks/useMobile'
+import PersonaModal from '@/components/personaModal'
 
 function ChatPage() {
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -38,10 +45,15 @@ function ChatPage() {
 
   const bodyResize = useDocumentResize()
 
-  const isMobile = useMobile();
+  const isMobile = useMobile()
 
   // 提示指令预设
   const [roleConfigModal, setRoleConfigModal] = useState({
+    open: false
+  })
+
+  // ai角色
+  const [personaModal, setPersonaModal] = useState({
     open: false
   })
 
@@ -51,8 +63,8 @@ function ChatPage() {
     }
   }, [scrollRef.current, selectChatId, chats])
 
-  useEffect(()=>{
-    if(token){
+  useEffect(() => {
+    if (token) {
       chatAsync.fetchChatMessages()
     }
   }, [token])
@@ -199,13 +211,13 @@ function ChatPage() {
       setLoginModal(true)
       return
     }
-    const parentMessageId =
-      refurbishOptions?.requestOptions.parentMessageId ||
-      chats.filter((c) => c.id === selectChatId)[0].id
+    const selectChat = chats.filter((c) => c.id === selectChatId)[0]
+    const parentMessageId = refurbishOptions?.requestOptions.parentMessageId || selectChat.id
     let userMessageId = generateUUID()
     const requestOptions = {
       prompt: vaule,
       parentMessageId,
+      persona_id: selectChat?.persona_id || refurbishOptions?.persona_id || '',
       options: filterObjectNull({
         ...config,
         ...refurbishOptions?.requestOptions.options
@@ -270,7 +282,7 @@ function ChatPage() {
           return (
             <div className={className}>
               <span className={styles.menuItem_icon}>
-                <CommentOutlined />
+                {item.persona_id ? <RedditCircleFilled /> : <CommentOutlined />}
               </span>
               <span className={styles.menuItem_name}>{item.name}</span>
               <div className={styles.menuItem_options}>
@@ -278,7 +290,7 @@ function ChatPage() {
                   title="删除会话"
                   description="是否确定删除会话？"
                   onConfirm={() => {
-					chatAsync.fetchDelUserMessages({ id: item.id,  type: 'del' })
+                    chatAsync.fetchDelUserMessages({ id: item.id, type: 'del' })
                   }}
                   onCancel={() => {
                     // ==== 无操作 ====
@@ -309,14 +321,26 @@ function ChatPage() {
                   })
                 }}
               />
-              <Button
-                block
-                onClick={() => {
-                  setRoleConfigModal({ open: true })
-                }}
-              >
-                AI提示指令
-              </Button>
+              <Space className={styles.space}>
+                <Button
+                  block
+                  onClick={() => {
+                    setRoleConfigModal({ open: true })
+                  }}
+                >
+                  AI提示指令
+                </Button>
+                <Button
+                  block
+                  onClick={() => {
+                    setPersonaModal({
+                      open: true
+                    })
+                  }}
+                >
+                  AI角色
+                </Button>
+              </Space>
               <Button
                 block
                 onClick={() => {
@@ -333,7 +357,11 @@ function ChatPage() {
                 title="删除全部对话"
                 description="您确定删除全部会话对吗? "
                 onConfirm={() => {
-					chatAsync.fetchDelUserMessages({ type: 'delAll' })
+                  if (token) {
+                    chatAsync.fetchDelUserMessages({ type: 'delAll' })
+                  } else {
+                    clearChats()
+                  }
                 }}
                 onCancel={() => {
                   // ==== 无操作 ====
@@ -358,6 +386,9 @@ function ChatPage() {
         }}
       >
         <div className={styles.chatPage_container}>
+          {/* {
+            chatMessages[0]?.persona_id && <div className={styles.chatPage_container_persona}>当前为预置角色对话</div>
+          } */}
           <div ref={scrollRef} className={styles.chatPage_container_one}>
             <div id="image-wrapper">
               {chatMessages.map((item) => {
@@ -380,13 +411,14 @@ function ChatPage() {
                 )
               })}
               {chatMessages.length <= 0 && <Reminder />}
-			  <div style={{ height: 80 }} />
+              <div style={{ height: 80 }} />
             </div>
           </div>
-          <div className={styles.chatPage_container_two}
-		  	style={{
-				position: isMobile ? 'fixed' : 'absolute'
-			}}
+          <div
+            className={styles.chatPage_container_two}
+            style={{
+              position: isMobile ? 'fixed' : 'absolute'
+            }}
           >
             <AllInput
               disabled={!!fetchController}
@@ -396,7 +428,11 @@ function ChatPage() {
                 scrollToBottomIfAtBottom()
               }}
               clearMessage={() => {
-				chatAsync.fetchDelUserMessages({ id: selectChatId,  type: 'clear' })
+                if (token) {
+                  chatAsync.fetchDelUserMessages({ id: selectChatId, type: 'clear' })
+                } else {
+                  setLoginModal(true)
+                }
               }}
               onStopFetch={() => {
                 // 结束
@@ -438,6 +474,24 @@ function ChatPage() {
           ]}
         />
       </Modal>
+
+      <PersonaModal
+        {...personaModal}
+        onCreateChat={(info) => {
+          addChat({
+            persona_id: info.id,
+            name: info.title
+          })
+          setPersonaModal({
+            open: false
+          })
+        }}
+        onCancel={() => {
+          setPersonaModal({
+            open: false
+          })
+        }}
+      />
     </div>
   )
 }

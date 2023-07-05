@@ -8,11 +8,11 @@ export interface userState {
   loginModal: boolean
   // 用户信息
   user_info: UserInfo | undefined
-  // 登陆Token
+  // 登录Token
   token: string | undefined
   // 修改登录弹窗
   setLoginModal: (value: boolean) => void
-  // 登陆
+  // 登录
   login: (data: ResponseLoginData) => void
   // 退出
   logout: () => void

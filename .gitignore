@@ -4,6 +4,7 @@ logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+yarn.lock
 pnpm-debug.log*
 lerna-debug.log*
 package-lock.json

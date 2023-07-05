@@ -9,7 +9,10 @@ export interface ChatState {
   // 当前选择的会话id
   selectChatId: string | number
   // 新增一个对话
-  addChat: () => void
+  addChat: (value?: {
+	persona_id?: number | string,
+	name?: string
+  }) => void
   // 删除一个对话
   delChat: (id: string | number) => void
   // 清空所有对话
@@ -41,9 +44,9 @@ const chatStore = create<ChatState>()(
     (set, get) => ({
       chats: [],
       selectChatId: '',
-      addChat: () =>
+      addChat: (value) =>
         set((state: ChatState) => {
-          const info = generateChatInfo()
+          const info = generateChatInfo(value)
           const newChats = [...state.chats]
           newChats.unshift({ ...info })
           return {

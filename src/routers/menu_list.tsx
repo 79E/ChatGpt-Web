@@ -19,6 +19,7 @@ import {
   PictureOutlined,
   ReconciliationFilled,
   RedEnvelopeFilled,
+  RedditCircleFilled,
   ScheduleFilled,
   SettingFilled,
   ShopFilled,
@@ -40,6 +41,12 @@ const web = [
     name: '绘画',
     icon: <PictureOutlined />,
     message: '利用智能AI绘画出图片'
+  },
+  {
+    path: '/mapping',
+    name: '思维导图',
+    icon: <PictureOutlined />,
+    message: '利用智能AI生成思维导图'
   },
   {
     path: '/shop',
@@ -142,6 +149,11 @@ const admin = {
           name: '内置对话',
           icon: <GitlabFilled />
         },
+		{
+			path: '/admin/persona',
+			name: '角色配置',
+			icon: <RedditCircleFilled />
+		},
 		{
 			path: '/admin/messages',
 			name: '消息列表',

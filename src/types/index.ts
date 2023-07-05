@@ -92,6 +92,7 @@ export interface ChatsInfo {
   path: string
   id: string
   name: string
+  persona_id?: string | number
   data: Array<ChatGpt>
 }
 
@@ -110,6 +111,7 @@ export interface ChatGpt {
   dateTime: string
   status: 'pass' | 'loading' | 'error'
   role: 'assistant' | 'user' | string
+  persona_id?: string | number
   requestOptions: RequestChatOptions
 }
 
@@ -235,4 +237,18 @@ export interface WithdrawalRecordInfo {
 	create_time: string;
 	update_time: string;
 	user: UserInfo;
+}
+
+
+export interface PersonaInfo {
+	id: string | number;
+	user_id?: string | number;
+	title: string;
+	emoji: string;
+	description?: string;
+	context: string;
+	status: number;
+	create_time: string;
+	update_time: string;
+	user?: UserInfo;
 }

@@ -3,6 +3,7 @@ import { MessageInfo } from '@/types/admin'
 import { ActionType, ProColumns } from '@ant-design/pro-components'
 import { ProTable } from '@ant-design/pro-components'
 import { Button, Tag, message } from 'antd'
+import { Emoji } from 'emoji-picker-react'
 import { useRef } from 'react'
 
 function MessagePage() {
@@ -27,12 +28,36 @@ function MessagePage() {
       dataIndex: 'content'
     },
     {
-      title: '角色',
+      title: 'AI角色',
       dataIndex: 'role',
       width: 130,
       render: (_, data) => (
         <Tag color={data.role.includes('user') ? 'cyan' : 'green'}>{data.role}</Tag>
       )
+    },
+    {
+      title: '内置AI角色',
+      dataIndex: 'persona_id',
+      width: 130,
+      render: (_, data) => {
+        if (!data.persona || !data.persona_id) {
+          return <span>-</span>
+        }
+        return (
+          <div
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+			  background: '#f5f5f5',
+			  padding: 4,
+			  borderRadius: 4
+            }}
+          >
+            <Emoji unified={data.persona.emoji} size={20} />
+            <span>{data.persona.title}</span>
+          </div>
+        )
+      }
     },
     {
       title: '模型',
@@ -115,7 +140,7 @@ function MessagePage() {
         actionRef={tableActionRef}
         columns={columns}
         scroll={{
-          x: 1800
+          x: 2200
         }}
         request={async (params, sorter, filter) => {
           // 表单搜索项会从 params 传入，传递给后端接口。

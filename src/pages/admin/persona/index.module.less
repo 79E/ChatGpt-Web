@@ -1,0 +1,30 @@
+.emojiForm {
+	width: 60px;
+	height: 112px;
+	&_label{
+		height: 40px;
+		display: flex;
+		align-items: center;
+		font-size: 14px;
+		&::before {
+			display: inline-block;
+			margin-inline-end: 4px;
+			color: #ff4d4f;
+			font-size: 14px;
+			font-family: SimSun,sans-serif;
+			line-height: 1;
+			content: "*";
+		}
+		padding-bottom: 8px;
+	}
+	&_card{
+		cursor: pointer;
+		width: 40px;
+		height: 40px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border: 1px solid #d9d9d9;
+		border-radius: 8px;
+	}
+}

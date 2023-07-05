@@ -15,6 +15,7 @@ export interface RouteOptions extends Omit<Omit<RouteObject, 'children'>, 'index
 
 const ChatPage = React.lazy(() => import('@/pages/chat'))
 const DrawPage = React.lazy(() => import('@/pages/draw'))
+const MappingPage = React.lazy(() => import('@/pages/mapping'))
 const ShopPage = React.lazy(() => import('@/pages/shop'))
 const UserPage = React.lazy(() => import('@/pages/user'))
 const LoginPage = React.lazy(() => import('@/pages/login'))
@@ -38,6 +39,7 @@ import AdminInvitePage from '@/pages/admin/invite'
 import AdminWithdrawalPage from '@/pages/admin/withdrawal'
 import AdminAmountsPage from '@/pages/admin/amounts'
 import AdminDialogPage from '@/pages/admin/dialog'
+import AdminPersonaPage from '@/pages/admin/persona'
 
 export const webRouter: RouteOptions[] = [
   {
@@ -54,6 +56,16 @@ export const webRouter: RouteOptions[] = [
     id: 'DrawPage',
     path: '/draw',
     element: <DrawPage />,
+    children: [],
+    configure: {
+      verifToken: false,
+      role: ['user', 'administrator']
+    }
+  },
+  {
+    id: 'MappingPage',
+    path: '/mapping',
+    element: <MappingPage />,
     children: [],
     configure: {
       verifToken: false,
@@ -183,7 +195,7 @@ export const adminRouter: RouteOptions[] = [
           role: ['administrator']
         }
       },
-	  {
+      {
         id: 'AdminDialogPage',
         path: '/admin/dialog',
         element: <AdminDialogPage />,
@@ -249,7 +261,7 @@ export const adminRouter: RouteOptions[] = [
           role: ['administrator']
         }
       },
-	    {
+      {
         id: 'AdminNotificationPage',
         path: '/admin/notification',
         element: <AdminNotificationPage />,
@@ -260,7 +272,7 @@ export const adminRouter: RouteOptions[] = [
           role: ['administrator']
         }
       },
-	    {
+      {
         id: 'AdminCashbackPage',
         path: '/admin/cashback',
         element: <AdminCashbackPage />,
@@ -271,7 +283,7 @@ export const adminRouter: RouteOptions[] = [
           role: ['administrator']
         }
       },
-	    {
+      {
         id: 'AdminInvitePage',
         path: '/admin/invite',
         element: <AdminInvitePage />,
@@ -282,7 +294,7 @@ export const adminRouter: RouteOptions[] = [
           role: ['administrator']
         }
       },
-	    {
+      {
         id: 'AdminWithdrawalPage',
         path: '/admin/withdrawal',
         element: <AdminWithdrawalPage />,
@@ -300,6 +312,17 @@ export const adminRouter: RouteOptions[] = [
         index: false,
         configure: {
           title: '金额明细',
+          verifToken: true,
+          role: ['administrator']
+        }
+      },
+      {
+        id: 'AdminPersonaPage',
+        path: '/admin/persona',
+        element: <AdminPersonaPage />,
+        index: false,
+        configure: {
+          title: '角色配置',
           verifToken: true,
           role: ['administrator']
         }

@@ -10,22 +10,26 @@ import mila from 'markdown-it-link-attributes'
 import hljs from 'highlight.js'
 import { CopyOutlined, DeleteOutlined, MoreOutlined, RedoOutlined } from '@ant-design/icons'
 
+import ai3Logo from '@/assets/openai/ai3.svg'
+import ai4Logo from '@/assets/openai/ai4.svg'
+import avatarIcon from '@/assets/avatar.png'
+
 const dropdownItems = [
   {
     icon: <CopyOutlined />,
     label: '复制',
-    key: 'copyout',
+    key: 'copyout'
   },
   {
     icon: <RedoOutlined />,
     label: '重试',
-    key: 'refurbish',
+    key: 'refurbish'
   },
   {
     icon: <DeleteOutlined />,
     label: '删除',
-    key: 'delete',
-  },
+    key: 'delete'
+  }
 ]
 
 function screenDropdownItems(status: string, position: 'left' | 'right') {
@@ -37,8 +41,8 @@ function screenDropdownItems(status: string, position: 'left' | 'right') {
     if (position !== 'left' && item.key === 'refurbish') {
       return false
     }
-    return true;
-  });
+    return true
+  })
 
   return [...newList]
 }
@@ -88,7 +92,7 @@ function ChatMessage({
         btn.addEventListener('click', () => {
           const code = btn.parentElement?.nextElementSibling?.textContent
           if (code) {
-            onCopyOut(code);
+            onCopyOut(code)
           }
         })
       })
@@ -130,15 +134,12 @@ function ChatMessage({
     const value = content || ''
     if (position === 'right') {
       return (
-        <div
-          ref={markdownBodyRef}
-          className="markdown-body"
-        >
+        <div ref={markdownBodyRef} className="markdown-body">
           {value}
         </div>
-      );
+      )
     }
-    const renderMdHtml = mdi.render(value);
+    const renderMdHtml = mdi.render(value)
     return (
       <div
         ref={markdownBodyRef}
@@ -157,11 +158,22 @@ function ChatMessage({
     }
   }, [markdownBodyRef.current, content])
 
-  function chatAvatar({ icon, style }: { icon: string; style?: React.CSSProperties }) {
+  function chatAvatar({
+    isShow,
+    icon,
+    style
+  }: {
+    isShow: boolean
+    icon: string
+    style?: React.CSSProperties
+  }) {
+    if (!isShow) return null
     return (
-      <div className={styles.chatMessage_avatarCard} style={{
-        ...style
-      }}
+      <div
+        className={styles.chatMessage_avatarCard}
+        style={{
+          ...style
+        }}
       >
         <img src={icon} alt="" />
       </div>
@@ -175,14 +187,13 @@ function ChatMessage({
         justifyContent: position === 'right' ? 'flex-end' : 'flex-start'
       }}
     >
-      {/* https://u1.dl0.cn/icon/chat_gpt_3.png */}
-      {/* https://u1.dl0.cn/icon/chat_gpt_4.png */}
-      {/* https://u1.dl0.cn/icon/openailogo.svg */}
-      {position === 'left' &&
-        chatAvatar({
+      {useMemo(() => {
+        return chatAvatar({
           style: { marginRight: 8 },
-          icon: model && model.indexOf('gpt-4') !== -1 ? 'https://u1.dl0.cn/icon/chat_gpt_4.png' : 'https://u1.dl0.cn/icon/openailogo.svg'
-        })}
+          isShow: position === 'left',
+          icon: model && model.indexOf('gpt-4') !== -1 ? ai4Logo : ai3Logo
+        })
+      }, [])}
       <div className={styles.chatMessage_content}>
         <span
           className={styles.chatMessage_content_time}
@@ -198,21 +209,18 @@ function ChatMessage({
             position === 'right' ? styles.right : styles.left
           ])}
         >
-          {status === 'loading' ? (
-            <OpenAiLogo rotate />
-          ) : (
-            renderText
-          )}
-          <div className={styles.chatMessage_content_operate}
+          {status === 'loading' ? <OpenAiLogo rotate /> : renderText}
+          <div
+            className={styles.chatMessage_content_operate}
             style={{
               left: position === 'right' ? -20 : 'none',
-              right: position === 'left' ? -20 : 'none',
+              right: position === 'left' ? -20 : 'none'
             }}
           >
             <Dropdown
               placement="topRight"
               arrow={{
-                pointAtCenter: true,
+                pointAtCenter: true
               }}
               destroyPopupOnHide
               trigger={['click', 'hover']}
@@ -229,9 +237,9 @@ function ChatMessage({
                   }
 
                   if (key === 'copyout' && content) {
-                    onCopyOut(content);
+                    onCopyOut(content)
                   }
-                },
+                }
               }}
             >
               <div className={styles.chatMessage_content_operate_icon}>
@@ -241,11 +249,13 @@ function ChatMessage({
           </div>
         </div>
       </div>
-      {position === 'right' &&
-        chatAvatar({
+      {useMemo(() => {
+        return chatAvatar({
           style: { marginLeft: 8 },
-          icon: 'https://u1.dl0.cn/icon/1682426702646avatarf3db669b024fad66-1930929abe2847093.png'
-        })}
+          isShow: position === 'right',
+          icon: avatarIcon
+        })
+      }, [])}
     </div>
   )
 }

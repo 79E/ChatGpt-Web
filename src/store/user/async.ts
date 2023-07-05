@@ -1,5 +1,6 @@
 import { RequestLoginParams, WithdrawalRecordInfo } from '@/types'
 import userStore from '../user/slice'
+import chatStore from '../chat/slice'
 import { getUserInfo, getUserRecords, postLogin, postUserWithdrawal, putUserPassword } from '@/request/api'
 
 // 登录
@@ -28,6 +29,7 @@ export async function fetchUserPassword(params: RequestLoginParams) {
   const response = await putUserPassword(params)
   if (!response.code) {
     userStore.getState().logout()
+	chatStore.getState().clearChats()
   }
   return response
 }

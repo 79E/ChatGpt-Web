@@ -5,12 +5,7 @@ async function fetchChatMessages() {
   const res = await getUserMessages()
   if (!res.code) {
     chatStore.getState().changeChatMessage(res.data)
-    if(res.data.length > 0){
-      chatStore.getState().changeSelectChatId(res.data[0].id)
-    }
-	if(res.data.length <= 0){
-		chatStore.getState().addChat()
-	}
+    chatStore.getState().addChat()
   }
   return res
 }
