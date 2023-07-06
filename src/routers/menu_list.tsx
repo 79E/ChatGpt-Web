@@ -17,6 +17,7 @@ import {
   MoneyCollectFilled,
   NotificationFilled,
   PictureOutlined,
+  RadarChartOutlined,
   ReconciliationFilled,
   RedEnvelopeFilled,
   RedditCircleFilled,
@@ -45,7 +46,7 @@ const web = [
   {
     path: '/mapping',
     name: '思维导图',
-    icon: <PictureOutlined />,
+    icon: <RadarChartOutlined />,
     message: '利用智能AI生成思维导图'
   },
   {

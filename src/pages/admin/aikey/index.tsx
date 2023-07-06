@@ -32,17 +32,49 @@ const getModels = (type: string) => {
   }
   return [
     {
-      label: 'OpenAI绘画',
+      label: 'OpenAI(dall-e)绘画',
       value: 'dall-e'
     },
     {
-      label: '全部GPT4类型',
+      label: 'gpt-3.5-turbo',
+      value: 'gpt-3.5-turbo'
+    },
+    {
+      label: 'gpt-3.5-turbo-16k',
+      value: 'gpt-3.5-turbo-16k'
+    },
+    {
+      label: 'gpt-3.5-turbo-0613',
+      value: 'gpt-3.5-turbo-0613'
+    },
+    {
+      label: 'gpt-3.5-turbo-16k-0613',
+      value: 'gpt-3.5-turbo-16k-0613'
+    },
+    {
+      label: 'text-davinci-003',
+      value: 'text-davinci-003'
+    },
+    {
+      label: 'code-davinci-002',
+      value: 'code-davinci-002'
+    },
+    {
+      label: 'gpt-4',
       value: 'gpt-4'
     },
     {
-      label: '全部GPT3类型',
-      value: 'gpt-3'
-    }
+      label: 'gpt-4-0613',
+      value: 'gpt-4-0613'
+    },
+    {
+      label: 'gpt-4-32k',
+      value: 'gpt-4-32k'
+    },
+    {
+      label: 'gpt-4-32k-0613',
+      value: 'gpt-4-32k-0613'
+    },
   ]
 }
 
@@ -121,7 +153,11 @@ function AikeyPage() {
             <p>总额：{data.limit.toFixed(2)}</p>
             <p>已用：{data.usage}</p>
             <p>剩余：{(data.limit - data.usage).toFixed(2)}</p>
-            <Progress percent={Number(((data.usage / data.limit) * 100).toFixed(2))} format={()=> ''} size="small" />
+            <Progress
+              percent={Number(((data.usage / data.limit) * 100).toFixed(2))}
+              format={() => ''}
+              size="small"
+            />
           </div>
         )
       }

@@ -57,26 +57,6 @@ const configStore = create<ConfigState>()(
           label: 'GPT-4',
           value: 'gpt-4'
         }
-        // {
-        //   label: 'GPT-4-0314',
-        //   value: 'gpt-4-0314'
-        // },
-        // {
-        //   label: 'GPT-4-32k',
-        //   value: 'gpt-4-32k'
-        // },
-        // {
-        //   label: 'TEXT-002',
-        //   value: 'text-davinci-002'
-        // },
-        // {
-        //   label: 'TEXT-003',
-        //   value: 'text-davinci-003'
-        // },
-        // {
-        //   label: 'CODE-002',
-        //   value: 'code-davinci-002'
-        // }
       ],
       config: {
         model: 'gpt-3.5-turbo-16k',

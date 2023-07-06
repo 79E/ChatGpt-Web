@@ -351,7 +351,7 @@ function ChatPage() {
                   // setChatConfigModal({ open: true })
                 }}
               >
-                系统配置
+                会话配置
               </Button>
               <Popconfirm
                 title="删除全部对话"
