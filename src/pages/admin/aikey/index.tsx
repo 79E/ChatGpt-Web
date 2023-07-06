@@ -74,7 +74,7 @@ const getModels = (type: string) => {
     {
       label: 'gpt-4-32k-0613',
       value: 'gpt-4-32k-0613'
-    },
+    }
   ]
 }
 
@@ -137,10 +137,15 @@ function AikeyPage() {
       dataIndex: 'remarks'
     },
     {
-      title: '状态值',
+      title: '状态',
       dataIndex: 'status',
       render: (_, data) => (
-        <Tag color={data.status ? 'green' : 'red'}>{data.status ? '正常' : '异常'}</Tag>
+        <Space direction="vertical">
+          <Tag color={data.status ? 'green' : 'red'}>{data.status ? '正常' : '异常'}</Tag>
+          <Tag color={data.check ? 'green' : 'red'}>
+            {data.check ? '检查可用性' : '不检查可用性'}
+          </Tag>
+        </Space>
       )
     },
     {
@@ -297,7 +302,8 @@ function AikeyPage() {
         form={form}
         initialValues={{
           status: 1,
-          type: 'openai'
+          type: 'openai',
+		  check: 1
         }}
         onOpenChange={(visible) => {
           if (!visible) {
@@ -391,9 +397,22 @@ function AikeyPage() {
               }
             ]}
           />
-          <ProFormText name="remarks" label="备注" placeholder="备注" />
+          <ProFormRadio.Group
+            name="check"
+            label="检查可用性"
+            radioType="button"
+            options={[
+              {
+                label: '不检查',
+                value: 0
+              },
+              {
+                label: '检查',
+                value: 1
+              }
+            ]}
+          />
         </ProFormGroup>
-
         <ProFormDependency name={['type']}>
           {({ type }) => {
             return (
@@ -458,6 +477,7 @@ function AikeyPage() {
             )
           }}
         </ProFormDependency>
+		<ProFormText name="remarks" label="备注" placeholder="备注" />
       </ModalForm>
     </div>
   )

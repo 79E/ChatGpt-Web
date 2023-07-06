@@ -38,6 +38,17 @@ export interface ResponseConfigData {
   shop_introduce: string
   user_introduce: string
   notifications: NotificationInfo[]
+  website_title: string
+  website_description: string
+  website_keywords: string
+  website_logo: string
+  website_footer: string
+  invite_introduce: string
+  random_personas: PersonaInfo[]
+  models: Array<{
+    label: string
+    value: string
+  }>
 }
 
 export interface ChatGptConfig {
@@ -117,19 +128,19 @@ export interface ChatGpt {
 
 export interface RequestImagesGenerations {
   prompt: string
-  quantity: number,
-  width: number,
-  height: number,
-  draw_type: string,
-  quality?: number,
-  steps?: number,
-  style?: string,
+  quantity: number
+  width: number
+  height: number
+  draw_type: string
+  quality?: number
+  steps?: number
+  style?: string
   image?: File | string
   [key: string]: any
 }
 
 export interface ImagesInfo extends RequestImagesGenerations {
-  prompt: string,
+  prompt: string
   id: string
   dateTime: string
   url: string
@@ -187,68 +198,65 @@ export interface SigninInfo {
 }
 
 export interface InvitationRecordInfo {
-	id: string;
-	user_id: string;
-	invite_code: string;
-	superior_id: string;
-	reward: string;
-	reward_type: string;
-	user_agent: string;
-	remark: string;
-	ip: string;
-	status: number;
-	create_time: string;
-	update_time: string;
-	user: UserInfo;
-	superior: UserInfo;
+  id: string
+  user_id: string
+  invite_code: string
+  superior_id: string
+  reward: string
+  reward_type: string
+  user_agent: string
+  remark: string
+  ip: string
+  status: number
+  create_time: string
+  update_time: string
+  user: UserInfo
+  superior: UserInfo
 }
 
 export interface ConsumeRecordInfo {
-	id: string;
-	user_id: string;
-	benefit_id: string;
-	pay_amount: string;
-	commission_rate: string;
-	commission_amount: string;
-	remarks: string;
-	order_id: number;
-	status: number;
-	create_time: string;
-	update_time: string;
-	user: UserInfo;
-	benefit: UserInfo;
+  id: string
+  user_id: string
+  benefit_id: string
+  pay_amount: string
+  commission_rate: string
+  commission_amount: string
+  remarks: string
+  order_id: number
+  status: number
+  create_time: string
+  update_time: string
+  user: UserInfo
+  benefit: UserInfo
 }
-
-
 
 export interface WithdrawalRecordInfo {
-	id: number;
-	user_id: string;
-	amount: string;
-	type: string;
-	name: string;
-	contact: string;
-	account: string;
-	remarks: string;
-	message: string;
-	ip: string;
-	user_agent: string;
-	status: number;
-	create_time: string;
-	update_time: string;
-	user: UserInfo;
+  id: number
+  user_id: string
+  amount: string
+  type: string
+  name: string
+  contact: string
+  account: string
+  remarks: string
+  message: string
+  ip: string
+  user_agent: string
+  status: number
+  create_time: string
+  update_time: string
+  user: UserInfo
 }
 
-
 export interface PersonaInfo {
-	id: string | number;
-	user_id?: string | number;
-	title: string;
-	emoji: string;
-	description?: string;
-	context: string;
-	status: number;
-	create_time: string;
-	update_time: string;
-	user?: UserInfo;
+  id: string | number
+  user_id?: string | number
+  title: string
+  emoji: string
+  description?: string
+  context: string
+  status: number
+  create_time: string
+  update_time: string
+  user?: UserInfo
 }

@@ -109,6 +109,7 @@ export interface AikeyInfo {
   limit: number
   usage: number
   type: string
+  check: number
   status: number
   create_time: string
   update_time: string
