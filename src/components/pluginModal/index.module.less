@@ -1,0 +1,18 @@
+.pluginList{
+	width: 100%;
+	max-height: 600px;
+	overflow: auto;
+	&::-webkit-scrollbar {
+		width: 0px;
+	}
+
+	display: grid;
+	grid-template-columns: 1fr 1fr; /* 平均分配两列 */
+	grid-gap: 10px; /* 列之间的间隔 */
+}
+
+@media (max-width: 600px) {
+	.pluginList {
+	  grid-template-columns: 1fr; /* 宽度不够时变为一列布局 */
+	}
+}

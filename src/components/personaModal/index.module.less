@@ -10,7 +10,7 @@
 	}
 	&_list{
 		width: 100%;
-		height: 600px;
+		max-height: 600px;
 		overflow: auto;
 		&::-webkit-scrollbar {
 			width: 0px;
@@ -19,76 +19,15 @@
 		&_empty{
 			padding-top: 150px;
 		}
+		display: grid;
+  		grid-template-columns: 1fr 1fr; /* 平均分配两列 */
+  		grid-gap: 10px; /* 列之间的间隔 */
 	}
-	&_card{
-		width: 100%;
-		box-sizing: border-box;
-		padding: 8px 12px;
-		border: 1px solid #dedede;
-		margin-bottom: 8px;
-		border-radius: 12px;
-		display: flex;
-		align-items: center;
-
-		&_icon{
-			height: 36px;
-			min-height: 36px;
-			width: 36px;
-			min-width: 36px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			border: 1px solid #dedede;
-			box-shadow: 0px 2px 4px 0px rgba(0,0,0,.05);
-			border-radius: 12px;
-		}
-		&_text{
-			margin-left: 12px;
-			display: flex;
-			justify-content: center;
-			flex-direction: column;
-			p{
-				font-weight: 500;
-				font-size: 14px;
-				color: #333;
-				line-height: 1;
-			}
-			span {
-				width: 100%;
-				max-width: 500px;
-				text-overflow: ellipsis;
-				overflow: hidden;
-				white-space: nowrap;
-				margin-top: 4px;
-				font-size: 12px;
-				color: #999;
-				line-height: 1;
-			}
-		}
-		&_button{
-			display: flex;
-			align-items: center;
-			gap: 20px;
-			margin-left: auto;
-			p {
-				padding: 6px 10px 6px 6px;
-				cursor: pointer;
-				background-color: rgba(255, 255, 255, 0);
-				font-size: 12px;
-				border-radius: 8px;
-				transition: background-color 0.3s ease-in-out;
-				&:hover{
-					background-color: #ddd;
-				}
-				span{
-					margin-left: 4px;
-				}
-			}
+	@media (max-width: 600px) {
+		&_list {
+		  grid-template-columns: 1fr; /* 宽度不够时变为一列布局 */
 		}
 	}
-
-
-
 }
 
 

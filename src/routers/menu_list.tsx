@@ -3,6 +3,7 @@ import {
   CommentOutlined,
   ContactsFilled,
   CrownFilled,
+  DropboxCircleFilled,
   ExperimentFilled,
   FileTextFilled,
   GithubFilled,
@@ -154,6 +155,11 @@ const admin = {
 			path: '/admin/persona',
 			name: '角色配置',
 			icon: <RedditCircleFilled />
+		},
+		{
+			path: '/admin/plugin',
+			name: '插件管理',
+			icon: <DropboxCircleFilled />
 		},
 		{
 			path: '/admin/messages',

@@ -4,4 +4,5 @@ import userAsync from './user/async'
 import shopAsync from './shop/async'
 import configAsync from './config/async'
 import personaAsync from './persona/async'
-export { chatAsync, drawAsync, userAsync, shopAsync, configAsync, personaAsync }
+import pluginAsync from './plugin/async'
+export { chatAsync, drawAsync, userAsync, shopAsync, configAsync, personaAsync, pluginAsync }

@@ -1,6 +1,7 @@
 import { personaAsync } from '@/store/async'
 import {
   Avatar,
+  Badge,
   Button,
   Empty,
   Form,
@@ -9,16 +10,17 @@ import {
   Pagination,
   Popover,
   Space,
+  Tag,
   message
 } from 'antd'
 import { useEffect, useMemo, useState } from 'react'
 import styles from './index.module.less'
 import personaStore from '@/store/persona/slice'
-import EmojiPicker, { Emoji } from 'emoji-picker-react'
-import { EyeOutlined, PlusCircleOutlined } from '@ant-design/icons'
+import { EyeOutlined, PlusCircleOutlined, QuestionOutlined } from '@ant-design/icons'
 import { PersonaInfo } from '@/types'
 import {
   ModalForm,
+  ProFormDependency,
   ProFormGroup,
   ProFormList,
   ProFormSelect,
@@ -26,11 +28,13 @@ import {
 } from '@ant-design/pro-components'
 import { postPersona } from '@/request/api'
 import { userStore } from '@/store'
+import { getEmailPre } from '@/utils'
+import AppCard from '../appCard'
 
 type Props = {
   open: boolean
   onCreateChat: (item: PersonaInfo) => void
-  onCancel: ()=>void
+  onCancel: () => void
 }
 
 function PersonaModal(props: Props) {
@@ -70,7 +74,7 @@ function PersonaModal(props: Props) {
             <Space wrap>
               <Button
                 type="primary"
-				disabled={!token}
+                disabled={!token}
                 onClick={() => {
                   setEditInfoModal({
                     info: {
@@ -94,29 +98,23 @@ function PersonaModal(props: Props) {
           <div className={styles.persona_list}>
             {countPersonas.map((item) => {
               return (
-                <div className={styles.persona_card} key={item.id}>
-                  <div className={styles.persona_card_icon}>
-                    <Emoji unified={item.emoji} size={24} />
-                  </div>
-                  <div className={styles.persona_card_text}>
-                    <p>
-                      {item.title} <span>{item.user?.account.split('@')[0]}</span>{' '}
-                    </p>
-                    <span>
-                      包含 {JSON.parse(item.context).length} 条预设对话{' '}
-                      {item.description ? `/ ${item.description}` : ''}
-                    </span>
-                  </div>
-                  <div className={styles.persona_card_button}>
+                <AppCard
+                  key={item.id}
+                  {...item}
+                  userInfo={item.user}
+				  message={`包含 ${JSON.parse(item.context).length} 条预设对话`}
+                  buttons={[
                     <p
+                      key="duihua"
                       onClick={() => {
                         props.onCreateChat?.(item)
                       }}
                     >
                       <PlusCircleOutlined />
                       <span>对话</span>
-                    </p>
+                    </p>,
                     <p
+                      key="chakan"
                       onClick={() => {
                         setEditInfoModal(() => {
                           form.setFieldsValue({
@@ -134,8 +132,8 @@ function PersonaModal(props: Props) {
                       <EyeOutlined />
                       <span>查看</span>
                     </p>
-                  </div>
-                </div>
+                  ]}
+                />
               )
             })}
             <div className={styles.persona_list_empty}>
@@ -177,8 +175,7 @@ function PersonaModal(props: Props) {
           const context = JSON.stringify(data.context)
           const res = await postPersona({
             ...data,
-            context,
-            emoji: edidInfoModal.info?.emoji || ''
+            context
           })
           if (res.code) {
             message.error('提交失败')
@@ -215,40 +212,44 @@ function PersonaModal(props: Props) {
           </ProFormGroup>
         </ProFormList>
         <ProFormGroup>
-          <div className={styles.emojiForm}>
-            <div className={styles.emojiForm_label}>
-              <label>表情</label>
-            </div>
-            <Popover
-              content={(
-                <EmojiPicker
-                  onEmojiClick={(e) => {
-                    setEditInfoModal((allinfo) => ({
-                      ...allinfo,
-                      info: {
-                        ...allinfo.info,
-                        emoji: e.unified
-                      } as any
-                    }))
-                  }}
-                />
-              )}
-              trigger="click"
-            >
-              <div className={styles.emojiForm_card}>
-                <Emoji unified={edidInfoModal.info?.emoji || ''} />
-              </div>
-            </Popover>
-          </div>
+          <ProFormDependency name={['avatar']}>
+            {({ avatar }) => {
+              return (
+                <div className={styles.emojiForm}>
+                  <div className={styles.emojiForm_label}>
+                    <label>头像</label>
+                  </div>
+                  <div className={styles.emojiForm_card}>
+                    {avatar ? (
+                      <img
+                        src={avatar}
+                        style={{
+                          width: '100%'
+                        }}
+                      />
+                    ) : (
+                      <QuestionOutlined />
+                    )}
+                  </div>
+                </div>
+              )
+            }}
+          </ProFormDependency>
           <ProFormText
             width="md"
+            name="avatar"
+            label="头像地址"
+            placeholder="请输入头像链接地址"
+            rules={[{ required: true, message: '请输入头像链接地址' }]}
+          />
+          <ProFormText
             name="title"
             label="标题"
             placeholder="标题"
             rules={[{ required: true, message: '请输入角色标题' }]}
           />
-          <ProFormText name="description" label="描述" placeholder="描述" />
         </ProFormGroup>
+        <ProFormText name="description" label="描述" placeholder="描述" />
       </ModalForm>
     </div>
   )

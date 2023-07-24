@@ -82,6 +82,8 @@ export interface MessageInfo {
   user?: UserInfo
   create_time: string
   update_time: string
+  plugin_id?: string | number
+  plugin?: PluginInfo
 }
 
 export interface ProductInfo {
@@ -280,9 +282,26 @@ export interface PersonaInfo {
 	id: string | number;
 	user_id?: string | number;
 	title: string;
-	emoji: string;
+	avatar: string;
 	description?: string;
+  	system: number
 	context: string;
+	status: number;
+	create_time: string;
+	update_time: string;
+	user?: UserInfo;
+}
+
+
+export interface PluginInfo {
+	id: number;
+	user_id?: string | number;
+	name: string;
+	description: string;
+	avatar: string;
+	variables?: string;
+	function: string;
+	script: string;
 	status: number;
 	create_time: string;
 	update_time: string;

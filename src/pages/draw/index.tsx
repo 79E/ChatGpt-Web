@@ -553,7 +553,6 @@ function DrawPage() {
                   </div>
                 </Upload>
                 <Input.TextArea
-                  maxLength={100}
                   autoSize={{
                     minRows: 3,
                     maxRows: 3

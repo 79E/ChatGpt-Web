@@ -123,7 +123,9 @@ export interface ChatGpt {
   status: 'pass' | 'loading' | 'error'
   role: 'assistant' | 'user' | string
   persona_id?: string | number
-  requestOptions: RequestChatOptions
+  requestOptions: RequestChatOptions,
+  plugin_id?: string | number
+  plugin_info?: PluginInfo
 }
 
 export interface RequestImagesGenerations {
@@ -252,11 +254,27 @@ export interface PersonaInfo {
   id: string | number
   user_id?: string | number
   title: string
-  emoji: string
+  avatar: string
   description?: string
   context: string
   status: number
   create_time: string
   update_time: string
   user?: UserInfo
+}
+
+export interface PluginInfo {
+	id: number;
+	user_id?: string | number;
+	name: string;
+	description: string;
+	avatar: string;
+	variables?: string;
+	function: string;
+	script: string;
+	status: number;
+	create_time: string;
+	update_time: string;
+	user?: UserInfo;
+  installed: boolean
 }

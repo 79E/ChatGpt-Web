@@ -18,7 +18,8 @@ import {
   AmountDetailInfo,
   WithdrawalRecordInfo,
   DialogInfo,
-  PersonaInfo
+  PersonaInfo,
+  PluginInfo
 } from '@/types/admin'
 import request from '.'
 
@@ -307,4 +308,22 @@ export function postAdminPersona(params: PersonaInfo) {
 // 删除角色数据
 export function delAdminPersona(params: { id: string | number }) {
 	return request.del(`/api/admin/persona/${params.id}`)
+}
+
+// 获取插件数据
+export function getAdminPlugins(params?: Paging) {
+	return request.get<TableData<PluginInfo>>('/api/admin/plugins', params)
+}
+
+// 删除插件
+export function delAdminPlugin(params: { id: string | number }) {
+	return request.del(`/api/admin/plugin/${params.id}`)
+}
+// 编辑插件数据
+export function putAdminPlugin(params: PluginInfo) {
+	return request.put('/api/admin/plugin', params)
+}
+// 新增插件数据
+export function postAdminPlugin(params: PluginInfo) {
+	return request.post('/api/admin/plugin', params)
 }

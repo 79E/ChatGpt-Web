@@ -10,7 +10,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 
 import styles from './index.module.less'
 import { chatStore, configStore, userStore } from '@/store'
-import { chatAsync } from '@/store/async'
+import { chatAsync, pluginAsync } from '@/store/async'
 import RoleNetwork from './components/RoleNetwork'
 import RoleLocal from './components/RoleLocal'
 import AllInput from './components/AllInput'
@@ -23,7 +23,8 @@ import { useScroll } from '@/hooks/useScroll'
 import useDocumentResize from '@/hooks/useDocumentResize'
 import Layout from '@/components/Layout'
 import useMobile from '@/hooks/useMobile'
-import PersonaModal from '@/components/personaModal'
+import PersonaModal from '@/components/PersonaModal'
+import PluginModal from '@/components/pluginModal'
 
 function ChatPage() {
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -57,6 +58,10 @@ function ChatPage() {
     open: false
   })
 
+  const [pluginModal, setPluginModal] = useState({
+    open: false
+  })
+
   useLayoutEffect(() => {
     if (scrollRef) {
       scrollToBottom()
@@ -66,6 +71,7 @@ function ChatPage() {
   useEffect(() => {
     if (token) {
       chatAsync.fetchChatMessages()
+	  pluginAsync.fetchGetPlugin()
     }
   }, [token])
 
@@ -131,7 +137,6 @@ function ChatPage() {
 
     if (!(response instanceof Response)) {
       // 这里返回是错误 ...
-      console.log('这里是：', userMessageId)
       if (userMessageId) {
         setChatDataInfo(selectChatId, userMessageId, {
           status: 'error'
@@ -140,7 +145,7 @@ function ChatPage() {
 
       setChatDataInfo(selectChatId, assistantMessageId, {
         status: 'error',
-        text: response?.message || '❌ 请求异常，请稍后在尝试。'
+        text: `${response?.message || '❌ 请求异常，请稍后在尝试。'} \n \`\`\` ${JSON.stringify(response, null, 2)}   `
       })
       fetchController?.abort()
       setFetchController(null)
@@ -160,7 +165,7 @@ function ChatPage() {
       const text = new TextDecoder('utf-8').decode(value)
       const texts = handleChatData(text)
       for (let i = 0; i < texts.length; i++) {
-        const { dateTime, role, content, segment } = texts[i]
+        const { dateTime, role, content, segment, pluginInfo } = texts[i]
         allContent += content ? content : ''
         if (segment === 'stop') {
           setFetchController(null)
@@ -188,7 +193,8 @@ function ChatPage() {
             dateTime,
             status: 'loading',
             role,
-            requestOptions
+            requestOptions,
+            plugin_info: pluginInfo || undefined
           })
         }
         if (segment === 'text') {
@@ -344,6 +350,20 @@ function ChatPage() {
               <Button
                 block
                 onClick={() => {
+                  if (token) {
+                    setPluginModal({
+                      open: true
+                    })
+                  } else {
+                    setLoginModal(true)
+                  }
+                }}
+              >
+                智能插件
+              </Button>
+              <Button
+                block
+                onClick={() => {
                   setConfigModal(true)
                   // chatGptConfigform.setFieldsValue({
                   //   ...config
@@ -407,6 +427,7 @@ function ChatPage() {
                       console.log(item)
                       sendChatCompletions(item.requestOptions.prompt, item)
                     }}
+                    pluginInfo={item.plugin_info}
                   />
                 )
               })}
@@ -488,6 +509,15 @@ function ChatPage() {
         }}
         onCancel={() => {
           setPersonaModal({
+            open: false
+          })
+        }}
+      />
+
+      <PluginModal
+        {...pluginModal}
+        onCancel={() => {
+          setPluginModal({
             open: false
           })
         }}

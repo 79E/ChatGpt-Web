@@ -2,8 +2,7 @@ import { delAdminMessage, getAdminMessages, putAdminMessage } from '@/request/ad
 import { MessageInfo } from '@/types/admin'
 import { ActionType, ProColumns } from '@ant-design/pro-components'
 import { ProTable } from '@ant-design/pro-components'
-import { Button, Tag, message } from 'antd'
-import { Emoji } from 'emoji-picker-react'
+import { Avatar, Button, Tag, message } from 'antd'
 import { useRef } from 'react'
 
 function MessagePage() {
@@ -48,13 +47,40 @@ function MessagePage() {
             style={{
               display: 'inline-flex',
               alignItems: 'center',
-			  background: '#f5f5f5',
-			  padding: 4,
-			  borderRadius: 4
+              background: '#f5f5f5',
+              padding: 4,
+              borderRadius: 4
             }}
           >
-            <Emoji unified={data.persona.emoji} size={20} />
+            <Avatar src={data.persona.avatar} size={24} />
             <span>{data.persona.title}</span>
+          </div>
+        )
+      }
+    },
+    {
+      title: 'AI插件',
+      dataIndex: 'plugin_id',
+      width: 150,
+      render: (_, data) => {
+        if (!data.plugin_id || !data.plugin) {
+          return <span>-</span>
+        }
+        return (
+          <div
+            style={{
+              textAlign: 'center',
+              background: '#f5f5f5',
+              padding: 4,
+              borderRadius: 4
+            }}
+          >
+            <img src={data.plugin.avatar} style={{
+              width: 50,
+              height: 'auto'
+            }}
+            />
+            <p>{data.plugin.name}</p>
           </div>
         )
       }

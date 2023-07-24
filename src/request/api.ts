@@ -3,6 +3,7 @@ import {
   ConsumeRecordInfo,
   InvitationRecordInfo,
   PersonaInfo,
+  PluginInfo,
   ProductInfo,
   RequesPrepay,
   RequestChatOptions,
@@ -156,6 +157,23 @@ export function getUserMessages(){
 	return request.get<Array<ChatsInfo>>('/api/user/messages')
 }
 
+// 删除用户对话
 export function delUserMessages(params: { parent_message_id?: string | number }){
 	return request.del('/api/user/messages', params)
 }
+
+// 获取插件数据
+export function getPlugin(){
+	return request.get<Array<PluginInfo>>('/api/plugin')
+}
+
+// 安装插件
+export function putInstalledPlugin(id: string | number){
+	return request.put(`/api/plugin/installed/${id}`)
+}
+
+// 卸载插件
+export function putUninstallPlugin(id: string | number){
+	return request.put(`/api/plugin/uninstall/${id}`)
+}
+

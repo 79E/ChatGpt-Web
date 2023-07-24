@@ -1,4 +1,4 @@
-import { Button, Form, Popover, Tag, message } from 'antd'
+import { Avatar, Button, Form, Popover, Tag, message } from 'antd'
 import { useRef, useState } from 'react'
 import {
   delAdminPersona,
@@ -11,6 +11,7 @@ import {
   ActionType,
   ModalForm,
   ProColumns,
+  ProFormDependency,
   ProFormDigit,
   ProFormGroup,
   ProFormList,
@@ -20,8 +21,8 @@ import {
   ProFormTextArea
 } from '@ant-design/pro-components'
 import { ProTable } from '@ant-design/pro-components'
-import EmojiPicker, { Emoji } from 'emoji-picker-react'
-import styles from './index.module.less'
+import { QuestionOutlined } from '@ant-design/icons'
+import FormCard from '../components/FormCard'
 
 function PersonaPage() {
   const tableActionRef = useRef<ActionType>()
@@ -41,19 +42,7 @@ function PersonaPage() {
       width: 180
     },
     {
-      title: '图标/表情',
-      width: 100,
-      dataIndex: 'emoji',
-      render: (_, data) => {
-        return (
-          <div>
-            <Emoji unified={data.emoji} size={25} />
-          </div>
-        )
-      }
-    },
-    {
-      title: '标题',
+      title: '头像/标题',
       width: 180,
       dataIndex: 'title',
       render: (_, data) => {
@@ -71,8 +60,13 @@ function PersonaPage() {
                 }
               })
             }}
+            style={{
+              display: 'flex',
+              alignItems: 'center'
+            }}
           >
-            {data.title}
+            {data.avatar && <Avatar size={24} src={data.avatar} />}
+            <span>{data.title}</span>
           </a>
         )
       }
@@ -231,7 +225,8 @@ function PersonaPage() {
         open={edidInfoModal.open}
         form={form}
         initialValues={{
-          status: 1
+          status: 1,
+          system: 0
         }}
         onOpenChange={(visible) => {
           if (!visible) {
@@ -255,7 +250,6 @@ function PersonaPage() {
             const res = await putAdminPersona({
               ...data,
               context,
-              emoji: edidInfoModal.info?.emoji,
               id: edidInfoModal.info?.id
             })
             if (res.code) {
@@ -265,8 +259,7 @@ function PersonaPage() {
           } else {
             const res = await postAdminPersona({
               ...data,
-              context,
-              emoji: edidInfoModal.info?.emoji || ''
+              context
             })
             if (res.code) {
               message.error('新增失败')
@@ -305,40 +298,39 @@ function PersonaPage() {
           </ProFormGroup>
         </ProFormList>
         <ProFormGroup>
-          <div className={styles.emojiForm}>
-            <div className={styles.emojiForm_label}>
-              <label>表情</label>
-            </div>
-            <Popover
-              content={(
-                <EmojiPicker
-                  onEmojiClick={(e) => {
-                    setEditInfoModal((allinfo) => ({
-                      ...allinfo,
-                      info: {
-                        ...allinfo.info,
-                        emoji: e.unified
-                      } as any
-                    }))
-                  }}
-                />
-              )}
-              trigger="click"
-            >
-              <div className={styles.emojiForm_card}>
-                <Emoji unified={edidInfoModal.info?.emoji || ''} />
-              </div>
-            </Popover>
-          </div>
+          <ProFormDependency name={['avatar']}>
+            {({ avatar }) => {
+              return (
+                <FormCard title="头像" type="avatar">
+                  {avatar ? (
+                    <img
+                      src={avatar}
+                      style={{
+                        width: '100%'
+                      }}
+                    />
+                  ) : (
+                    <QuestionOutlined />
+                  )}
+                </FormCard>
+              )
+            }}
+          </ProFormDependency>
           <ProFormText
             width="md"
+            name="avatar"
+            label="头像链接"
+            placeholder="头像链接"
+            rules={[{ required: true, message: '请输入头像链接' }]}
+          />
+          <ProFormText
             name="title"
             label="标题"
             placeholder="标题"
             rules={[{ required: true, message: '请输入角色标题' }]}
           />
-          <ProFormText name="description" label="描述" placeholder="描述" />
         </ProFormGroup>
+        <ProFormText name="description" label="描述" placeholder="描述" />
         <ProFormGroup>
           <ProFormRadio.Group
             name="status"
@@ -356,6 +348,22 @@ function PersonaPage() {
               {
                 label: '审核中',
                 value: 4
+              }
+            ]}
+            rules={[{ required: true }]}
+          />
+          <ProFormRadio.Group
+            name="system"
+            label="角色级别"
+            radioType="button"
+            options={[
+              {
+                label: '用户',
+                value: 0
+              },
+              {
+                label: '系统级',
+                value: 1
               }
             ]}
             rules={[{ required: true }]}

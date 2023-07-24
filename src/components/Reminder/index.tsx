@@ -1,6 +1,6 @@
 import { chatStore, configStore } from '@/store'
 import styles from './index.module.less'
-import { Emoji } from 'emoji-picker-react'
+import { Avatar } from 'antd'
 
 function Reminder() {
   const { random_personas, website_logo } = configStore()
@@ -25,12 +25,12 @@ function Reminder() {
               className={styles.reminder_question_item}
               onClick={() => {
                 addChat({
-					persona_id: item.id,
-					name: item?.title
-				})
+                  persona_id: item.id,
+                  name: item?.title
+                })
               }}
             >
-              <Emoji unified={item.emoji} size={24} />
+              {item.avatar && <Avatar shape="square" size={24} src={item.avatar} />}
               <h3>{item.title}</h3>
             </div>
           )

@@ -1,0 +1,30 @@
+.pluginCard{
+    display: flex;
+    flex: 1;
+    margin: 10px 0;
+    align-items: center;
+    img{
+        width: 46px;
+        height: 46px;
+        object-fit: contain;
+        border: 1px solid #ddd;
+        border-radius: 12px;
+        margin-right: 12px;
+    }
+    &_info{
+        p {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+        }
+        span{
+            font-size: 12px;
+            color: #999;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+        }
+    }
+}

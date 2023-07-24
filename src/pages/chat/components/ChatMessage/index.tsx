@@ -13,6 +13,8 @@ import { CopyOutlined, DeleteOutlined, MoreOutlined, RedoOutlined } from '@ant-d
 import ai3Logo from '@/assets/openai/ai3.svg'
 import ai4Logo from '@/assets/openai/ai4.svg'
 import avatarIcon from '@/assets/avatar.png'
+import { PluginInfo } from '@/types'
+import PluginCard from '@/components/PluginCard'
 
 const dropdownItems = [
   {
@@ -54,7 +56,8 @@ function ChatMessage({
   time,
   model,
   onDelChatMessage,
-  onRefurbishChatMessage
+  onRefurbishChatMessage,
+  pluginInfo
 }: {
   position: 'left' | 'right'
   content?: string
@@ -63,6 +66,7 @@ function ChatMessage({
   model?: string
   onDelChatMessage?: () => void
   onRefurbishChatMessage?: () => void
+  pluginInfo?: PluginInfo
 }) {
   const copyMessageKey = 'copyMessageKey'
   const markdownBodyRef = useRef<HTMLDivElement>(null)
@@ -203,6 +207,7 @@ function ChatMessage({
         >
           {time}
         </span>
+        {pluginInfo && <PluginCard {...pluginInfo} />}
         <div
           className={joinTrim([
             styles.chatMessage_content_text,
