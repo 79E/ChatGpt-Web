@@ -25,6 +25,7 @@ import Layout from '@/components/Layout'
 import useMobile from '@/hooks/useMobile'
 import PersonaModal from '@/components/PersonaModal'
 import PluginModal from '@/components/pluginModal'
+import MessageItem from './components/MessageItem'
 
 function ChatPage() {
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -71,7 +72,7 @@ function ChatPage() {
   useEffect(() => {
     if (token) {
       chatAsync.fetchChatMessages()
-	  pluginAsync.fetchGetPlugin()
+      pluginAsync.fetchGetPlugin()
     }
   }, [token])
 
@@ -280,36 +281,16 @@ function ChatPage() {
         menuDataRender={(item) => {
           return item
         }}
-        menuItemRender={(item, dom) => {
-          const className =
-            item.id === selectChatId
-              ? `${styles.menuItem} ${styles.menuItem_action}`
-              : styles.menuItem
-          return (
-            <div className={className}>
-              <span className={styles.menuItem_icon}>
-                {item.persona_id ? <RedditCircleFilled /> : <CommentOutlined />}
-              </span>
-              <span className={styles.menuItem_name}>{item.name}</span>
-              <div className={styles.menuItem_options}>
-                <Popconfirm
-                  title="删除会话"
-                  description="是否确定删除会话？"
-                  onConfirm={() => {
-                    chatAsync.fetchDelUserMessages({ id: item.id, type: 'del' })
-                  }}
-                  onCancel={() => {
-                    // ==== 无操作 ====
-                  }}
-                  okText="Yes"
-                  cancelText="No"
-                >
-                  <DeleteOutlined />
-                </Popconfirm>
-              </div>
-            </div>
-          )
-        }}
+        menuItemRender={(item, dom) => (
+          <MessageItem
+            isSelect={item.id === selectChatId}
+            isPersona={!!item.persona_id}
+            name={item.name}
+            onConfirm={() => {
+              chatAsync.fetchDelUserMessages({ id: item.id, type: 'del' })
+            }}
+          />
+        )}
         menuFooterRender={(props) => {
           //   if (props?.collapsed) return undefined;
           return (

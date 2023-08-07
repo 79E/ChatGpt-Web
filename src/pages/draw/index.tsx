@@ -14,8 +14,9 @@ import {
   Select,
   Upload
 } from 'antd'
-import { useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { drawStore, userStore } from '@/store'
+import { drawAsync } from '@/store/async'
 import OpenAiLogo from '@/components/OpenAiLogo'
 import { postChatCompletion, postImagesGenerations } from '@/request/api'
 import {
@@ -27,11 +28,14 @@ import {
   CloseCircleFilled,
   CloseCircleOutlined,
   CloseOutlined,
-  LoadingOutlined
+  LoadingOutlined,
+  SyncOutlined
 } from '@ant-design/icons'
 import { formatTime, generateUUID, handleChatData } from '@/utils'
 import { ResponseData } from '@/request'
 import Layout from '@/components/Layout'
+import { DrawRecord } from '@/types'
+import ImageCard from './ImageCard'
 
 const drawSize = [
   {
@@ -107,7 +111,7 @@ const stylePresets = [
 
 function DrawPage() {
   const { token, setLoginModal } = userStore()
-  const { historyDrawImages, clearhistoryDrawImages, addDrawImage } = drawStore()
+  const { galleryDrawImages, historyDrawImages, clearhistoryDrawImages, addDrawImage } = drawStore()
 
   const containerOneRef = useRef<HTMLDivElement>(null)
   const containerTwoRef = useRef<HTMLDivElement>(null)
@@ -115,6 +119,37 @@ function DrawPage() {
 
   const [collapse, setCollapse] = useState(true)
   const [gptLoading, setGptLoading] = useState(false)
+
+  const [drawRecordData, setDrawRecordData] = useState({
+    isAll: false,
+    loading: false,
+    page: 1,
+    page_size: 20,
+    type: 'me'
+  })
+
+  async function getDrawListData({ page = 1, type = 'me' }: { page?: number, type?: string }) {
+    setDrawRecordData(data => ({ ...data, type, loading: true }))
+    const result = await drawAsync.fetchDrawImages({ ...drawRecordData, page, type })
+    if (result.code) {
+      setDrawRecordData(data => ({ ...data, type, loading: false }))
+      return
+    }
+    let isAll = false
+    if (result.data.rows.length <= 0) {
+      isAll = true
+    }
+    setDrawRecordData(data => ({ ...data, page, type, loading: false, isAll }))
+  }
+
+  useEffect(() => {
+    if (token) {
+      getDrawListData({ ...drawRecordData })
+    } else {
+      handleScroll()
+      getDrawListData({ ...drawRecordData, type: 'gallery' })
+    }
+  }, [token])
 
   const [drawConfig, setDrawConfig] = useState<{
     prompt: string
@@ -140,12 +175,12 @@ function DrawPage() {
   const [drawType, setDrawType] = useState('openai')
   const [drawResultData, setDrawResultData] = useState<{
     loading: boolean
-    list: Array<{ url: string }>
+    list: Array<DrawRecord>
   }>({
     loading: false,
     list: []
   })
-  const handleDraw = (res: ResponseData<Array<{ url: string }>>) => {
+  const handleDraw = (res: ResponseData<Array<DrawRecord>>) => {
     if (res.code || res.data.length <= 0) {
       message.error('请求错误 🙅')
       return
@@ -187,7 +222,7 @@ function DrawPage() {
     await postImagesGenerations(
       {
         ...drawConfig,
-        draw_type: drawType,
+        draw_type: drawType
       },
       {},
       { timeout: 0 }
@@ -203,12 +238,14 @@ function DrawPage() {
     const response = await postChatCompletion({
       prompt: drawConfig.prompt,
       type: 'draw'
-    }).then((res) => {
-      return res
-    }).catch((error) => {
-      setGptLoading(false)
-      return error
     })
+      .then((res) => {
+        return res
+      })
+      .catch((error) => {
+        setGptLoading(false)
+        return error
+      })
 
     const reader = response.body?.getReader?.()
     let allContent = ''
@@ -242,6 +279,20 @@ function DrawPage() {
   const handleScroll = () => {
     const twoClientHeight = containerTwoRef.current?.clientHeight || 0
     const oneScrollTop = containerOneRef.current?.scrollTop || 0
+    const clientHeight = containerOneRef.current?.clientHeight || 0
+    const scrollHeight = containerOneRef.current?.scrollHeight || 0
+    if (!drawRecordData.loading && !drawRecordData.isAll && (oneScrollTop + clientHeight + 40) >= scrollHeight) {
+      getDrawListData({
+        page: drawRecordData.page + 1,
+        type: drawRecordData.type
+      })
+    }
+
+    if (drawRecordData.type === 'gallery') {
+      setBottom(-(twoClientHeight + 100))
+      return
+    }
+
     if (oneScrollTop > 100) {
       setBottom(-(twoClientHeight + 100))
     } else {
@@ -254,7 +305,7 @@ function DrawPage() {
     return () => {
       containerOneRef.current?.removeEventListener('scroll', handleScroll)
     }
-  }, [])
+  }, [drawRecordData])
 
   function SegmentedLabel({ icon, title }: { icon: string; title: string }) {
     return (
@@ -279,6 +330,44 @@ function DrawPage() {
     }
   }
 
+  function DrawPageHeader(props: { type: string }) {
+    return (
+      <div className={styles.drawPage_mydraw_header}>
+        <div>
+          <h4>{props.type === 'me' ? '我的绘画' : '绘画广场'}</h4>
+          <p>{props.type === 'me' ? '请及时保存绘画图片，链接可能会失效' : '可以将你的好作品提交给大家使用'}</p>
+        </div>
+        {
+          props.type === 'me' && (
+            <Popconfirm
+              title="清除历史绘画"
+              description="确定清除所有绘画数据吗？"
+              onConfirm={() => {
+                drawAsync.fetchSetDrawImages({ status: 0 })
+              }}
+              okText="Yes"
+              cancelText="No"
+            >
+              <ClearOutlined className={styles.drawPage_mydraw_header_icon} />
+            </Popconfirm>
+          )
+        }
+      </div>
+    )
+  }
+
+  function DrawEmpty({ isShow }: { isShow: boolean }) {
+    if (!isShow) return
+    return <Empty style={{ paddingTop: 100 }} image={Empty.PRESENTED_IMAGE_SIMPLE} description="暂无绘画记录" />
+  }
+
+  const drawImagesList = useMemo(() => {
+    if (drawRecordData.type === 'me') {
+      return [...historyDrawImages]
+    }
+    return [...galleryDrawImages]
+  }, [drawRecordData, historyDrawImages, galleryDrawImages])
+
   return (
     <div className={styles.drawPage}>
       <Layout>
@@ -301,47 +390,79 @@ function DrawPage() {
                   return (
                     <Image
                       className={styles.drawPage_image}
-                      key={item.url}
-                      width={160}
-                      src={item.url}
+                      key={item.images?.[0]}
+                      width={220}
+                      src={item.images?.[0]}
                     />
                   )
                 })}
               </Image.PreviewGroup>
             </div>
+            <div className={styles.drawPage_selectTab}>
+              <Segmented
+                defaultValue="me"
+                value={drawRecordData.type}
+                onChange={(value: any) => {
+                  if (value === 'me' && !token) {
+                    setLoginModal(true)
+                    return
+                  }
+                  handleScroll()
+                  setDrawRecordData(data => ({ ...data, type: value, page: 1, isAll: false }))
+                  getDrawListData({ page: 1, type: value })
+                }}
+                options={[
+                  {
+                    value: 'me',
+                    label: '我的绘画'
+                  },
+                  {
+                    value: 'gallery',
+                    label: '绘画广场'
+                  }
+                ]}
+              />
+            </div>
             <div className={styles.drawPage_mydraw}>
-              <div className={styles.drawPage_mydraw_header}>
-                <div>
-                  <h4>我的绘画</h4>
-                  <p>请及时保存绘画图片，链接可能会失效</p>
-                </div>
-                <Popconfirm
-                  title="清除历史绘画"
-                  description="确定清除所有绘画数据吗？"
-                  onConfirm={() => {
-                    clearhistoryDrawImages()
-                  }}
-                  okText="Yes"
-                  cancelText="No"
-                >
-                  <ClearOutlined className={styles.drawPage_mydraw_header_icon} />
-                </Popconfirm>
-              </div>
-              {historyDrawImages.length <= 0 && (
-                <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="暂无生成记录" />
-              )}
+              <DrawPageHeader type={drawRecordData.type} />
+              <DrawEmpty isShow={
+                drawRecordData.type === 'me' && historyDrawImages.length <= 0
+                ||
+                drawRecordData.type === 'gallery' && galleryDrawImages.length <= 0
+              }
+              />
+
               <Image.PreviewGroup>
                 <div className={styles.drawPage_mydraw_list}>
-                  {historyDrawImages.map((item) => {
-                    return (
-                      <div key={item.id} className={styles.drawPage_mydraw_list_item}>
-                        <Image className={styles.drawPage_image} src={item.url} />
-                        <p>{item.prompt}</p>
-                      </div>
-                    )
-                  })}
+                  {
+                    drawImagesList.map((item) => {
+                      return (
+                        <ImageCard
+                          key={item.id}
+                          {...item}
+                          type={drawRecordData.type}
+                          onClickOperate={(id, status) => {
+                            drawAsync.fetchSetDrawImages({ id, status }).then((res) => {
+                              if (!res.code) {
+                                message.success('操作成功')
+                              } else {
+                                message.error('操作失败')
+                              }
+                            })
+                          }}
+                        />
+                      )
+                    })
+                  }
                 </div>
               </Image.PreviewGroup>
+              <div className={styles.drawPage_container_footer}>
+                {
+                  drawRecordData.loading ? <span><SyncOutlined spin /> 加载中...</span> :
+                    drawRecordData.isAll ? <span>- 我也是有底线的 -</span> :
+                      <span />
+                }
+              </div>
             </div>
           </div>
           <div
@@ -442,7 +563,7 @@ function DrawPage() {
                         }}
                       />
                     </div>
-                    <div className={styles.drawPage_config_item}>
+                    {/* <div className={styles.drawPage_config_item}>
                       <p>生成数量({drawConfig.quantity}张)：</p>
                       <Slider
                         defaultValue={drawConfig.quantity}
@@ -453,7 +574,7 @@ function DrawPage() {
                           setDrawConfig((c) => ({ ...c, quantity: e }))
                         }}
                       />
-                    </div>
+                    </div> */}
                   </div>
                   {drawType === 'stablediffusion' && (
                     <div className={styles.drawPage_config_group}>

@@ -1,0 +1,40 @@
+.menuItem{
+    color: #333;
+    padding: 12px;
+    border-radius: 4px;
+    height: 40px;
+    border: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    border-color: #e5e7eb;
+    &:hover{
+        background-color:#f5f5f5;
+    }
+
+    transition: all 0.3s ease-in-out;
+
+    &_action{
+        border-color: #1677ff;
+        color: #1677ff;
+
+        .menuItem_options{
+            display: inline-block;
+        }
+    }
+
+    &_options{
+        margin-left: auto;
+        cursor: pointer;
+        display: none;
+    }
+
+    &_icon{
+        margin-right: 8px;
+    }
+    &_name{
+        font-size: 14px;
+        overflow:hidden; //超出的文本隐藏
+        text-overflow:ellipsis; //溢出用省略号显示
+        white-space:nowrap; //溢出不换行
+    }
+}

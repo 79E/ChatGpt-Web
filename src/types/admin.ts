@@ -307,3 +307,20 @@ export interface PluginInfo {
 	update_time: string;
 	user?: UserInfo;
 }
+
+
+export interface DrawRecordInfo {
+	id: string;
+	user_id: string;
+	inset_image_url?: string;
+	prompt: string;
+	model: string;
+	images: string[];
+	params: string;
+	take_time: number;
+	size: string;
+	status: number;
+	create_time: string;
+	update_time: string;
+  user?: UserInfo
+}

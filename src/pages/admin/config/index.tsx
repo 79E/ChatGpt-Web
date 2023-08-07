@@ -1,8 +1,8 @@
 import {
   ProForm,
+  ProFormDependency,
   ProFormDigit,
-  ProFormGroup,
-  ProFormList,
+  ProFormSelect,
   ProFormText,
   ProFormTextArea,
   QueryFilter
@@ -12,7 +12,6 @@ import { useEffect, useRef, useState } from 'react'
 import styles from './index.module.less'
 import { getAdminConfig, putAdminConfig } from '@/request/adminApi'
 import { ConfigInfo } from '@/types/admin'
-import { CloseCircleOutlined, SmileOutlined } from '@ant-design/icons'
 import RichEdit from '@/components/RichEdit'
 
 function ConfigPage() {
@@ -44,6 +43,18 @@ function ConfigPage() {
     website_keywords: string
     website_logo: string
     website_footer: string
+  }>()
+
+  const [cloudStorageForm] = Form.useForm<{
+    type: string
+    secret_key?: string
+    api_host?: string
+    secret_id?: string
+    bucket?: string
+    access_key_secret?: string
+    access_key_id?: string
+    region?: string
+    local_host?: string
   }>()
 
   const [prohibitedWordsForm] = Form.useForm<{
@@ -169,6 +180,14 @@ function ConfigPage() {
         ...emailData
       })
     }
+
+    const cloudStorage = getConfigValue('cloud_storage', data)
+    if (cloudStorage && cloudStorage.value) {
+      const cloudStorageData = JSON.parse(cloudStorage.value)
+      cloudStorageForm.setFieldsValue({
+        ...cloudStorageData
+      })
+    }
   }
 
   function onGetConfig() {
@@ -195,6 +214,111 @@ function ConfigPage() {
       message.success('保存成功')
       onGetConfig()
     })
+  }
+
+  const cloudStorageFormItems: {
+    [key: string]: Array<React.ReactNode>
+  } = {
+    local: [
+      <ProFormText
+        key="local_host"
+        name="host"
+        label="访问域名(http/https)"
+        // rules={[{ required: true, message: '请输入访问域名（以/结尾）!' }]}
+      />
+    ],
+    tencent: [
+      <ProFormText
+        key="tencent_secret_id"
+        name="secret_id"
+        label="SecretId"
+        rules={[{ required: true, message: '请输入SecretId!' }]}
+      />,
+      <ProFormText
+        key="tencent_secret_key"
+        name="secret_key"
+        label="SecretKey"
+        rules={[{ required: true, message: '请输入SecretKey!' }]}
+      />,
+      <ProFormText
+        key="tencent_bucket"
+        name="bucket"
+        label="Bucket"
+        rules={[{ required: true, message: '请输入Bucket!' }]}
+      />,
+      <ProFormText
+        key="tencent_region"
+        name="region"
+        label="Region"
+        rules={[{ required: true, message: '请输入Region!' }]}
+      />
+    ],
+    alioss: [
+      <ProFormText
+        key="alioss_access_key_id"
+        name="access_key_id"
+        label="AccessKeyId"
+        rules={[{ required: true, message: '请输入AccessKeyId!' }]}
+      />,
+      <ProFormText
+        key="alioss_access_key_secret"
+        name="access_key_secret"
+        label="AccessKeySecret"
+        rules={[{ required: true, message: '请输入AccessKeySecret!' }]}
+      />,
+      <ProFormText
+        key="alioss_bucket"
+        name="bucket"
+        label="Bucket"
+        rules={[{ required: true, message: '请输入Bucket!' }]}
+      />,
+      <ProFormText
+        key="alioss_region"
+        name="region"
+        label="Region"
+        rules={[{ required: true, message: '请输入Region!' }]}
+      />
+    ],
+    upyun: [
+      <ProFormText
+        key="tencent_bucket"
+        name="bucket"
+        label="服务名称"
+        rules={[{ required: true, message: '请输入网站LOGO URL!' }]}
+      />,
+      <ProFormText
+        key="upyun_secret_id"
+        name="secret_id"
+        label="操作员"
+        rules={[{ required: true, message: '请输入操作员账号!' }]}
+      />,
+      <ProFormText
+        key="upyun_secret_key"
+        name="secret_key"
+        label="操作员密钥"
+        rules={[{ required: true, message: '请输入操作员密钥!' }]}
+      />,
+      <ProFormText
+        key="upyun_host"
+        name="host"
+        label="访问域名(http/https)"
+        rules={[{ required: true, message: '请输入访问域名（以/结尾）!' }]}
+      />
+    ],
+    lsky: [
+      <ProFormText
+        key="lsky_api_host"
+        name="api_host"
+        label="ApiHost"
+        rules={[{ required: true, message: '请输入网站LOGO URL!' }]}
+      />,
+      <ProFormText
+        key="lsky_secret_key"
+        name="secret_key"
+        label="SecretKey"
+        rules={[{ required: true, message: '请输入网站LOGO URL!' }]}
+      />
+    ]
   }
 
   function IntroduceSettings() {
@@ -774,6 +898,88 @@ function ConfigPage() {
     )
   }
 
+  function CloudStorageSettings() {
+    return (
+      <Space
+        direction="vertical"
+        style={{
+          width: '100%'
+        }}
+      >
+        <div className={styles.config_form}>
+          <h3>图片存储配置</h3>
+          <ProForm
+            autoFocus={false}
+            autoFocusFirstInput={false}
+            form={cloudStorageForm}
+            size="large"
+            initialValues={{
+              type: 'local'
+            }}
+            isKeyPressSubmit={false}
+            submitter={{
+              searchConfig: {
+                submitText: '保存',
+                resetText: '恢复'
+              }
+            }}
+            onFinish={(vales) => {
+              return onSave({
+                cloud_storage: JSON.stringify(vales)
+              })
+            }}
+            onReset={() => {
+              onRewardFormSet(configs)
+            }}
+          >
+            <ProFormSelect
+              name="type"
+              label="存储策略"
+              valueEnum={{
+                local: '本地存储',
+                tencent: '腾讯云存储',
+                alioss: '阿里云存储',
+                upyun: '又拍云存储',
+                lsky: 'Lsky图床'
+              }}
+              placeholder="请选择存储策略！"
+              rules={[{ required: true, message: '请选择存储策略！' }]}
+            />
+
+            <ProFormDependency name={['type']}>
+              {({ type }) => {
+                return cloudStorageFormItems[type]
+              }}
+            </ProFormDependency>
+
+            {/* 腾讯存储 */}
+            {/* SecretId: 'AKIDugGclhPglenkV3OfeQziFbljU2MUQ9fx', */}
+            {/* SecretKey: 'CD1bw50f5LPGtKYYLuKWUHrBKAqIbhcN' */}
+            {/* Bucket: 'upload-1305179234', */}
+            {/* Region: 'ap-beijing', */}
+
+            {/* 阿里云存储 */}
+            {/*
+				region: 'oss-cn-beijing',
+				// 阿里云账号AccessKey拥有所有API的访问权限，风险很高。强烈建议您创建并使用RAM用户进行API访问或日常运维，请登录RAM控制台创建RAM用户。
+				accessKeyId: 'LTAI5tDexQdkVpBrHyszfuW1',
+				accessKeySecret: 'VbQnCXaJBvhA2vrel4VcGY4yWKY3ws',
+				// 填写Bucket名称。
+				bucket: '79chucun',
+			*/}
+
+            {/* 又拍云 */}
+            {/* 'files-storage', 'upload', 'cC5HndWsWTXG5seD00FY7XjrY576tD1k' */}
+
+            {/* 图床 */}
+            {/* 'https://t.dl0.cn/api/v1/upload'  */}
+            {/* Authorization: 'Bearer 1|t2xiQZVf2JsXRbeD3tB2aKgTKrWL621dLSIPijHB' */}
+          </ProForm>
+        </div>
+      </Space>
+    )
+  }
+
   return (
     <div className={styles.config}>
       <Tabs
@@ -810,6 +1016,11 @@ function ConfigPage() {
             label: '邮件配置',
             key: 'EmailSettings',
             children: <EmailSettings />
+          },
+          {
+            label: '存储配置',
+            key: 'CloudStorageSettings',
+            children: <CloudStorageSettings />
           }
         ]}
       />

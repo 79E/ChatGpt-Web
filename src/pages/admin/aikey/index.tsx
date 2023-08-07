@@ -303,7 +303,7 @@ function AikeyPage() {
         initialValues={{
           status: 1,
           type: 'openai',
-		  check: 1
+		  check: 0
         }}
         onOpenChange={(visible) => {
           if (!visible) {

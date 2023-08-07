@@ -141,13 +141,6 @@ export interface RequestImagesGenerations {
   [key: string]: any
 }
 
-export interface ImagesInfo extends RequestImagesGenerations {
-  prompt: string
-  id: string
-  dateTime: string
-  url: string
-}
-
 // 三方订阅 信息
 export interface SubscriptionInfo {
   hard_limit_usd: number
@@ -277,4 +270,16 @@ export interface PluginInfo {
 	update_time: string;
 	user?: UserInfo;
   installed: boolean
+}
+
+export interface DrawRecord {
+	id: string;
+	user_id: string;
+	images: string[];
+	prompt: string;
+	size: string;
+	status: number;
+	take_time: number;
+	model: string;
+	create_time: string
 }

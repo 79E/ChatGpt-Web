@@ -41,6 +41,7 @@ import AdminAmountsPage from '@/pages/admin/amounts'
 import AdminDialogPage from '@/pages/admin/dialog'
 import AdminPersonaPage from '@/pages/admin/persona'
 import AdminPluginPage from '@/pages/admin/plugin'
+import AdminDrawPage from '@/pages/admin/draw'
 
 export const webRouter: RouteOptions[] = [
   {
@@ -328,13 +329,24 @@ export const adminRouter: RouteOptions[] = [
           role: ['administrator']
         }
       },
-	  {
+      {
         id: 'AdminPluginPage',
         path: '/admin/plugin',
         element: <AdminPluginPage />,
         index: false,
         configure: {
           title: '插件管理',
+          verifToken: true,
+          role: ['administrator']
+        }
+      },
+      {
+        id: 'AdminDrawPage',
+        path: '/admin/draw',
+        element: <AdminDrawPage />,
+        index: false,
+        configure: {
+          title: '绘画记录管理',
           verifToken: true,
           role: ['administrator']
         }

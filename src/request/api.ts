@@ -1,6 +1,7 @@
 import {
 	ChatsInfo,
   ConsumeRecordInfo,
+  DrawRecord,
   InvitationRecordInfo,
   PersonaInfo,
   PluginInfo,
@@ -70,7 +71,7 @@ export function postImagesGenerations(
   Object.keys(params).forEach((key) => {
     formData.append(key, params[key])
   })
-  return request.post<Array<{ url: string }>>(
+  return request.post<Array<DrawRecord>>(
     '/api/images/generations',
     formData,
     {
@@ -177,3 +178,19 @@ export function putUninstallPlugin(id: string | number){
 	return request.put(`/api/plugin/uninstall/${id}`)
 }
 
+// 获取绘画数据
+export function getDrawImages(params: {
+  page: number,
+  page_size: number,
+  type: 'gallery' | 'me' | string
+}){
+	return request.get<TableData<DrawRecord>>('/api/images', params)
+}
+
+// 修改绘画状态
+export function setDrawImages(params: {
+  id?: string | number,
+  status?: number
+}){
+	return request.put('/api/images', params)
+}

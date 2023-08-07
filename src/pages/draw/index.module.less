@@ -1,4 +1,5 @@
 .drawPage {
+
 	&_container {
 		display: flex;
 		width: 100%;
@@ -8,12 +9,13 @@
 		height: calc(100vh - 56px);
 
 		&_one {
-			flex: 1;
+			
 			width: 100%;
 			max-width: 900px;
 			align-self: center;
 			overflow: auto;
 			padding-bottom: 100px;
+			margin: 0 auto;
 
 			&::-webkit-scrollbar {
 				display: none;
@@ -29,6 +31,18 @@
 			bottom: 0;
 			padding: 12px 12px 20px;
 			transition: bottom 0.4s ease-in-out;
+		}
+
+		&_footer{
+			padding: 50px 0;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			span{
+				text-align: center;
+				font-size: 14px;
+				color: #999;
+			}
 		}
 	}
 
@@ -177,6 +191,7 @@
 
 	&_mydraw {
 		width: 100%;
+		min-height: 500px;
 
 		&_header {
 			h4 {
@@ -209,20 +224,13 @@
 		}
 
 		&_list {
-			display: grid;
-			grid-template-columns: repeat(auto-fill, minmax(213px, 1fr));
-			grid-gap: 10px;
+			// display: grid;
+			// grid-template-columns: repeat(auto-fill, minmax(213px, 1fr));
+			// grid-auto-rows: auto;
 
-			&_item {
-				p {
-					display: block;
-					font-size: 14px;
-					color: #333;
-					overflow: hidden;
-					text-overflow: ellipsis;
-					white-space: nowrap;
-				}
-			}
+			column-count: 4; /* 列数 */
+  			column-gap: 12px; /* 元素间距 */
+			transition: all 0.3s ease-in-out;
 		}
 	}
 
@@ -262,6 +270,12 @@
 		transition: all 0.4s ease-in-out;
 	}
 
+	&_selectTab{
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
 	&_image {
 		border-radius: 4px;
 	}
@@ -272,6 +286,22 @@
 
 	[class*='ant-pro-layout-content'] {
 		padding-block: 0;
+	}
+
+	@media (max-width: 850px) {
+		.drawPage_mydraw_list{
+			column-count: 3;
+		}
+	}
+	@media (max-width: 700px) {
+		.drawPage_mydraw_list{
+			column-count: 2;
+		}
+	}
+	@media (max-width: 460px) {
+		.drawPage_mydraw_list{
+			column-count: 1;
+		}
 	}
 
 	@media (max-width: 600px) {

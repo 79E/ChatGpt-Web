@@ -38,6 +38,7 @@ function AdminPage() {
         contentWidth="Fluid"
         fixedHeader
         fixSiderbar
+        theme="light"
         contentStyle={
           {
             //   height: 'calc(100vh - 10px)'
@@ -47,7 +48,7 @@ function AdminPage() {
         siderMenuType="group"
         menu={{
           locale: false,
-          collapsedShowGroupTitle: false
+          collapsedShowGroupTitle: false,
         }}
         // settings={{}}
         suppressSiderWhenMenuEmpty
@@ -117,7 +118,8 @@ function AdminPage() {
               setSelectedKeys([...r.keyPath])
             }
           },
-          selectedKeys: [...selectedKeys]
+          selectedKeys: [...selectedKeys],
+          theme: 'light'
         }}
         breadcrumbRender={() => []}
         footerRender={() => (

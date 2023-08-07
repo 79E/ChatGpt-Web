@@ -1,24 +1,32 @@
-import { RequestImagesGenerations } from '@/types';
-import configStore from '../config/slice';
+import drawStore from '../draw/slice';
+import { getDrawImages, setDrawImages } from '@/request/api';
 
-// 代理模式
-const proxyImagesGenerations = (
-  params: RequestImagesGenerations,
-  options?: { [key: string]: any }
-) => {
-  const host = configStore.getState().config.api;
-  const key = configStore.getState().config.api_key;
-  return fetch('/api/proxy/v1/images/generations', {
-    method: 'POST',
-    body: JSON.stringify(params),
-    headers: {
-      'x-proxy-host': host ? host : '',
-      'x-proxy-key': key ? key : '',
-    },
-    ...options,
-  });
-};
+async function fetchDrawImages(params: {
+    page: number,
+    page_size: number,
+    type: 'gallery' | 'me' | string
+}) {
+    const res = await getDrawImages(params)
+    if (!res.code) {
+        drawStore.getState().changeDrawImage(params.type, res.data.rows, params.page)
+    }
+    return res
+}
+
+async function fetchSetDrawImages(params: {
+    id?: string | number,
+    status?: number
+}) {
+    const res = await setDrawImages(params)
+    if (!res.code && !params.id) {
+        drawStore.getState().clearhistoryDrawImages()
+    } else if (!res.code && params.id) {
+        drawStore.getState().setHistoryDrawImages(params.id, params.status)
+    }
+    return res
+}
 
 export default {
-  proxyImagesGenerations,
+    fetchDrawImages,
+    fetchSetDrawImages
 };

@@ -19,7 +19,8 @@ import {
   WithdrawalRecordInfo,
   DialogInfo,
   PersonaInfo,
-  PluginInfo
+  PluginInfo,
+  DrawRecordInfo
 } from '@/types/admin'
 import request from '.'
 
@@ -314,7 +315,6 @@ export function delAdminPersona(params: { id: string | number }) {
 export function getAdminPlugins(params?: Paging) {
 	return request.get<TableData<PluginInfo>>('/api/admin/plugins', params)
 }
-
 // 删除插件
 export function delAdminPlugin(params: { id: string | number }) {
 	return request.del(`/api/admin/plugin/${params.id}`)
@@ -326,4 +326,18 @@ export function putAdminPlugin(params: PluginInfo) {
 // 新增插件数据
 export function postAdminPlugin(params: PluginInfo) {
 	return request.post('/api/admin/plugin', params)
+}
+
+// 获取绘画列表
+export function getAdminDrawRecords(params?: Paging) {
+	return request.get<TableData<DrawRecordInfo>>('/api/admin/draw_record', params)
+}
+// 删除绘画数据
+export function delAdminDrawRecord(params: { id: string | number }) {
+	return request.del(`/api/admin/draw_record/${params.id}`)
+}
+
+// 修改绘画数据
+export function putAdminDrawRecord(params: DrawRecordInfo | { images: string }) {
+	return request.put('/api/admin/draw_record', params)
 }

@@ -5,6 +5,7 @@ import {
   CrownFilled,
   DropboxCircleFilled,
   ExperimentFilled,
+  FileImageFilled,
   FileTextFilled,
   GithubFilled,
   GithubOutlined,
@@ -142,7 +143,7 @@ const admin = {
       ]
     },
     {
-      name: '会话管理',
+      name: '功能性管理',
       icon: <MessageFilled />,
       path: '/admin_message',
       routes: [
@@ -151,21 +152,26 @@ const admin = {
           name: '内置对话',
           icon: <GitlabFilled />
         },
-		{
-			path: '/admin/persona',
-			name: '角色配置',
-			icon: <RedditCircleFilled />
-		},
-		{
-			path: '/admin/plugin',
-			name: '插件管理',
-			icon: <DropboxCircleFilled />
-		},
-		{
-			path: '/admin/messages',
-			name: '消息列表',
-			icon: <FileTextFilled />
-		}
+        {
+          path: '/admin/persona',
+          name: '角色配置',
+          icon: <RedditCircleFilled />
+        },
+        {
+          path: '/admin/plugin',
+          name: '插件管理',
+          icon: <DropboxCircleFilled />
+        },
+        {
+          path: '/admin/messages',
+          name: '消息列表',
+          icon: <FileTextFilled />
+        },
+        {
+          path: '/admin/draw',
+          name: '绘画列表',
+          icon: <FileImageFilled />
+        },
       ]
     },
     {
