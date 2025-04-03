@@ -115,7 +115,9 @@ yarn build
 #### 服务端
 
 1. 前端请求服务端的 [接口文档](https://console-docs.apipost.cn/preview/38826c52f656ef05/044846bd536b67bb) 你们可以按照这个接口文档进行开发
-2. 如需帮助请提交 [Issues](https://github.com/79E/ChatGPT-Web/issues) 或赞赏时留下联系方式。
+2. 将Mysql sql文件导入到数据库中
+3. 配置好数据库的连接信息（server/config）
+3. 如需帮助请提交 [Issues](https://github.com/79E/ChatGPT-Web/issues) 或赞赏时留下联系方式。
 
 ## 🎯 部署
 > 直接将`WEB`项目打包好的 `dist` 目录上传到服务器即可。注意服务器IP地址位置！
@@ -126,11 +128,6 @@ yarn build
 [![Deploy to Vercel](https://vercel.com/button)](https://vercel.com/import/project?template=https://github.com/79E/ChatGpt-Web)
 
 如需帮助请提交 [Issues](https://github.com/79E/ChatGPT-Web/issues) 或赞赏时留下联系方式。
-
-## 💰 赞助方
-<a href='https://www.asiayun.com/aff/BMLOQGTD' target='_blank'>
-<img width='50%' style="border-radius: 12px;"  src='https://imgcache.yyyisp.com/img/asiaxcimg.png' />
-</a>
 
 
 ## 🧘 贡献者
